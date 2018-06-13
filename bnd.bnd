@@ -1,0 +1,6 @@
+-exportcontents: \
+    org.apache.harmony.pack200,\
+    org.apache.harmony.unpack200,\
+    org.apache.harmony.unpack200.bytecode,\
+    org.apache.harmony.unpack200.bytecode.forms
+-sources: false
