@@ -186,7 +186,8 @@ public class Segment implements ClassVisitor {
             }
         }
     }
-
+    
+    @Override
     public void visit(int version, int access, String name, String signature,
             String superName, String[] interfaces) {
         bcBands.setCurrentClass(name, superName);
@@ -195,22 +196,26 @@ public class Segment implements ClassVisitor {
                 interfaces);
     }
 
+    @Override
     public void visitSource(String source, String debug) {
         if(!stripDebug) {
             classBands.addSourceFile(source);
         }
     }
 
+    @Override
     public void visitOuterClass(String owner, String name, String desc) {
         classBands.addEnclosingMethod(owner, name, desc);
 
     }
 
+    @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_CLASS,
                 desc, visible);
     }
 
+    @Override
     public void visitAttribute(Attribute attribute) {
         if(attribute.isUnknown()) {
             String action = options.getUnknownAttributeAction();
@@ -237,23 +242,27 @@ public class Segment implements ClassVisitor {
         }
     }
 
+    @Override
     public void visitInnerClass(String name, String outerName,
             String innerName, int flags) {
         icBands.addInnerClass(name, outerName, innerName, flags);
     }
 
+    @Override
     public FieldVisitor visitField(int flags, String name, String desc,
             String signature, Object value) {
         classBands.addField(flags, name, desc, signature, value);
         return fieldVisitor;
     }
 
+    @Override
     public MethodVisitor visitMethod(int flags, String name, String desc,
             String signature, String[] exceptions) {
         classBands.addMethod(flags, name, desc, signature, exceptions);
         return methodVisitor;
     }
 
+    @Override
     public void visitEnd() {
         classBands.endOfClass();
     }
@@ -267,15 +276,18 @@ public class Segment implements ClassVisitor {
      */
     public class SegmentMethodVisitor implements MethodVisitor {
 
+	@Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             return new SegmentAnnotationVisitor(
                     MetadataBandGroup.CONTEXT_METHOD, desc, visible);
         }
 
+	@Override
         public AnnotationVisitor visitAnnotationDefault() {
             return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_METHOD);
         }
 
+	@Override
         public void visitAttribute(Attribute attribute) {
             if(attribute.isUnknown()) {
                 String action = options.getUnknownAttributeAction();
@@ -316,26 +328,31 @@ public class Segment implements ClassVisitor {
             }
         }
 
+	@Override
         public void visitCode() {
             classBands.addCode();
         }
 
+	@Override
         public void visitFrame(int arg0, int arg1, Object[] arg2, int arg3,
                 Object[] arg4) {
             // TODO: Java 6 - implement support for this
 
         }
 
+	@Override
         public void visitLabel(Label label) {
             bcBands.visitLabel(label);
         }
 
+	@Override
         public void visitLineNumber(int line, Label start) {
             if(!stripDebug) {
                 classBands.addLineNumber(line, start);
             }
         }
 
+	@Override
         public void visitLocalVariable(String name, String desc,
                 String signature, Label start, Label end, int index) {
             if(!stripDebug) {
@@ -344,73 +361,89 @@ public class Segment implements ClassVisitor {
             }
         }
 
+	@Override
         public void visitMaxs(int maxStack, int maxLocals) {
             classBands.addMaxStack(maxStack, maxLocals);
         }
 
+	@Override
         public AnnotationVisitor visitParameterAnnotation(int parameter,
                 String desc, boolean visible) {
             return new SegmentAnnotationVisitor(
                     MetadataBandGroup.CONTEXT_METHOD, parameter, desc, visible);
         }
 
+	@Override
         public void visitTryCatchBlock(Label start, Label end, Label handler,
                 String type) {
             classBands.addHandler(start, end, handler, type);
         }
 
+	@Override
         public void visitEnd() {
             classBands.endOfMethod();
             bcBands.visitEnd();
         }
 
+	@Override
         public void visitFieldInsn(int opcode, String owner, String name,
                 String desc) {
             bcBands.visitFieldInsn(opcode, owner, name, desc);
         }
 
+	@Override
         public void visitIincInsn(int var, int increment) {
             bcBands.visitIincInsn(var, increment);
         }
 
+	@Override
         public void visitInsn(int opcode) {
             bcBands.visitInsn(opcode);
         }
 
+	@Override
         public void visitIntInsn(int opcode, int operand) {
             bcBands.visitIntInsn(opcode, operand);
         }
 
+	@Override
         public void visitJumpInsn(int opcode, Label label) {
             bcBands.visitJumpInsn(opcode, label);
         }
 
+	@Override
         public void visitLdcInsn(Object cst) {
             bcBands.visitLdcInsn(cst);
         }
 
+	@Override
         public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
             bcBands.visitLookupSwitchInsn(dflt, keys, labels);
         }
 
+	@Override
         public void visitMethodInsn(int opcode, String owner, String name,
                 String desc) {
             bcBands.visitMethodInsn(opcode, owner, name, desc);
         }
 
+	@Override
         public void visitMultiANewArrayInsn(String desc, int dimensions) {
             bcBands.visitMultiANewArrayInsn(desc, dimensions);
         }
 
+	@Override
         public void visitTableSwitchInsn(int min, int max, Label dflt,
                 Label[] labels) {
             bcBands.visitTableSwitchInsn(min, max, dflt, labels);
         }
 
+	@Override
         public void visitTypeInsn(int opcode, String type) {
             bcBands.visitTypeInsn(opcode, type);
         }
 
+	@Override
         public void visitVarInsn(int opcode, int var) {
             bcBands.visitVarInsn(opcode, var);
         }
@@ -459,6 +492,7 @@ public class Segment implements ClassVisitor {
             this.visible = visible;
         }
 
+	@Override
         public void visit(String name, Object value) {
             if (name == null) {
                 name = "";
@@ -466,6 +500,8 @@ public class Segment implements ClassVisitor {
             nameRU.add(name);
             addValueAndTag(value, T, values);
         }
+	
+	@Override
         public AnnotationVisitor visitAnnotation(String name, String desc) {
             T.add("@");
             if (name == null) {
@@ -507,6 +543,7 @@ public class Segment implements ClassVisitor {
             };
         }
 
+	@Override
         public AnnotationVisitor visitArray(String name) {
             T.add("[");
             if (name == null) {
@@ -517,6 +554,7 @@ public class Segment implements ClassVisitor {
             return new ArrayVisitor(caseArrayN, T, nameRU, values);
         }
 
+	@Override
         public void visitEnd() {
             if (desc == null) {
                 Segment.this.classBands.addAnnotationDefault(nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
@@ -527,6 +565,7 @@ public class Segment implements ClassVisitor {
             }
         }
 
+	@Override
         public void visitEnum(String name, String desc, String value) {
             T.add("e");
             if (name == null) {
@@ -554,6 +593,7 @@ public class Segment implements ClassVisitor {
             this.indexInCaseArrayN = caseArrayN.size() - 1;
         }
         
+	@Override
         public void visit(String name, Object value) {
             Integer numCases = (Integer) caseArrayN.remove(indexInCaseArrayN);
             caseArrayN.add(indexInCaseArrayN, new Integer(numCases.intValue() + 1));
@@ -563,11 +603,13 @@ public class Segment implements ClassVisitor {
             addValueAndTag(value, T, values);
         }
 
+	@Override
         public AnnotationVisitor visitAnnotation(String arg0,
                 String arg1) {
             throw new RuntimeException("Not yet supported");
         }
 
+	@Override
         public AnnotationVisitor visitArray(String name) {
             T.add("[");
             if (name == null) {
@@ -578,9 +620,11 @@ public class Segment implements ClassVisitor {
             return new ArrayVisitor(caseArrayN, T, nameRU, values);
         }
 
+	@Override
         public void visitEnd() {
         }
 
+	@Override
         public void visitEnum(String name, String desc, String value) {
             Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
             caseArrayN.add(new Integer(numCases.intValue() + 1));
@@ -596,11 +640,13 @@ public class Segment implements ClassVisitor {
      */
     public class SegmentFieldVisitor implements FieldVisitor {
 
+	@Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             return new SegmentAnnotationVisitor(MetadataBandGroup.CONTEXT_FIELD,
                     desc, visible);
         }
 
+	@Override
         public void visitAttribute(Attribute attribute) {
             if(attribute.isUnknown()) {
                 String action = options.getUnknownAttributeAction();
@@ -627,6 +673,7 @@ public class Segment implements ClassVisitor {
             }
         }
 
+	@Override
         public void visitEnd() {
         }
     }
