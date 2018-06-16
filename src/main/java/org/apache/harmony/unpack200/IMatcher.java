@@ -19,7 +19,7 @@ package org.apache.harmony.unpack200;
 /**
  * Interface for a class that can perform matching on flag values.
  */
-public interface IMatcher {
+interface IMatcher {
 
     public abstract boolean matches(long value);
 

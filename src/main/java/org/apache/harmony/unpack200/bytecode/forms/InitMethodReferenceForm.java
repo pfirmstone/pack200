@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * Abstract superclass of those classes which look up init methods (these are
  * class specific methods). They use getInitMethodPoolEntry to find the methods.
  */
-public abstract class InitMethodReferenceForm extends
+abstract class InitMethodReferenceForm extends
         ClassSpecificReferenceForm {
 
     public InitMethodReferenceForm(int opcode, String name, int[] rewrite) {

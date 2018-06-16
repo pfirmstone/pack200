@@ -22,7 +22,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
 /**
  * This class implements the form for bytecodes which have single byte operands.
  */
-public class ByteForm extends ByteCodeForm {
+class ByteForm extends ByteCodeForm {
 
     public ByteForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have label
  * references (and only label references).
  */
-public class LabelForm extends ByteCodeForm {
+class LabelForm extends ByteCodeForm {
 
     protected boolean widened;
 

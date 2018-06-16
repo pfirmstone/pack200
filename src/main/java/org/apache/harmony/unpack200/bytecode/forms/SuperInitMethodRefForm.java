@@ -20,7 +20,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
  * This class is used to determine which init method should be called, based on
  * the last superclass reference.
  */
-public class SuperInitMethodRefForm extends InitMethodReferenceForm {
+class SuperInitMethodRefForm extends InitMethodReferenceForm {
 
     public SuperInitMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

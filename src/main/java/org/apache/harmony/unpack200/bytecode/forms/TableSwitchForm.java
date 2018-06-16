@@ -19,7 +19,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
 
-public class TableSwitchForm extends SwitchForm {
+class TableSwitchForm extends SwitchForm {
 
     public TableSwitchForm(int opcode, String name) {
         super(opcode, name);

@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * references (and only float references). This excludes iinc (which has its own
  * form, IincForm).
  */
-public class LocalForm extends ByteCodeForm {
+class LocalForm extends ByteCodeForm {
 
     public LocalForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class is used to determine which init method should be called, based on
  * the last class which was sent a constructor message.
  */
-public class NewInitMethodRefForm extends InitMethodReferenceForm {
+class NewInitMethodRefForm extends InitMethodReferenceForm {
 
     public NewInitMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

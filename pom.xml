@@ -14,7 +14,9 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
 
@@ -33,16 +35,17 @@
         <gmaven.version>1.4</gmaven.version>
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
         <junit.version>4.8.2</junit.version>
-        <asm.version>3.1</asm.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>  
 	<dependency>
-            <groupId>asm</groupId>
+            <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>${asm.version}</version>
-        </dependency>   
+            <version>6.2</version>
+            <!--<version>5.0.1</version>-->
+	    <type>jar</type>
+	</dependency>   
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -167,7 +170,7 @@
                 </links>
                 <detectLinks>true</detectLinks>
                 <breakiterator>true</breakiterator>
-                <top><![CDATA[<h2>JGDMS Project ${version} API Documentation</h2>]]></top>
+                <top><![CDATA[<h2>JGDMS Project ${project.version} API Documentation</h2>]]></top>
                 <footer><![CDATA[<i>Copyright &copy;, multiple authors.</i>]]></footer>
               </configuration>
             </plugin>

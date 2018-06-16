@@ -30,7 +30,7 @@ import org.objectweb.asm.Attribute;
  * Attribute Definition bands define how any unknown attributes should be read
  * by the decompressor.
  */
-public class AttributeDefinitionBands extends BandSet {
+class AttributeDefinitionBands extends BandSet {
 
     public static final int CONTEXT_CLASS = 0;
     public static final int CONTEXT_CODE = 3;

@@ -23,7 +23,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for the iinc instruction. It has a
  * local reference and a byte operand.
  */
-public class IincForm extends ByteCodeForm {
+class IincForm extends ByteCodeForm {
 
     public IincForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

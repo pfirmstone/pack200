@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * Abstract superclass for a set of bands
  */
-public abstract class BandSet {
+abstract class BandSet {
 
     protected final SegmentHeader segmentHeader;
     final int effort;

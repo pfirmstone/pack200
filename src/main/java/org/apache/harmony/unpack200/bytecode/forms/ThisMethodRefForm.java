@@ -25,7 +25,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * class to be inferred from context; this class tracks previous method
  * reference current classes to allow this.
  */
-public class ThisMethodRefForm extends ClassSpecificReferenceForm {
+class ThisMethodRefForm extends ClassSpecificReferenceForm {
 
     public ThisMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

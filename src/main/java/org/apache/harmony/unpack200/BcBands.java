@@ -37,7 +37,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
 /**
  * Bytecode bands
  */
-public class BcBands extends BandSet {
+class BcBands extends BandSet {
 
     // The bytecodes for each method in each class as they come (i.e. in their
     // packed format)

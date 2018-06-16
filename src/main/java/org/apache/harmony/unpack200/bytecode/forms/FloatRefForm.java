@@ -22,7 +22,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have float
  * references (and only float references).
  */
-public class FloatRefForm extends SingleByteReferenceForm {
+class FloatRefForm extends SingleByteReferenceForm {
 
     public FloatRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

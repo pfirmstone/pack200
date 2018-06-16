@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * other instructions, it can take multiple forms, depending on what is being
  * widened.
  */
-public class WideForm extends VariableInstructionForm {
+class WideForm extends VariableInstructionForm {
 
     public WideForm(int opcode, String name) {
         super(opcode, name);

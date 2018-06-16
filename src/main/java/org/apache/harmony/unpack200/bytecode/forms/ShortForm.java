@@ -22,7 +22,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
 /**
  * This class implements the form for bytecodes which have short operands only.
  */
-public class ShortForm extends ByteCodeForm {
+class ShortForm extends ByteCodeForm {
 
     public ShortForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

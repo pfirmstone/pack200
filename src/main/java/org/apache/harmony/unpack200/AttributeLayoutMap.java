@@ -30,7 +30,7 @@ import org.apache.harmony.pack200.Pack200Exception;
  * Note that names of attribute layouts and their formats are NOT
  * internationalized, and should not be translated.
  */
-public class AttributeLayoutMap {
+class AttributeLayoutMap {
 
     // Create all the default AttributeLayouts here
     private static AttributeLayout[] getDefaultAttributeLayouts()

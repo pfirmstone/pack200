@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 /**
  * Constant pool entry for a double.
  */
-public class CPDouble extends CPConstant {
+class CPDouble extends CPConstant {
 
     private final double theDouble;
 

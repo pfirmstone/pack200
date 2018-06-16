@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.Pack200Exception;
 /**
  * SegmentHeader is the header band of a {@link Segment}
  */
-public class SegmentHeader {
+class SegmentHeader {
 
     private int archiveMajor;
 

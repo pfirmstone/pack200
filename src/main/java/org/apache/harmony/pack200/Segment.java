@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.pack200.Archive.PackingFile;
-import org.apache.harmony.pack200.Archive.SegmentUnit;
+import org.apache.harmony.pack200.Pack200Archive.PackingFile;
+import org.apache.harmony.pack200.Pack200Archive.SegmentUnit;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -39,7 +39,7 @@ import org.objectweb.asm.Type;
 /**
  * A Pack200 archive consists of one or more Segments.
  */
-public class Segment extends ClassVisitor {
+class Segment extends ClassVisitor {
 
     private final static int opcode = Opcodes.ASM5;
     private SegmentHeader segmentHeader;

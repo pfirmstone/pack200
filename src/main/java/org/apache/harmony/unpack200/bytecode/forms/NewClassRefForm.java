@@ -29,7 +29,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * 2. To allow the sender to create instances of either a specified class (which
  * then becomes the new class) or the last used new class.
  */
-public class NewClassRefForm extends ClassRefForm {
+class NewClassRefForm extends ClassRefForm {
 
     public NewClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

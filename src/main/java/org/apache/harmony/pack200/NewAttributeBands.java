@@ -35,7 +35,7 @@ import org.objectweb.asm.Label;
  * definition given to pack200 (e.g. via one of the -C, -M, -F or -D command
  * line options)
  */
-public class NewAttributeBands extends BandSet {
+class NewAttributeBands extends BandSet {
 
     protected List attributeLayoutElements;
     private int[] backwardsCallCounts;

@@ -40,7 +40,7 @@ import org.apache.harmony.unpack200.bytecode.CPUTF8;
 /**
  * Abstract superclass for a set of bands
  */
-public abstract class BandSet {
+abstract class BandSet {
 
     public abstract void read(InputStream inputStream) throws IOException,
             Pack200Exception;

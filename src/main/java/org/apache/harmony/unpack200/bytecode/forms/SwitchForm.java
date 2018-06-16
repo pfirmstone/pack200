@@ -19,7 +19,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
 
-public abstract class SwitchForm extends VariableInstructionForm {
+abstract class SwitchForm extends VariableInstructionForm {
 
     public SwitchForm(int opcode, String name) {
         super(opcode, name);

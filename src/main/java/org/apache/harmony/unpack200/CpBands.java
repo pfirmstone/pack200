@@ -39,7 +39,7 @@ import org.apache.harmony.unpack200.bytecode.CPUTF8;
 /**
  * Constant Pool bands
  */
-public class CpBands extends BandSet {
+class CpBands extends BandSet {
 
     public SegmentConstantPool getConstantPool() {
         return pool;

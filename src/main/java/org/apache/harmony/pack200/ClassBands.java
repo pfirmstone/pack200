@@ -37,7 +37,7 @@ import org.objectweb.asm.Opcodes;
  * Class bands (corresponds to the <code>class_bands</code> set of bands in the
  * pack200 specification)
  */
-public class ClassBands extends BandSet {
+class ClassBands extends BandSet {
 
     private final CpBands cpBands;
     private final AttributeDefinitionBands attrBands;

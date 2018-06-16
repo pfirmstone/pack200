@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * Some bytecodes (such as (a)ldc, fldc and ildc) have single- byte references
  * to the class pool. This class is the abstract superclass of those classes.
  */
-public abstract class SingleByteReferenceForm extends ReferenceForm {
+abstract class SingleByteReferenceForm extends ReferenceForm {
 
     protected boolean widened;
 

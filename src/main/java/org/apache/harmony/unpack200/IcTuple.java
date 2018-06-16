@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * C2 is the outer class name, or null if it can be inferred from C<br>
  * N is the inner class name, or null if it can be inferred from C<br>
  */
-public class IcTuple {
+class IcTuple {
 
     private final int cIndex;
     private final int c2Index;

@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 /**
  * Constant pool entry for a long.
  */
-public class CPLong extends CPConstant {
+class CPLong extends CPConstant {
 
     private final long theLong;
 

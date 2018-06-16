@@ -25,7 +25,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  *
  * MultiANewArrayForms (like other anewarray forms) do not track the last new().
  */
-public class MultiANewArrayForm extends ClassRefForm {
+class MultiANewArrayForm extends ClassRefForm {
 
     public MultiANewArrayForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

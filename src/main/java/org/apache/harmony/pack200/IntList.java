@@ -23,7 +23,7 @@ import java.util.Arrays;
  * specifically for ints in order to reduce boxing and unboxing to Integers,
  * reduce the memory required and improve performance of pack200.
  */
-public class IntList {
+class IntList {
 
     private int[] array;
     private int firstIndex;

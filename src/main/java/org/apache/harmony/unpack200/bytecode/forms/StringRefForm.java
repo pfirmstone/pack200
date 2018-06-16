@@ -27,7 +27,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have
  * string references (and only string references).
  */
-public class StringRefForm extends SingleByteReferenceForm {
+class StringRefForm extends SingleByteReferenceForm {
 
     public StringRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

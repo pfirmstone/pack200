@@ -37,7 +37,7 @@ import java.util.List;
  * Note that this cache must be synchronized externally
  * if it is shared.
  */
-public class SegmentConstantPoolArrayCache {
+class SegmentConstantPoolArrayCache {
 
     protected IdentityHashMap knownArrays = new IdentityHashMap(1000);
 

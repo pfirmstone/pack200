@@ -37,7 +37,7 @@ import org.apache.harmony.unpack200.bytecode.RuntimeVisibleorInvisibleParameterA
 /**
  * A group of metadata bands, such as class_RVA_bands, method_AD_bands etc.
  */
-public class MetadataBandGroup {
+class MetadataBandGroup {
 
     private final String type;
     private final CpBands cpBands;

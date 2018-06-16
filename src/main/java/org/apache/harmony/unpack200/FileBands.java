@@ -29,7 +29,7 @@ import org.apache.harmony.pack200.Pack200Exception;
  * in the stream with BYTE1 compression. A decent implementation will probably
  * just stream the bytes out to the reconstituted Jar rather than caching them.
  */
-public class FileBands extends BandSet {
+class FileBands extends BandSet {
 
     private byte[][] fileBits;
 

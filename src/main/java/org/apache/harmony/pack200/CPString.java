@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 /**
  * Constant pool entry for a String.
  */
-public class CPString extends CPConstant {
+class CPString extends CPConstant {
 
     private final String string;
     private final CPUTF8 utf8;

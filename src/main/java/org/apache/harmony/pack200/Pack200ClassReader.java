@@ -22,7 +22,7 @@ import org.objectweb.asm.ClassReader;
  * Wrapper for ClassReader that enables pack200 to obtain extra class file
  * information
  */
-public class Pack200ClassReader extends ClassReader {
+class Pack200ClassReader extends ClassReader {
 
     private boolean lastConstantHadWideIndex;
     private int lastUnsignedShort;

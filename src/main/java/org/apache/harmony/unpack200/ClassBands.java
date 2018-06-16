@@ -41,7 +41,7 @@ import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
 /**
  * Class Bands
  */
-public class ClassBands extends BandSet {
+class ClassBands extends BandSet {
 
     private int[] classFieldCount;
 

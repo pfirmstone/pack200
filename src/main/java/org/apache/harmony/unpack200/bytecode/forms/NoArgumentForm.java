@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * no operands (such as nop) or have all their operands passed on the stack (not
  * encoded as bytes in the bytecode streams).
  */
-public class NoArgumentForm extends ByteCodeForm {
+class NoArgumentForm extends ByteCodeForm {
 
     public NoArgumentForm(int opcode, String name) {
         super(opcode, name);

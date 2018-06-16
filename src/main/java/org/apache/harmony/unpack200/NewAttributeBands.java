@@ -44,7 +44,7 @@ import org.apache.harmony.unpack200.bytecode.NewAttribute;
 /**
  * Set of bands relating to a non-predefined attribute
  */
-public class NewAttributeBands extends BandSet {
+class NewAttributeBands extends BandSet {
 
     private final AttributeLayout attributeLayout;
 

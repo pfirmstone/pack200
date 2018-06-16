@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.apache.harmony.pack200.Archive.PackingFile;
-import org.apache.harmony.pack200.Archive.SegmentUnit;
+import org.apache.harmony.pack200.Pack200Archive.PackingFile;
+import org.apache.harmony.pack200.Pack200Archive.SegmentUnit;
 import org.objectweb.asm.ClassReader;
 
 /**
@@ -33,7 +33,7 @@ import org.objectweb.asm.ClassReader;
  * contents for non-class-files. Corresponds to the <code>file_bands</code> set
  * of bands described in the specification.
  */
-public class FileBands extends BandSet {
+class FileBands extends BandSet {
 
     private final CPUTF8[] fileName;
     private int[] file_name;

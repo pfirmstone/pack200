@@ -26,7 +26,7 @@ import java.util.List;
  * A group of metadata (annotation) bands, such as class_RVA_bands,
  * method_AD_bands etc.
  */
-public class MetadataBandGroup extends BandSet {
+class MetadataBandGroup extends BandSet {
 
     public static final int CONTEXT_CLASS = 0;
     public static final int CONTEXT_FIELD = 1;

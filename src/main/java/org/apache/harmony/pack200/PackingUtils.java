@@ -39,9 +39,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.apache.harmony.pack200.Archive.PackingFile;
+import org.apache.harmony.pack200.Pack200Archive.PackingFile;
 
-public class PackingUtils {
+class PackingUtils {
 
     private static PackingLogger packingLogger;
 

@@ -23,7 +23,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have int
  * references (and only int references).
  */
-public class IntRefForm extends SingleByteReferenceForm {
+class IntRefForm extends SingleByteReferenceForm {
 
     public IntRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

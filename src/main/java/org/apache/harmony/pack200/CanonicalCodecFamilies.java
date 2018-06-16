@@ -20,7 +20,7 @@ package org.apache.harmony.pack200;
  * Sets of codecs that share characteristics. Mainly used for different effort
  * compression heuristics in BandSet.
  */
-public class CanonicalCodecFamilies {
+class CanonicalCodecFamilies {
 
     // Families of codecs for bands of positive integers that do not correlate
     // well (i.e. would not benefit from delta encoding)

@@ -31,7 +31,7 @@ import org.objectweb.asm.Label;
  * Bytecode bands (corresponds to the <code>bc_bands</code> set of bands in the
  * pack200 specification)
  */
-public class BcBands extends BandSet {
+class BcBands extends BandSet {
 
     private final CpBands cpBands;
     private final Segment segment;

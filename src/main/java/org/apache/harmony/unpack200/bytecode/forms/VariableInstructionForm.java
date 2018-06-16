@@ -21,7 +21,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
  * variable lengths. This is currently the *switch instructions and some wide
  * (_w) instructions.
  */
-public abstract class VariableInstructionForm extends ByteCodeForm {
+abstract class VariableInstructionForm extends ByteCodeForm {
 
     public VariableInstructionForm(int opcode, String name) {
         super(opcode, name);

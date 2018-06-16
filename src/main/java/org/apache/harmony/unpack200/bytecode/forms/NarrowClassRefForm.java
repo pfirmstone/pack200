@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class is used for representations of cldc and cldc_w. In these cases, a
  * narrow class ref has one byte and a wide class ref has two bytes.
  */
-public class NarrowClassRefForm extends ClassRefForm {
+class NarrowClassRefForm extends ClassRefForm {
 
     public NarrowClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

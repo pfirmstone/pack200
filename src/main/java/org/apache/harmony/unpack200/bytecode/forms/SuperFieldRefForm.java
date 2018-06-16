@@ -25,7 +25,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * be inferred from context; this class tracks previous field reference
  * superclasses to allow this.
  */
-public class SuperFieldRefForm extends ClassSpecificReferenceForm {
+class SuperFieldRefForm extends ClassSpecificReferenceForm {
 
     public SuperFieldRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

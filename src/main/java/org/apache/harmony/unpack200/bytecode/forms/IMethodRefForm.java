@@ -25,7 +25,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have
  * IMethod references (and only IMethod references).
  */
-public class IMethodRefForm extends ReferenceForm {
+class IMethodRefForm extends ReferenceForm {
 
     public IMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

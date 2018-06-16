@@ -38,7 +38,7 @@ import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
  * Attribute definition bands are the set of bands used to define extra
  * attributes transmitted in the archive.
  */
-public class AttrDefinitionBands extends BandSet {
+class AttrDefinitionBands extends BandSet {
 
     private int[] attributeDefinitionHeader;
 

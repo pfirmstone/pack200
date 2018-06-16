@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * Abstract class of all ByteCodeForms which add a nested entry from the
  * globalConstantPool.
  */
-public abstract class ReferenceForm extends ByteCodeForm {
+abstract class ReferenceForm extends ByteCodeForm {
 
     public ReferenceForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

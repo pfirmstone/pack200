@@ -26,7 +26,7 @@ import org.apache.harmony.pack200.Pack200Exception;
  * pre-processor, these may be defined by macros that do bitflag manipulation
  * instead.
  */
-public class SegmentOptions {
+class SegmentOptions {
 
     private static final int DEFLATE_HINT = 1 << 5;
 

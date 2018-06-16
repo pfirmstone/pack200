@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 /**
  * Constant pool entry for a name and type pair.
  */
-public class CPNameAndType extends ConstantPoolEntry implements Comparable {
+class CPNameAndType extends ConstantPoolEntry implements Comparable {
 
     private final CPUTF8 name;
     private final CPSignature signature;

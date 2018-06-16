@@ -25,7 +25,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * invokevirtual invokespecial invokestatic Class-specific references to methods
  * are subclasses of ClassSpecificReferenceForm instead.
  */
-public class MethodRefForm extends ReferenceForm {
+class MethodRefForm extends ReferenceForm {
 
     public MethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

@@ -25,7 +25,7 @@ import org.objectweb.asm.Label;
  * encountered by ASM that have had a layout definition given to pack200 (e.g.
  * via one of the -C, -M, -F or -D command line options)
  */
-public class NewAttribute extends Attribute {
+class NewAttribute extends Attribute {
 
     private boolean contextClass = false;
     private boolean contextMethod = false;

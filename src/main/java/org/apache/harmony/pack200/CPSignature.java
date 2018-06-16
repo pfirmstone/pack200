@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Constant pool entry for a signature.
  */
-public class CPSignature extends ConstantPoolEntry implements Comparable {
+class CPSignature extends ConstantPoolEntry implements Comparable {
 
     private final CPUTF8 signatureForm;
     private final List classes;

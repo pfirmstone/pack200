@@ -23,7 +23,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have
  * double references (and only double references).
  */
-public class DoubleForm extends ReferenceForm {
+class DoubleForm extends ReferenceForm {
 
     public DoubleForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

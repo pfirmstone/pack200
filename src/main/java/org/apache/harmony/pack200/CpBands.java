@@ -33,7 +33,7 @@ import org.objectweb.asm.Type;
 /**
  * Pack200 Constant Pool Bands
  */
-public class CpBands extends BandSet {
+class CpBands extends BandSet {
 
     // Don't need to include default attribute names in the constant pool bands
     private final Set defaultAttributeNames = new HashSet();

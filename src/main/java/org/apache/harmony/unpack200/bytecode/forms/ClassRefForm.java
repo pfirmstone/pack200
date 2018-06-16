@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * This class implements the byte code form for those bytecodes which have class
  * references (and only class references).
  */
-public class ClassRefForm extends ReferenceForm {
+class ClassRefForm extends ReferenceForm {
 
     protected boolean widened;
 

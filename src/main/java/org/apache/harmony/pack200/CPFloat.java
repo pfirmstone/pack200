@@ -19,7 +19,7 @@ package org.apache.harmony.pack200;
 /**
  * Constant pool entry for a float.
  */
-public class CPFloat extends CPConstant {
+class CPFloat extends CPConstant {
 
     private final float theFloat;
 

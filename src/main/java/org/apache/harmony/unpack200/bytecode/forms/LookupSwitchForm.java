@@ -19,7 +19,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
 
-public class LookupSwitchForm extends SwitchForm {
+class LookupSwitchForm extends SwitchForm {
 
     public LookupSwitchForm(int opcode, String name) {
         super(opcode, name);

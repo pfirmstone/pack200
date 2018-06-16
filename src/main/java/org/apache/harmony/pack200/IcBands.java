@@ -30,7 +30,7 @@ import java.util.TreeSet;
  * Inner class bands (corresponds to the <code>ic_bands</code> set of bands in
  * the pack200 specification)
  */
-public class IcBands extends BandSet {
+class IcBands extends BandSet {
 
     private final Set innerClasses = new TreeSet();
     private final CpBands cpBands;

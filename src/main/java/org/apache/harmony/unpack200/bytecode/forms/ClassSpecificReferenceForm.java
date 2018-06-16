@@ -29,7 +29,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * instead of getConstantPoolEntry.
  *
  */
-public abstract class ClassSpecificReferenceForm extends ReferenceForm {
+abstract class ClassSpecificReferenceForm extends ReferenceForm {
 
     public ClassSpecificReferenceForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);

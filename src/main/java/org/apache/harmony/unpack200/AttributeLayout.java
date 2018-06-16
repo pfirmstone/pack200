@@ -24,7 +24,7 @@ import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
  * AttributeLayout defines a layout that describes how an attribute will be
  * transmitted.
  */
-public class AttributeLayout implements IMatcher {
+class AttributeLayout implements IMatcher {
 
     public static final String ACC_ABSTRACT = "ACC_ABSTRACT"; //$NON-NLS-1$
     public static final String ACC_ANNOTATION = "ACC_ANNOTATION"; //$NON-NLS-1$
