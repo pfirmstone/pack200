@@ -170,7 +170,7 @@ public class SegmentConstantPool {
      * example, _super bytecodes will use a subset of method or field classes
      * which have just those methods / fields defined in the superclass.
      * Similarly, _this bytecodes use just those methods/fields defined in this
-     * class, and _init bytecodes use just those methods that start with <init>.
+     * class, and _init bytecodes use just those methods that start with &lt;init&gt;
      *
      * This method takes an array of names, a String to match for, an index and
      * a boolean as parameters, and answers the array position in the array of
@@ -248,7 +248,7 @@ public class SegmentConstantPool {
      * We don't want a dependency on regex in Pack200. The only place one exists
      * is in matchSpecificPoolEntryIndex(). To eliminate this dependency, we've
      * implemented the world's stupidest regexMatch. It knows about the two
-     * forms we care about: .* (aka REGEX_MATCH_ALL) ^<init>.* (aka
+     * forms we care about: .* (aka REGEX_MATCH_ALL) ^&lt;init^gt;.* (aka
      * REGEX_MATCH_INIT) and will answer correctly if those are passed as the
      * regexString.
      *

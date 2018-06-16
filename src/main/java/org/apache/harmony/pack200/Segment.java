@@ -30,15 +30,18 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 /**
  * A Pack200 archive consists of one or more Segments.
  */
-public class Segment implements ClassVisitor {
+public class Segment extends ClassVisitor {
 
+    private final static int opcode = Opcodes.ASM5;
     private SegmentHeader segmentHeader;
     private CpBands cpBands;
     private AttributeDefinitionBands attributeDefinitionBands;
@@ -53,16 +56,16 @@ public class Segment implements ClassVisitor {
     private PackingOptions options;
     private boolean stripDebug;
     private Attribute[] nonStandardAttributePrototypes;
-
+ 
+    public Segment() {
+	super(opcode);
+    }
+    
     /**
      * The main method on Segment. Reads in all the class files, packs them and
      * then writes the packed segment out to the given OutputStream.
      *
-     * @param classes
-     *            List of Pack200ClassReaders, one for each class file in the
-     *            segment
-     * @param files
-     *            List of Archive.Files, one for each file in the segment
+     * @param segmentUnit
      * @param out
      *            the OutputStream to write the packed Segment to
      * @param options
@@ -70,7 +73,7 @@ public class Segment implements ClassVisitor {
      * @throws IOException
      * @throws Pack200Exception
      */
-    public void pack(SegmentUnit segmentUnit, OutputStream out, PackingOptions options)
+    void pack(SegmentUnit segmentUnit, OutputStream out, PackingOptions options)
             throws IOException, Pack200Exception {
         this.options = options;
         this.stripDebug = options.isStripDebug();
@@ -274,7 +277,11 @@ public class Segment implements ClassVisitor {
      * It delegates to BcBands for bytecode related visits and to ClassBands for
      * everything else.
      */
-    public class SegmentMethodVisitor implements MethodVisitor {
+    public class SegmentMethodVisitor extends MethodVisitor {
+	
+	public SegmentMethodVisitor() {
+	    super(opcode);
+	}
 
 	@Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -423,8 +430,8 @@ public class Segment implements ClassVisitor {
 
 	@Override
         public void visitMethodInsn(int opcode, String owner, String name,
-                String desc) {
-            bcBands.visitMethodInsn(opcode, owner, name, desc);
+                String desc, boolean isInterface) {
+            bcBands.visitMethodInsn(opcode, owner, name, desc, isInterface);
         }
 
 	@Override
@@ -447,6 +454,11 @@ public class Segment implements ClassVisitor {
         public void visitVarInsn(int opcode, int var) {
             bcBands.visitVarInsn(opcode, var);
         }
+	
+	@Override
+	public void visitInvokeDynamicInsn( String p1, String p2, Handle p3, Object... p4 ) {
+	    bcBands.visitInvokeDynamicInsn(p1, p2, p3, p4);
+	}
 
     }
 
@@ -458,7 +470,7 @@ public class Segment implements ClassVisitor {
      * SegmentAnnotationVisitor implements <code>AnnotationVisitor</code> to
      * visit Annotations found in a class file.
      */
-    public class SegmentAnnotationVisitor implements AnnotationVisitor {
+    public class SegmentAnnotationVisitor extends AnnotationVisitor {
 
         private int context = -1;
         private int parameter = -1;
@@ -475,17 +487,20 @@ public class Segment implements ClassVisitor {
 
         public SegmentAnnotationVisitor(int context, String desc,
                 boolean visible) {
+	    super(opcode);
             this.context = context;
             this.desc = desc;
             this.visible = visible;
         }
 
         public SegmentAnnotationVisitor(int context) {
+	    super(opcode);
             this.context = context;
         }
 
         public SegmentAnnotationVisitor(int context, int parameter,
                 String desc, boolean visible) {
+	    super(opcode);
             this.context = context;
             this.parameter = parameter;
             this.desc = desc;
@@ -510,37 +525,7 @@ public class Segment implements ClassVisitor {
             nameRU.add(name);
             nestTypeRS.add(desc);
             nestPairN.add(new Integer(0));
-            return new AnnotationVisitor() {
-                public void visit(String name, Object value) {
-                    Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
-                    nestPairN.add(new Integer(numPairs.intValue() + 1));
-                    nestNameRU.add(name);
-                    addValueAndTag(value, T, values);
-                }
-
-                public AnnotationVisitor visitAnnotation(String arg0,
-                        String arg1) {
-                    throw new RuntimeException("Not yet supported");
-//                    return null;
-                }
-
-                public AnnotationVisitor visitArray(String arg0) {
-                    throw new RuntimeException("Not yet supported");
-//                    return null;
-                }
-
-                public void visitEnd() {
-                }
-
-                public void visitEnum(String name, String desc, String value) {
-                    Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
-                    nestPairN.add(new Integer(numPairs.intValue() + 1));
-                    T.add("e");
-                    nestNameRU.add(name);
-                    values.add(desc);
-                    values.add(value);
-                }
-            };
+            return new AnnotationVisitorImpl();
         }
 
 	@Override
@@ -557,11 +542,17 @@ public class Segment implements ClassVisitor {
 	@Override
         public void visitEnd() {
             if (desc == null) {
-                Segment.this.classBands.addAnnotationDefault(nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Segment.this.classBands.addAnnotationDefault(
+			nameRU, T, values, caseArrayN,
+			nestTypeRS, nestNameRU, nestPairN);
             } else if(parameter != -1) {
-                Segment.this.classBands.addParameterAnnotation(parameter, desc, visible, nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Segment.this.classBands.addParameterAnnotation(
+			parameter, desc, visible, nameRU, T, values,
+			caseArrayN, nestTypeRS, nestNameRU, nestPairN);
             } else {
-                Segment.this.classBands.addAnnotation(context, desc, visible, nameRU, T, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
+                Segment.this.classBands.addAnnotation(
+			context, desc, visible, nameRU, T, values,
+			caseArrayN, nestTypeRS, nestNameRU, nestPairN);
             }
         }
 
@@ -575,17 +566,60 @@ public class Segment implements ClassVisitor {
             values.add(desc);
             values.add(value);
         }
+
+	private class AnnotationVisitorImpl extends AnnotationVisitor {
+
+	    public AnnotationVisitorImpl() {
+		super(opcode);
+	    }
+
+	    @Override
+	    public void visit(String name, Object value) {
+		Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
+		nestPairN.add(new Integer(numPairs.intValue() + 1));
+		nestNameRU.add(name);
+		addValueAndTag(value, T, values);
+	    }
+
+	    @Override
+	    public AnnotationVisitor visitAnnotation(String arg0,
+		    String arg1) {
+		throw new RuntimeException("Not yet supported");
+//                    return null;
+	    }
+	    
+	    @Override
+	    public AnnotationVisitor visitArray(String arg0) {
+		throw new RuntimeException("Not yet supported");
+//                    return null;
+	    }
+	    
+	    @Override
+	    public void visitEnd() {
+	    }
+	    
+	    @Override
+	    public void visitEnum(String name, String desc, String value) {
+		Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
+		nestPairN.add(new Integer(numPairs.intValue() + 1));
+		T.add("e");
+		nestNameRU.add(name);
+		values.add(desc);
+		values.add(value);
+	    }
+	}
     }
     
-    public class ArrayVisitor implements AnnotationVisitor  {
-        
-        private int indexInCaseArrayN;
-        private List caseArrayN;
-        private List values;
-        private List nameRU;
+    public class ArrayVisitor extends AnnotationVisitor  {
+	
+	private int indexInCaseArrayN;
+	private List caseArrayN;
+	private List values;
+	private List nameRU;
         private List T;
 
         public ArrayVisitor(List caseArrayN, List T, List nameRU, List values) {
+	    super(opcode);
             this.caseArrayN = caseArrayN;
             this.T = T;
             this.nameRU = nameRU;
@@ -638,7 +672,11 @@ public class Segment implements ClassVisitor {
      * SegmentFieldVisitor implements <code>FieldVisitor</code> to visit the
      * metadata relating to fields in a class file.
      */
-    public class SegmentFieldVisitor implements FieldVisitor {
+    public class SegmentFieldVisitor extends FieldVisitor {
+	
+	public SegmentFieldVisitor() {
+	    super(opcode);
+	}
 
 	@Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -694,16 +732,16 @@ public class Segment implements ClassVisitor {
             values.add(value);
         } else if (value instanceof Byte) {
             T.add("B");
-            values.add(new Integer(((Byte)value).intValue()));
+            values.add(Integer.valueOf(((Byte)value).intValue()));
         } else if (value instanceof Character) {
             T.add("C");
-            values.add(new Integer(((Character)value).charValue()));
+            values.add(Integer.valueOf(((Character)value).charValue()));
         } else if (value instanceof Short) {
             T.add("S");
-            values.add(new Integer(((Short)value).intValue()));
+            values.add(Integer.valueOf(((Short)value).intValue()));
         } else if (value instanceof Boolean) {
             T.add("Z");
-            values.add(new Integer(((Boolean)value).booleanValue() ? 1 : 0));
+            values.add(Integer.valueOf(((Boolean)value).booleanValue() ? 1 : 0));
         } else if (value instanceof String) {
             T.add("s");
             values.add(value);

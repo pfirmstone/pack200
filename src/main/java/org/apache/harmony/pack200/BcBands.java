@@ -19,9 +19,11 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.objectweb.asm.Handle;
 
 import org.objectweb.asm.Label;
 
@@ -53,14 +55,18 @@ public class BcBands extends BandSet {
     private final List bcDoubleRef = new ArrayList();
     private final List bcStringRef = new ArrayList();
     private final List bcClassRef = new ArrayList();
-    private final List bcFieldRef = new ArrayList();
+    private final List<CPMethodOrField> bcFieldRef = new ArrayList<CPMethodOrField>();
     private final List bcMethodRef = new ArrayList();
     private final List bcIMethodRef = new ArrayList();
-    private List bcThisField = new ArrayList();
-    private final List bcSuperField = new ArrayList();
-    private List bcThisMethod = new ArrayList();
-    private List bcSuperMethod = new ArrayList();
-    private List bcInitRef = new ArrayList();
+    private List<Integer> bcThisFieldInt = Collections.emptyList();
+    private final List<CPMethodOrField> bcThisField = new ArrayList<CPMethodOrField>();
+//    private final List<CPMethodOrField> bcSuperField = new ArrayList<CPMethodOrField>();
+    private List<Integer> bcThisMethodInt = Collections.emptyList();
+    private final List<CPMethodOrField> bcThisMethod = new ArrayList<CPMethodOrField>();
+    private List<Integer> bcSuperMethodInt = Collections.emptyList();
+    private final List<CPMethodOrField> bcSuperMethod = new ArrayList<CPMethodOrField>();
+    private List<Integer> bcInitRefInt = Collections.emptyList();
+    private final List<CPMethodOrField> bcInitRef = new ArrayList<CPMethodOrField>();
 
     private String currentClass;
     private String superClass;
@@ -92,10 +98,10 @@ public class BcBands extends BandSet {
      * do while classes were being read.
      */
     public void finaliseBands() {
-        bcThisField = getIndexInClass(bcThisField);
-        bcThisMethod = getIndexInClass(bcThisMethod);
-        bcSuperMethod = getIndexInClass(bcSuperMethod);
-        bcInitRef = getIndexInClassForConstructor(bcInitRef);
+        bcThisFieldInt = getIndexInClass(bcThisField);
+        bcThisMethodInt = getIndexInClass(bcThisMethod);
+        bcSuperMethodInt = getIndexInClass(bcSuperMethod);
+        bcInitRefInt = getIndexInClassForConstructor(bcInitRef);
     }
 
     public void pack(OutputStream out) throws IOException, Pack200Exception {
@@ -195,30 +201,30 @@ public class BcBands extends BandSet {
                 + " bytes from bcIMethodRef[" + bcIMethodRef.size() + "]");
 
         encodedBand = encodeBandInt("bcThisField",
-                integerListToArray(bcThisField), Codec.UNSIGNED5);
+                integerListToArray(bcThisFieldInt), Codec.UNSIGNED5);
         out.write(encodedBand);
         PackingUtils.log("Wrote " + encodedBand.length
                 + " bytes from bcThisField[" + bcThisField.size() + "]");
 
-        encodedBand = encodeBandInt("bcSuperField",
-                integerListToArray(bcSuperField), Codec.UNSIGNED5);
-        out.write(encodedBand);
-        PackingUtils.log("Wrote " + encodedBand.length
-                + " bytes from bcSuperField[" + bcSuperField.size() + "]");
+//        encodedBand = encodeBandInt("bcSuperField",
+//                cpEntryListToArray(bcSuperField), Codec.UNSIGNED5);
+//        out.write(encodedBand);
+//        PackingUtils.log("Wrote " + encodedBand.length
+//                + " bytes from bcSuperField[" + bcSuperField.size() + "]");
 
         encodedBand = encodeBandInt("bcThisMethod",
-                integerListToArray(bcThisMethod), Codec.UNSIGNED5);
+                integerListToArray(bcThisMethodInt), Codec.UNSIGNED5);
         out.write(encodedBand);
         PackingUtils.log("Wrote " + encodedBand.length
                 + " bytes from bcThisMethod[" + bcThisMethod.size() + "]");
 
         encodedBand = encodeBandInt("bcSuperMethod",
-                integerListToArray(bcSuperMethod), Codec.UNSIGNED5);
+                integerListToArray(bcSuperMethodInt), Codec.UNSIGNED5);
         out.write(encodedBand);
         PackingUtils.log("Wrote " + encodedBand.length
                 + " bytes from bcSuperMethod[" + bcSuperMethod.size() + "]");
 
-        encodedBand = encodeBandInt("bcInitRef", integerListToArray(bcInitRef),
+        encodedBand = encodeBandInt("bcInitRef", integerListToArray(bcInitRefInt),
                 Codec.UNSIGNED5);
         out.write(encodedBand);
         PackingUtils.log("Wrote " + encodedBand.length
@@ -233,16 +239,16 @@ public class BcBands extends BandSet {
         // out.write(encodeBandInt(integerListToArray(bcEscByte), Codec.BYTE1));
     }
 
-    private List getIndexInClass(List cPMethodOrFieldList) {
-        List indices = new ArrayList(cPMethodOrFieldList.size());
+    private List<Integer> getIndexInClass(List<CPMethodOrField> cPMethodOrFieldList) {
+        List<Integer> indices = new ArrayList<Integer>(cPMethodOrFieldList.size());
         for (int i = 0; i < cPMethodOrFieldList.size(); i++) {
             CPMethodOrField cpMF = (CPMethodOrField) cPMethodOrFieldList.get(i);
-            indices.add(new Integer(cpMF.getIndexInClass()));
+            indices.add(Integer.valueOf(cpMF.getIndexInClass()));
         }
         return indices;
     }
 
-    private List getIndexInClassForConstructor(List cPMethodList) {
+    private List getIndexInClassForConstructor(List<CPMethodOrField> cPMethodList) {
         List indices = new ArrayList(cPMethodList.size());
         for (int i = 0; i < cPMethodList.size(); i++) {
             CPMethodOrField cpMF = (CPMethodOrField) cPMethodList.get(i);
@@ -400,7 +406,7 @@ public class BcBands extends BandSet {
                 bcCodes.add(239); // dldc2_w
                 bcDoubleRef.add(constant);
             } else if (constant instanceof CPString) {
-                bcCodes.add(19); // aldc
+                bcCodes.add(19); // aldc renamed to sldc
                 bcStringRef.add(constant);
             } else if (constant instanceof CPClass) {
                 bcCodes.add(236); // cldc
@@ -442,64 +448,68 @@ public class BcBands extends BandSet {
         updateRenumbering();
     }
 
-    public void visitMethodInsn(int opcode, String owner, String name,
-            String desc) {
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterface) {
         byteCodeOffset += 3;
-        switch (opcode) {
-        case 182: // invokevirtual
-        case 183: // invokespecial
-        case 184: // invokestatic
-            boolean aload_0 = false;
-            if (bcCodes.size() > 0
-                    && (bcCodes.get(bcCodes.size() - 1))
-                             == (ALOAD_0)) {
-                bcCodes.remove(bcCodes.size() - 1);
-                aload_0 = true;
-                opcode += 7;
-            }
-            if (owner.equals(currentClass)) {
-                opcode += 24; // change to invokevirtual_this,
-                // invokespecial_this etc.
+	if (isInterface){
+	    byteCodeOffset += 2;
+	    CPMethodOrField cpIMethod = cpBands.getCPIMethod(owner, name, desc);
+	    bcIMethodRef.add(cpIMethod);
+	    bcCodes.add(INVOKEINTERFACE);
+	} else {
+	    switch (opcode) {
+	    case 182: // invokevirtual
+	    case 183: // invokespecial
+	    case 184: // invokestatic
+		boolean aload_0 = false;
+		if (bcCodes.size() > 0
+			&& (bcCodes.get(bcCodes.size() - 1))
+				 == (ALOAD_0)) {
+		    bcCodes.remove(bcCodes.size() - 1);
+		    aload_0 = true;
+		    opcode += 7;
+		}
+		if (owner.equals(currentClass)) {
+		    opcode += 24; // change to invokevirtual_this,
+		    // invokespecial_this etc.
 
-                if(name.equals("<init>") && opcode == 207) {
-                    opcode = 230; // invokespecial_this_init
-                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-                } else {
-                    bcThisMethod.add(cpBands.getCPMethod(owner, name, desc));
-                }
-            } else if (owner.equals(superClass)) { // TODO
-                opcode += 38; // change to invokevirtual_super,
-                // invokespecial_super etc.
-                if(name.equals("<init>") && opcode == 221) {
-                    opcode = 231; // invokespecial_super_init
-                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-                } else {
-                    bcSuperMethod.add(cpBands.getCPMethod(owner, name, desc));
-                }
-            } else {
-                if (aload_0) {
-                    opcode -= 7;
-                    bcCodes.add(ALOAD_0); // add aload_0 back in
-                    // because there's no
-                    // special rewrite in this
-                    // case.
-                }
-                if(name.equals("<init>") && opcode == 183 && owner.equals(currentNewClass)) {
-                    opcode = 232; // invokespecial_new_init
-                    bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
-                } else {
-                    bcMethodRef.add(cpBands.getCPMethod(owner, name, desc));
-                }
-            }
-            bcCodes.add(opcode);
-            break;
-        case 185: // invokeinterface
-            byteCodeOffset += 2;
-            CPMethodOrField cpIMethod = cpBands.getCPIMethod(owner, name, desc);
-            bcIMethodRef.add(cpIMethod);
-            bcCodes.add(INVOKEINTERFACE);
-            break;
-        }
+		    if(name.equals("<init>") && opcode == 207) {
+			opcode = 230; // invokespecial_this_init
+			bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+		    } else {
+			bcThisMethod.add(cpBands.getCPMethod(owner, name, desc));
+		    }
+		} else if (owner.equals(superClass)) { // TODO
+		    opcode += 38; // change to invokevirtual_super,
+		    // invokespecial_super etc.
+		    if(name.equals("<init>") && opcode == 221) {
+			opcode = 231; // invokespecial_super_init
+			bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+		    } else {
+			bcSuperMethod.add(cpBands.getCPMethod(owner, name, desc));
+		    }
+		} else {
+		    if (aload_0) {
+			opcode -= 7;
+			bcCodes.add(ALOAD_0); // add aload_0 back in
+			// because there's no
+			// special rewrite in this
+			// case.
+		    }
+		    if(name.equals("<init>") && opcode == 183 && owner.equals(currentNewClass)) {
+			opcode = 232; // invokespecial_new_init
+			bcInitRef.add(cpBands.getCPMethod(owner, name, desc));
+		    } else {
+			bcMethodRef.add(cpBands.getCPMethod(owner, name, desc));
+		    }
+		}
+		bcCodes.add(opcode);
+		break;
+	    case 185: // invokeinterface
+		throw new IllegalStateException("Opcode 185: invokeinterface declared");
+	    case 186: // invokedynamic
+		throw new UnsupportedOperationException("Invoke dynamic not supported yet");
+	    }
+	}
         updateRenumbering();
     }
 
@@ -578,6 +588,10 @@ public class BcBands extends BandSet {
             }
         }
         updateRenumbering();
+    }
+
+    void visitInvokeDynamicInsn(String p1, String p2, Handle p3, Object[] p4) {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

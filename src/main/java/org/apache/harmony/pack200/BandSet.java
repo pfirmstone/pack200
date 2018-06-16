@@ -572,7 +572,7 @@ public abstract class BandSet {
     /**
      * Converts a list of Integers to an int[] array
      */
-    protected int[] integerListToArray(List integerList) {
+    protected int[] integerListToArray(List<Integer> integerList) {
         int[] array = new int[integerList.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = ((Integer)integerList.get(i)).intValue();
@@ -593,8 +593,10 @@ public abstract class BandSet {
 
     /**
      * Converts a list of ConstantPoolEntrys to an int[] array of their indices
+     * @param list of ConstantPoolEntrys
+     * @return int[] array of indices.
      */
-    protected int[] cpEntryListToArray(List list) {
+    protected int[] cpEntryListToArray(List<? extends ConstantPoolEntry> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < array.length; i++) {
             array[i] = ((ConstantPoolEntry)list.get(i)).getIndex();

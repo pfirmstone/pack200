@@ -27,7 +27,7 @@ import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Stores a mapping from attribute names to their corresponding layout types.
- * Note that names of attribute layouts and their formats are <emph>not</emph>
+ * Note that names of attribute layouts and their formats are NOT
  * internationalized, and should not be translated.
  */
 public class AttributeLayoutMap {

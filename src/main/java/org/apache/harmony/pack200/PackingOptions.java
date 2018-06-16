@@ -42,12 +42,12 @@ public class PackingOptions {
     private int effort = 5;
     private String deflateHint = KEEP;
     private String modificationTime = KEEP;
-    private List passFiles;
+    private List<String> passFiles;
     private String unknownAttributeAction = PASS;
-    private Map classAttributeActions;
-    private Map fieldAttributeActions;
-    private Map methodAttributeActions;
-    private Map codeAttributeActions;
+    private Map<String, String> classAttributeActions;
+    private Map<String, String> fieldAttributeActions;
+    private Map<String, String> methodAttributeActions;
+    private Map<String, String> codeAttributeActions;
     private boolean verbose = false;
     private String logFile;
 
@@ -174,7 +174,7 @@ public class PackingOptions {
      */
     public void addPassFile(String passFileName) {
         if(passFiles == null) {
-            passFiles = new ArrayList();
+            passFiles = new ArrayList<String>();
         }
         String fileSeparator = System.getProperty("file.separator");
         if(fileSeparator.equals("\\")) {
@@ -209,28 +209,28 @@ public class PackingOptions {
 
     public void addClassAttributeAction(String attributeName, String action) {
         if(classAttributeActions == null) {
-            classAttributeActions = new HashMap();
+            classAttributeActions = new HashMap<String, String>();
         }
         classAttributeActions.put(attributeName, action);
     }
 
     public void addFieldAttributeAction(String attributeName, String action) {
         if(fieldAttributeActions == null) {
-            fieldAttributeActions = new HashMap();
+            fieldAttributeActions = new HashMap<String, String>();
         }
         fieldAttributeActions.put(attributeName, action);
     }
 
     public void addMethodAttributeAction(String attributeName, String action) {
         if(methodAttributeActions == null) {
-            methodAttributeActions = new HashMap();
+            methodAttributeActions = new HashMap<String, String>();
         }
         methodAttributeActions.put(attributeName, action);
     }
 
     public void addCodeAttributeAction(String attributeName, String action) {
         if(codeAttributeActions == null) {
-            codeAttributeActions = new HashMap();
+            codeAttributeActions = new HashMap<String, String>();
         }
         codeAttributeActions.put(attributeName, action);
     }
@@ -255,14 +255,16 @@ public class PackingOptions {
         this.logFile = logFile;
     }
 
-    private void addOrUpdateAttributeActions(List prototypes, Map attributeActions,
-            int tag) {
+    private void addOrUpdateAttributeActions(List<NewAttribute> prototypes, 
+					    Map<String, String> attributeActions,
+					    int tag) 
+    {
         if (attributeActions != null) {
             if (attributeActions.size() > 0) {
                 String name, action;
                 boolean prototypeExists;
                 NewAttribute newAttribute;
-                for (Iterator iteratorI = attributeActions.keySet().iterator(); iteratorI
+                for (Iterator<String> iteratorI = attributeActions.keySet().iterator(); iteratorI
                         .hasNext();) {
                     name = (String) iteratorI.next();
                     action = (String) attributeActions.get(name);
@@ -311,7 +313,7 @@ public class PackingOptions {
                     AttributeDefinitionBands.CONTEXT_CODE);
 
             unknownAttributeTypes = (Attribute[]) prototypes
-                    .toArray(new Attribute[0]);
+                    .toArray(new Attribute[prototypes.size()]);
         }
         return unknownAttributeTypes;
     }

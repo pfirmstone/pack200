@@ -85,7 +85,7 @@ public class ClassConstantPool {
             // concurrently add parents to target storage
             for(int indexParents = 0; indexParents < parents.size(); indexParents++) {
                 ClassFileEntry entry = (ClassFileEntry) parents.get(indexParents);
-
+		if (entry == null) continue;
                 // traverse children
                 ClassFileEntry[] entryChildren = entry.getNestedClassFileEntries();
                 for(int c = 0; c < entryChildren.length; c++) {

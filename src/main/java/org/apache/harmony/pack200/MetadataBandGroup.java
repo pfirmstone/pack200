@@ -243,16 +243,22 @@ public class MetadataBandGroup extends BandSet {
     /**
      * Add an annotation to this set of bands
      *
-     * @param desc
+     * @param numParams
      * @param nameRU
+     * @param pairN
+     * @param annoN
      * @param t
      * @param values
+     * @param typeRS
      * @param caseArrayN
      * @param nestTypeRS
      * @param nestNameRU
      * @param nestPairN
      */
-    public void addParameterAnnotation(int numParams, int[] annoN, IntList pairN, List typeRS, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
+    public void addParameterAnnotation(int numParams, int[] annoN, IntList pairN,
+	    List typeRS, List nameRU, List t, List values, List caseArrayN,
+	    List nestTypeRS, List nestNameRU, List nestPairN) 
+    {
         param_NB.add(numParams);
         for (int i = 0; i < annoN.length; i++) {
             anno_N.add(annoN[i]);

@@ -82,6 +82,8 @@ public class PackingUtils {
     }
 
     public static void log(String message) {
+	// Handy for debugging tests when logging is not enabled.
+//	System.err.println(message);
         packingLogger.log(Level.INFO, message);
     }
 
@@ -91,8 +93,8 @@ public class PackingUtils {
      * 
      * @param jarInputStream
      *            the jar input stream
-     * @param jarOutputStream
-     *            the jar output stream
+     * @param outputStream
+     *            the output stream
      * @throws IOException
      */
     public static void copyThroughJar(JarInputStream jarInputStream,
@@ -123,8 +125,8 @@ public class PackingUtils {
      * 
      * @param jarFile
      *            the input jar file
-     * @param jarOutputStream
-     *            the jar output stream
+     * @param outputStream
+     *            the output stream
      * @throws IOException
      */
     public static void copyThroughJar(JarFile jarFile, OutputStream outputStream)

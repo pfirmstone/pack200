@@ -18,6 +18,7 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.apache.harmony.pack200.Segment.PassException;
 
 
 /**
@@ -163,7 +164,7 @@ public abstract class Codec {
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
      * This should probably be used in most cases, since some codecs (such as
      *
-     * @{link PopCodec}) only work when the number of values to be read is
+     * {@link PopulationCodec}) only work when the number of values to be read is
      *        known.
      *
      * @param n
@@ -210,6 +211,8 @@ public abstract class Codec {
      */
     public int[] decodeInts(int n, InputStream in, int firstValue)
             throws IOException, Pack200Exception {
+	if (n < 0) throw new IndexOutOfBoundsException(
+		"Number of values to decode cannot be negative: " +n);
         int result[] = new int[n + 1];
         result[0] = firstValue;
         int last = firstValue;

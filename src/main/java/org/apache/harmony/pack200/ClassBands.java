@@ -90,7 +90,7 @@ public class ClassBands extends BandSet {
     private final IntList codeLocalVariableTableN = new IntList();
     private final List codeLocalVariableTableBciP = new ArrayList();
     private final List codeLocalVariableTableSpanO = new ArrayList();
-    private final List codeLocalVariableTableNameRU = new ArrayList();
+    private final List<CPUTF8> codeLocalVariableTableNameRU = new ArrayList<CPUTF8>();
     private final List codeLocalVariableTableTypeRS = new ArrayList();
     private final IntList codeLocalVariableTableSlot = new IntList();
     private final IntList codeLocalVariableTypeTableN = new IntList();

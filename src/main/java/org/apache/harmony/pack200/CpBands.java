@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.objectweb.asm.Handle;
 
 import org.objectweb.asm.Type;
 
@@ -50,7 +51,7 @@ public class CpBands extends BandSet {
     private final Set cp_Method = new TreeSet();
     private final Set cp_Imethod = new TreeSet();
 
-    private final Map stringsToCpUtf8 = new HashMap();
+    private final Map<String, CPUTF8> stringsToCpUtf8 = new HashMap<String, CPUTF8>();
     private final Map stringsToCpNameAndType = new HashMap();
     private final Map stringsToCpClass = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
@@ -624,16 +625,29 @@ public class CpBands extends BandSet {
                 constant = new CPString(getCPUtf8((String) value));
                 cp_String.add(constant);
             } else if (value instanceof Type) {
-                String className = ((Type) value).getClassName();
-                if(className.endsWith("[]")) {
-                    className = "[L" + className.substring(0, className.length() - 2);
-                    while(className.endsWith("[]")) {
-                        className = "[" + className.substring(0, className.length() - 2);
-                    }
-                    className += ";";
-                }
-                constant = getCPClass(className);
-            }
+		int sort = ((Type) value).getSort();
+		if (sort == Type.OBJECT) {
+		    constant = getCPClass(((Type)value).getClassName());
+		} else if (sort == Type.ARRAY) {
+		    String className = ((Type)value).getClassName();
+		    className = "[L" + className.substring(0, className.length() - 2);
+		    while(className.endsWith("[]")) {
+			className = "[" + className.substring(0, className.length() - 2);
+		    }
+		    className += ";";
+		    constant = getCPClass(className);
+		} else if (sort == Type.METHOD) {
+		 // ...
+		} else {
+		 // throw an exception
+		    throw new RuntimeException("Unknown constant " + value);
+		}
+            } else if (value instanceof Handle) {
+	     // ...
+	    } else {
+	    // throw an exception
+		throw new RuntimeException("Unknown constant " + value);
+	    }
             objectsToCPConstant.put(value, constant);
         }
         return constant;

@@ -510,6 +510,8 @@ public class CpBands extends BandSet {
     }
 
     public CPUTF8 cpUTF8Value(int index) {
+	if (index >= cpUTF8.length) throw new ArrayIndexOutOfBoundsException(
+		"Index: " + index + " Length: "+ cpUTF8.length);
         String string = cpUTF8[index];
         CPUTF8 cputf8 = (CPUTF8) stringsToCPUTF8.get(string);
         if (cputf8 == null) {
@@ -660,11 +662,14 @@ public class CpBands extends BandSet {
 
     public CPUTF8 cpSignatureValue(int index) {
         int globalIndex;
-        if(cpSignatureInts[index] != -1) {
+        if(index >= 0 && index < cpSignatureInts.length && cpSignatureInts[index] != -1) {
             globalIndex = cpSignatureInts[index];
         } else {
             globalIndex = index + signatureOffset;
         }
+	if (index < 0 || index >= cpSignature.length) 
+	    throw new ArrayIndexOutOfBoundsException(
+		    "Index: " + index + " Length: "+ cpSignature.length);
         String string = cpSignature[index];
         CPUTF8 cpUTF8 = (CPUTF8) stringsToCPUTF8.get(string);
         if(cpUTF8 == null) {

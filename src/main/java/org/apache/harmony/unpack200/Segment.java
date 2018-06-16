@@ -623,6 +623,8 @@ public class Segment {
         if (this.logLevel >= logLevel) {
             logStream.println(message);
         }
+	// Handy for debugging tests when logging isn't enabled.
+//	System.err.println(message);
     }
 
     /**

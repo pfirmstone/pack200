@@ -113,10 +113,10 @@ public abstract class BandSet {
             band = codec.decodeInts(count - 1, in, first);
         }
         // Useful for debugging -E options:
-        //if(!codecUsed.equals(codec)) {
-        //    int bytes = codecUsed.lastBandLength;
-        //    System.out.println(count + " " + name + " encoded with " + codecUsed + " "  + bytes);
-        //}
+//        if(!codecUsed.equals(codec)) {
+//            int bytes = codecUsed.lastBandLength;
+//            System.out.println(count + " " + name + " encoded with " + codecUsed + " "  + bytes);
+//        }
         if (codecUsed instanceof PopulationCodec) {
             PopulationCodec popCodec = (PopulationCodec) codecUsed;
             int[] favoured = (int[]) popCodec.getFavoured().clone();
@@ -173,11 +173,16 @@ public abstract class BandSet {
         int[] twoDResult = decodeBandInt(name, in, defaultCodec, totalCount);
         int index = 0;
         for (int i = 0; i < result.length; i++) {
-            result[i] = new int[counts[i]];
-            for (int j = 0; j < result[i].length; j++) {
-                result[i][j] = twoDResult[index];
-                index++;
-            }
+	    try {
+		result[i] = new int[counts[i]];
+		for (int j = 0; j < result[i].length; j++) {
+		    result[i][j] = twoDResult[index];
+		    index++;
+		}
+	    } catch (RuntimeException e){
+		throw new RuntimeException("Problem decoding band: "
+			+ name + " default codec: " + defaultCodec, e);
+	    }
         }
         return result;
     }

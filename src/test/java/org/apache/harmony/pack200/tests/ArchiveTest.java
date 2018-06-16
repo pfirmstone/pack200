@@ -32,19 +32,23 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.Archive;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.PackingOptions;
 import org.apache.harmony.unpack200.Segment;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ArchiveTest extends TestCase {
+
+
+public class ArchiveTest {
 
     JarFile in;
     OutputStream out;
     File file;
-
+    
+    @Test
     public void testHelloWorld() throws IOException, Pack200Exception, URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/hw.jar").toURI()));
@@ -96,6 +100,7 @@ public class ArchiveTest extends TestCase {
         reader2.close();
     }
 
+    @Test
     public void testSQL() throws IOException, Pack200Exception, URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI()));
@@ -105,7 +110,12 @@ public class ArchiveTest extends TestCase {
         PackingOptions options = new PackingOptions();
         options.setGzip(false);
         Archive ar = new Archive(in, out, options);
-        ar.pack();
+	try {
+	    ar.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -115,7 +125,15 @@ public class ArchiveTest extends TestCase {
         file2.deleteOnExit();
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive archive = new org.apache.harmony.unpack200.Archive(in2, out2);
-        archive.unpack();
+	try {
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         JarFile jarFile = new JarFile(file2);
 
         File compareFile = new File(Archive.class.getResource(
@@ -127,6 +145,7 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    @Test
     public void testAlternativeConstructor() throws FileNotFoundException,
             IOException, URISyntaxException, Pack200Exception {
         JarInputStream inStream = new JarInputStream(new FileInputStream(
@@ -135,11 +154,17 @@ public class ArchiveTest extends TestCase {
         file = File.createTempFile("sql", ".pack.gz");
         file.deleteOnExit();
         out = new FileOutputStream(file);
-        new Archive(inStream, out, null).pack();
+	try {
+	    new Archive(inStream, out, null).pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         inStream.close();
         out.close();
     }
 
+    @Test
     public void testLargeClass() throws IOException, Pack200Exception,
             URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
@@ -172,6 +197,7 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    @Test
     public void testJNDI() throws IOException, Pack200Exception, URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/jndi.jar").toURI()));
@@ -180,7 +206,12 @@ public class ArchiveTest extends TestCase {
         out = new FileOutputStream(file);
         PackingOptions options = new PackingOptions();
         options.setGzip(false);
-        new Archive(in, out, options).pack();
+	try {
+	    new Archive(in, out, options).pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -190,7 +221,12 @@ public class ArchiveTest extends TestCase {
         file2.deleteOnExit();
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive archive = new org.apache.harmony.unpack200.Archive(in2, out2);
-        archive.unpack();
+	try {
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         JarFile jarFile = new JarFile(file2);
         JarFile jarFile2 = new JarFile(new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/jndiUnpacked.jar").toURI()));
@@ -198,6 +234,7 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    @Test
     public void testAnnotations() throws IOException, Pack200Exception,
             URISyntaxException {
         in = new JarFile(new File(Archive.class.getResource(
@@ -227,6 +264,7 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    @Test
     public void testAnnotations2() throws IOException, Pack200Exception,
             URISyntaxException {
 
@@ -259,6 +297,7 @@ public class ArchiveTest extends TestCase {
     }
 
 //     Test with an archive containing Annotations
+    @Test
     public void testWithAnnotations2() throws Exception {
         InputStream i = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/annotationsRI.pack.gz");
@@ -276,6 +315,7 @@ public class ArchiveTest extends TestCase {
         compareFiles(jarFile, jarFile2);
     }
 
+    @Test
     public void testMultipleJars() throws URISyntaxException, IOException, Pack200Exception {
     	File folder = new File(Archive.class
     			.getResource("/org/apache/harmony/pack200/tests/jars").toURI());
@@ -287,8 +327,13 @@ public class ArchiveTest extends TestCase {
 				file = File.createTempFile("temp", ".pack.gz");
 		        file.deleteOnExit();
 		        out = new FileOutputStream(file);
-//		        System.out.println("packing " + children[i]);
-		        new Archive(in, out, null).pack();
+		        System.out.println("packing " + children[i]);
+			try{
+			    new Archive(in, out, null).pack();
+			} catch (RuntimeException e){
+			    e.printStackTrace(System.err);
+			    throw e;
+			}
 		        in.close();
 		        out.close();
 

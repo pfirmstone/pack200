@@ -26,6 +26,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.zip.GZIPOutputStream;
+import org.objectweb.asm.ClassReader;
 
 /**
  * Archive is the main entry point to pack200 and represents a packed archive.
@@ -174,7 +175,7 @@ public class Archive {
         return segmentUnitList;
     }
 
-    private boolean addJarEntry(PackingFile packingFile, List javaClasses,
+    private boolean addJarEntry(PackingFile packingFile, List<ClassReader> javaClasses,
             List files) throws IOException, Pack200Exception {
         long segmentLimit = options.getSegmentLimit();
         if (segmentLimit != -1 && segmentLimit != 0) {
@@ -221,22 +222,22 @@ public class Archive {
 
     static class SegmentUnit {
 
-        private final List classList;
+        private final List<ClassReader> classList;
 
-        private final List fileList;
+        private final List<PackingFile> fileList;
 
         private int byteAmount = 0;
 
         private int packedByteAmount = 0;
 
-        public SegmentUnit(List classes, List files) {
+        public SegmentUnit(List<ClassReader> classes, List<PackingFile> files) {
             classList = classes;
             fileList = files;
 
             // Calculate the amount of bytes in classes and files before packing
-            Pack200ClassReader classReader;
-            for (Iterator iterator = classList.iterator(); iterator.hasNext();) {
-                classReader = (Pack200ClassReader) iterator.next();
+            ClassReader classReader;
+            for (Iterator<ClassReader> iterator = classList.iterator(); iterator.hasNext();) {
+                classReader = iterator.next();
                 byteAmount += classReader.b.length;
             }
 

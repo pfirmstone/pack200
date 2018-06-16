@@ -62,7 +62,12 @@ public class PackingOptionsTest extends TestCase {
         options = new PackingOptions();
         options.setGzip(false);
         Archive archive = new Archive(in, out, options);
-        archive.pack();
+	try {
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -72,7 +77,15 @@ public class PackingOptionsTest extends TestCase {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(
                 in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         File compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
@@ -103,7 +116,12 @@ public class PackingOptionsTest extends TestCase {
         options.setKeepFileOrder(false);
         options.setGzip(false);
         archive = new Archive(in, out, options);
-        archive.pack();
+	try {
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -112,7 +130,12 @@ public class PackingOptionsTest extends TestCase {
         file2.deleteOnExit();
         out2 = new JarOutputStream(new FileOutputStream(file2));
         u2archive = new org.apache.harmony.unpack200.Archive(in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
@@ -179,7 +202,12 @@ public class PackingOptionsTest extends TestCase {
         options = new PackingOptions();
         options.setGzip(false);
         Archive archive = new Archive(in, out, options);
-        archive.pack();
+	try {
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -189,8 +217,16 @@ public class PackingOptionsTest extends TestCase {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(
                 in2, out2);
-        u2archive.unpack();
-
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
+	
         File compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
         JarFile jarFile = new JarFile(file2);
@@ -221,7 +257,12 @@ public class PackingOptionsTest extends TestCase {
         options.setGzip(false);
         options.setModificationTime("latest");
         archive = new Archive(in, out, options);
-        archive.pack();
+	try {
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -230,7 +271,12 @@ public class PackingOptionsTest extends TestCase {
         file2.deleteOnExit();
         out2 = new JarOutputStream(new FileOutputStream(file2));
         u2archive = new org.apache.harmony.unpack200.Archive(in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
@@ -359,7 +405,12 @@ public class PackingOptionsTest extends TestCase {
         options.setGzip(false);
         options.setStripDebug(true);
         Archive archive = new Archive(in, out, options);
-        archive.pack();
+	try{
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -370,7 +421,15 @@ public class PackingOptionsTest extends TestCase {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(
                 in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         File compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpackedNoDebug.jar")
@@ -394,7 +453,12 @@ public class PackingOptionsTest extends TestCase {
         PackingOptions options = new PackingOptions();
         options.setGzip(false);
         Archive archive = new Archive(in, out, options);
-        archive.pack();
+	try {
+	    archive.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -445,7 +509,15 @@ public class PackingOptionsTest extends TestCase {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file3));
         org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(
                 in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         File compareFile = new File(Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/sqlUnpacked.jar").toURI());
@@ -461,7 +533,12 @@ public class PackingOptionsTest extends TestCase {
         file4.deleteOnExit();
         JarOutputStream out3 = new JarOutputStream(new FileOutputStream(file4));
         u2archive = new org.apache.harmony.unpack200.Archive(in3, out3);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         jarFile = new JarFile(file4);
         jarFile2 = new JarFile(compareFile);
         compareJarEntries(jarFile, jarFile2);
@@ -480,7 +557,12 @@ public class PackingOptionsTest extends TestCase {
         PackingOptions options = new PackingOptions();
         options.addClassAttributeAction("Pack200", "I");
         Archive ar = new Archive(in, out, options);
-        ar.pack();
+	try {
+	    ar.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -519,7 +601,12 @@ public class PackingOptionsTest extends TestCase {
         options.addMethodAttributeAction("Pack200", "I");
         options.addCodeAttributeAction("Pack200", "I");
         Archive ar = new Archive(in, out, options);
-        ar.pack();
+	try {
+	    ar.pack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
         in.close();
         out.close();
 
@@ -530,7 +617,15 @@ public class PackingOptionsTest extends TestCase {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.Archive u2archive = new org.apache.harmony.unpack200.Archive(
                 in2, out2);
-        u2archive.unpack();
+	try {
+	    u2archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	} catch (IOException e){
+	    e.printStackTrace(System.err);
+	    throw e;
+	}
 
         // compare with original
         File compareFile = new File(Archive.class.getResource(
