@@ -27,7 +27,7 @@ public abstract class ByteCodeForm {
 
     protected static final boolean WIDENED = true;
 
-    protected static final ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
+    static final ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
     static final Map byteCodesByName = new HashMap(256);
     static {
         byteCodeArray[0] = new NoArgumentForm(0, "nop");
