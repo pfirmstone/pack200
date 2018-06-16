@@ -28,7 +28,24 @@ class CPNameAndType extends ConstantPoolEntry implements Comparable {
         this.name = name;
         this.signature = signature;
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPNameAndType)) return false;
+	CPNameAndType that = (CPNameAndType) o;
+	if (!name.equals(that.name)) return false;
+	return signature.equals(that.signature);
+    }
 
+    @Override
+    public int hashCode() {
+	int hash = 3;
+	hash = 71 * hash + (this.name != null ? this.name.hashCode() : 0);
+	hash = 71 * hash + (this.signature != null ? this.signature.hashCode() : 0);
+	return hash;
+    }
+
+    @Override
     public String toString() {
         return name + ":" + signature;
     }

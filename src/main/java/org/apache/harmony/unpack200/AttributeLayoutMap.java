@@ -216,7 +216,7 @@ class AttributeLayoutMap {
 
     public void add(AttributeLayout layout) {
         layouts[layout.getContext()]
-                .put(new Integer(layout.getIndex()), layout);
+                .put(Integer.valueOf(layout.getIndex()), layout);
     }
 
     public void add(AttributeLayout layout, NewAttributeBands newBands) {
@@ -239,7 +239,7 @@ class AttributeLayoutMap {
     public AttributeLayout getAttributeLayout(int index, int context)
             throws Pack200Exception {
         Map map = layouts[context];
-        return (AttributeLayout) map.get(new Integer(index));
+        return (AttributeLayout) map.get(Integer.valueOf(index));
     }
 
     /**

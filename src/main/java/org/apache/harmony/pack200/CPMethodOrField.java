@@ -47,6 +47,26 @@ class CPMethodOrField extends ConstantPoolEntry implements Comparable {
         }
         return 0;
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPMethodOrField)) return false;
+	CPMethodOrField that = (CPMethodOrField) o;
+	if (indexInClass != that.indexInClass) return false;
+	if (indexInClassForConstructor != that.indexInClassForConstructor) return false;
+	if (!className.equals(that.className)) return false;
+	return nameAndType.equals(that.nameAndType);
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 31 * hash + (this.className != null ? this.className.hashCode() : 0);
+	hash = 31 * hash + (this.nameAndType != null ? this.nameAndType.hashCode() : 0);
+	hash = 31 * hash + this.indexInClass;
+	hash = 31 * hash + this.indexInClassForConstructor;
+	return hash;
+    }
 
     public int getClassIndex() {
         return className.getIndex();

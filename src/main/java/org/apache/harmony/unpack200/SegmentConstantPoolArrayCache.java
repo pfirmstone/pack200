@@ -116,7 +116,7 @@ class SegmentConstantPoolArrayCache {
      * from element values to the indices of the array
      * which contain that value.
      */
-    protected class CachedArray {
+    protected static class CachedArray {
         String[] primaryArray;
         int lastKnownSize;
         HashMap primaryTable;
@@ -175,7 +175,7 @@ class SegmentConstantPoolArrayCache {
                 if(!primaryTable.containsKey(key)) {
                     primaryTable.put(key, new ArrayList());
                 }
-                ((ArrayList)primaryTable.get(key)).add(new Integer(index));
+                ((ArrayList)primaryTable.get(key)).add(Integer.valueOf(index));
             }
         }
     }

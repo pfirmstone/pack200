@@ -74,16 +74,16 @@ class AttributeDefinitionBands extends BandSet {
                 }
             }
         }
-        if (classLayouts.keySet().size() > 7) {
+        if (classLayouts.size() > 7) {
             segmentHeader.setHave_class_flags_hi(true);
         }
-        if (methodLayouts.keySet().size() > 6) {
+        if (methodLayouts.size() > 6) {
             segmentHeader.setHave_method_flags_hi(true);
         }
-        if (fieldLayouts.keySet().size() > 10) {
+        if (fieldLayouts.size() > 10) {
             segmentHeader.setHave_field_flags_hi(true);
         }
-        if (codeLayouts.keySet().size() > 15) {
+        if (codeLayouts.size() > 15) {
             segmentHeader.setHave_code_flags_hi(true);
         }
         int[] availableClassIndices = new int[] { 25, 26, 27, 28, 29, 30, 31 };
@@ -197,32 +197,31 @@ class AttributeDefinitionBands extends BandSet {
         return temp;
     }
 
-    private void addAttributeDefinitions(Map layouts, int[] availableIndices,
+    private void addAttributeDefinitions(Map<String, String> layouts, int[] availableIndices,
             int contextType) {
         int i = 0;
-        for (Iterator iterator = layouts.keySet().iterator(); iterator
-                .hasNext();) {
-            String name = (String) iterator.next();
-            String layout = (String) layouts.get(name);
-            int index = availableIndices[i];
-            AttributeDefinition definition = new AttributeDefinition(index,
-                    contextType, cpBands.getCPUtf8(name), cpBands
-                            .getCPUtf8(layout));
-            attributeDefinitions.add(definition);
-            switch (contextType) {
-            case CONTEXT_CLASS:
-                classAttributeLayouts.add(definition);
-                break;
-            case CONTEXT_METHOD:
-                methodAttributeLayouts.add(definition);
-                break;
-            case CONTEXT_FIELD:
-                fieldAttributeLayouts.add(definition);
-                break;
-            case CONTEXT_CODE:
-                codeAttributeLayouts.add(definition);
-            }
-        }
+	for (Map.Entry<String, String> entry : layouts.entrySet()) {
+	    String name = entry.getKey();
+	    String layout = entry.getValue();
+	    int index = availableIndices[i];
+	    AttributeDefinition definition = new AttributeDefinition(index,
+		    contextType, cpBands.getCPUtf8(name), cpBands
+			    .getCPUtf8(layout));
+	    attributeDefinitions.add(definition);
+	    switch (contextType) {
+		case CONTEXT_CLASS:
+		    classAttributeLayouts.add(definition);
+		    break;
+		case CONTEXT_METHOD:
+		    methodAttributeLayouts.add(definition);
+		    break;
+		case CONTEXT_FIELD:
+		    fieldAttributeLayouts.add(definition);
+		    break;
+		case CONTEXT_CODE:
+		    codeAttributeLayouts.add(definition);
+	    }
+	}
     }
 
     public List getClassAttributeLayouts() {

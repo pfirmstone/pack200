@@ -34,6 +34,26 @@ class CPSignature extends ConstantPoolEntry implements Comparable {
         this.classes = classes;
         formStartsWithBracket = signatureForm.toString().startsWith("(");
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPSignature)) return false;
+	CPSignature that = (CPSignature) o;
+	if (formStartsWithBracket != that.formStartsWithBracket) return false;
+	if (!signature.equals(that.signature)) return false;
+	if (!signatureForm.equals(that.signatureForm)) return false;
+	return classes.equals(that.classes);
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 3;
+	hash = 11 * hash + (this.signatureForm != null ? this.signatureForm.hashCode() : 0);
+	hash = 11 * hash + (this.classes != null ? this.classes.hashCode() : 0);
+	hash = 11 * hash + (this.signature != null ? this.signature.hashCode() : 0);
+	hash = 11 * hash + (this.formStartsWithBracket ? 1 : 0);
+	return hash;
+    }
 
     public int compareTo(Object arg0) {
         if(signature.equals(((CPSignature) arg0).signature)) {

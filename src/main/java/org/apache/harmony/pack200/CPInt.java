@@ -36,6 +36,19 @@ class CPInt extends CPConstant {
             return -1;
         }
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPInt)) return false;
+	return theInt == ((CPInt)o).theInt;
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 5;
+	hash = 29 * hash + this.theInt;
+	return hash;
+    }
 
     public int getInt() {
         return theInt;

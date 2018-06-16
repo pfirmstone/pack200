@@ -232,7 +232,7 @@ public class ClassConstantPool {
 
         for(int itIndex = 0; itIndex < startOfPool.size(); itIndex++) {
             ClassFileEntry entry = (ClassFileEntry) startOfPool.get(itIndex);
-            indexCache.put(entry, new Integer(index));
+            indexCache.put(entry, Integer.valueOf(index));
 
             if (entry instanceof CPLong || entry instanceof CPDouble) {
                 entries.add(entry); // these get 2 slots because of their size
@@ -246,7 +246,7 @@ public class ClassConstantPool {
 
         for(int itFinal = 0; itFinal < finalSort.size(); itFinal++) {
             ClassFileEntry entry = (ClassFileEntry) finalSort.get(itFinal);
-            indexCache.put(entry, new Integer(index));
+            indexCache.put(entry, Integer.valueOf(index));
 
             if (entry instanceof CPLong || entry instanceof CPDouble) {
                 entries.add(entry); // these get 2 slots because of their size

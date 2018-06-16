@@ -157,7 +157,7 @@ class CpBands extends BandSet {
         mapClass = new HashMap(cpClassCount);
         for (int i = 0; i < cpClassCount; i++) {
             cpClass[i] = cpUTF8[cpClassInts[i]];
-            mapClass.put(cpClass[i], new Integer(i));
+            mapClass.put(cpClass[i], Integer.valueOf(i));
         }
     }
 
@@ -191,7 +191,7 @@ class CpBands extends BandSet {
         mapDescriptor = new HashMap(cpDescriptorCount);
         for (int i = 0; i < cpDescriptorCount; i++) {
             cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i]; //$NON-NLS-1$
-            mapDescriptor.put(cpDescriptor[i], new Integer(i));
+            mapDescriptor.put(cpDescriptor[i], Integer.valueOf(i));
         }
     }
 
@@ -372,7 +372,7 @@ class CpBands extends BandSet {
                 }
             }
             cpSignature[i] = signature.toString();
-            mapSignature.put(signature.toString(), new Integer(i));
+            mapSignature.put(signature.toString(), Integer.valueOf(i));
         }
 //        for (int i = 0; i < cpSignatureInts.length; i++) {
 //            if(cpSignatureInts[i] == -1) {
@@ -410,7 +410,7 @@ class CpBands extends BandSet {
         cpUTF8 = new String[cpUTF8Count];
         mapUTF8 = new HashMap(cpUTF8Count+1);
         cpUTF8[0] = ""; //$NON-NLS-1$
-        mapUTF8.put("", new Integer(0));
+        mapUTF8.put("", Integer.valueOf(0));
         int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5,
                 cpUTF8Count - 2);
         int charCount = 0;
@@ -459,12 +459,12 @@ class CpBands extends BandSet {
                 // surprised if it works first time w/o errors ...
                 cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
                         + new String(bigSuffixData[bigSuffixCount++]);
-                mapUTF8.put(cpUTF8[i], new Integer(i));
+                mapUTF8.put(cpUTF8[i], Integer.valueOf(i));
             } else {
                 cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
                         + new String(data, charCount, suffix[i - 1]);
                 charCount += suffix[i - 1];
-                mapUTF8.put(cpUTF8[i], new Integer(i));
+                mapUTF8.put(cpUTF8[i], Integer.valueOf(i));
             }
         }
     }
@@ -572,7 +572,7 @@ class CpBands extends BandSet {
     }
 
     public CPInteger cpIntegerValue(int index) {
-        Integer i = new Integer(cpInt[index]);
+        Integer i = Integer.valueOf(cpInt[index]);
         CPInteger cpInteger = (CPInteger) integersToCPIntegers.get(i);
         if (cpInteger == null) {
             cpInteger = new CPInteger(i, index + intOffset);

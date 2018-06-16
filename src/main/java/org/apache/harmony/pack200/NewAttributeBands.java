@@ -420,7 +420,7 @@ class NewAttributeBands extends BandSet {
                 previousPValue = value;
             }
             if(val == null) {
-                val = new Integer(value);
+                val = Integer.valueOf(value);
             }
             band.add(val);
         }
@@ -450,7 +450,7 @@ class NewAttributeBands extends BandSet {
                         band.remove(i);
                         Integer bytecodeIndex = (Integer) labelsToOffsets
                                 .get(label);
-                        band.add(i, new Integer(bciRenumbering.get(bytecodeIndex
+                        band.add(i, Integer.valueOf(bciRenumbering.get(bytecodeIndex
                                 .intValue())));
                     }
                 }
@@ -466,7 +466,7 @@ class NewAttributeBands extends BandSet {
                 } else if (label instanceof Label) {
                     band.remove(i);
                     Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                    Integer renumberedOffset = new Integer(bciRenumbering
+                    Integer renumberedOffset = Integer.valueOf(bciRenumbering
                             .get(bytecodeIndex.intValue())
                             - ((Integer) relative.get(i)).intValue());
                     band.add(i, renumberedOffset);
@@ -775,7 +775,7 @@ class NewAttributeBands extends BandSet {
         }
 
         public boolean hasTag(long l) {
-            return tags.contains(new Integer((int) l));
+            return tags.contains(Integer.valueOf((int) l));
         }
 
         public UnionCase(List tags, List body) throws IOException {
@@ -929,7 +929,7 @@ class NewAttributeBands extends BandSet {
         if (read != digits.length) {
             throw new IOException("Error reading from the input stream");
         }
-        return new Integer(Integer.parseInt((negative ? "-" : "") + new String(digits)));
+        return Integer.valueOf(Integer.parseInt((negative ? "-" : "") + new String(digits)));
     }
 
     /**

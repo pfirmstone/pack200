@@ -191,12 +191,12 @@ class BcBands extends BandSet {
                             bcLabelCount++;
                             break;
                         case 170: // tableswitch
-                            switchIsTableSwitch.add(new Boolean(true));
+                            switchIsTableSwitch.add(Boolean.valueOf(true));
                             bcCaseCountCount++;
                             bcLabelCount++;
                             break;
                         case 171: // lookupswitch
-                            switchIsTableSwitch.add(new Boolean(false));
+                            switchIsTableSwitch.add(Boolean.valueOf(false));
                             bcCaseCountCount++;
                             bcLabelCount++;
                             break;
@@ -256,7 +256,7 @@ class BcBands extends BandSet {
                             break;
                         case 196: // wide
                             int nextInstruction = 0xff & methodByteCodePacked[c][m][i + 1];
-                            wideByteCodes.add(new Integer(nextInstruction));
+                            wideByteCodes.add(Integer.valueOf(nextInstruction));
                             if (nextInstruction == 132) { // iinc
                                 bcLocalCount++;
                                 bcShortCount++;

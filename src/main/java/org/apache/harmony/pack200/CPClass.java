@@ -41,7 +41,26 @@ class CPClass extends CPConstant implements Comparable {
     public int compareTo(Object arg0) {
         return className.compareTo(((CPClass)arg0).className);
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (o == null) return false;
+	if (!(getClass().equals(o.getClass()))) return false;
+	if (isInnerClass != ((CPClass)o).isInnerClass) return false;
+	if (!className.equals(((CPClass)o).className)) return false;
+	return utf8.equals(((CPClass)o).utf8);
+    }
 
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 47 * hash + (this.className != null ? this.className.hashCode() : 0);
+	hash = 47 * hash + (this.utf8 != null ? this.utf8.hashCode() : 0);
+	hash = 47 * hash + (this.isInnerClass ? 1 : 0);
+	return hash;
+    }
+
+    @Override
     public String toString() {
         return className;
     }

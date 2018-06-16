@@ -94,27 +94,27 @@ public class NewAttribute extends BCIRenumberedAttribute {
     }
 
     public void addInteger(int length, long value) {
-        lengths.add(new Integer(length));
-        body.add(new Long(value));
+        lengths.add(Integer.valueOf(length));
+        body.add(Long.valueOf(value));
     }
 
     public void addBCOffset(int length, int value) {
-        lengths.add(new Integer(length));
+        lengths.add(Integer.valueOf(length));
         body.add(new BCOffset(value));
     }
 
     public void addBCIndex(int length, int value) {
-        lengths.add(new Integer(length));
+        lengths.add(Integer.valueOf(length));
         body.add(new BCIndex(value));
     }
 
     public void addBCLength(int length, int value) {
-        lengths.add(new Integer(length));
+        lengths.add(Integer.valueOf(length));
         body.add(new BCLength(value));
     }
 
     public void addToBody(int length, Object value) {
-        lengths.add(new Integer(length));
+        lengths.add(Integer.valueOf(length));
         body.add(value);
     }
 

@@ -30,6 +30,19 @@ class CPFloat extends CPConstant {
     public int compareTo(Object obj) {
         return Float.compare(theFloat, ((CPFloat)obj).theFloat);
     }
+    
+     @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPFloat)) return false;
+	return theFloat == ((CPFloat)o).theFloat;
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 23 * hash + Float.floatToIntBits(this.theFloat);
+	return hash;
+    }
 
     public float getFloat() {
         return theFloat;

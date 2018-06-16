@@ -148,7 +148,7 @@ class IcBands extends BandSet {
         return name.equals(outerName + '$' + innerName) && innerName.indexOf('$') == -1;
     }
 
-    class IcTuple implements Comparable {
+    static class IcTuple implements Comparable {
 
         protected CPClass C; // this class
         protected int F; // flags
@@ -162,6 +162,7 @@ class IcBands extends BandSet {
             this.N = N;
         }
 
+	@Override
         public boolean equals(Object o) {
             if(o instanceof IcTuple) {
                 IcTuple icT = (IcTuple)o;
@@ -170,6 +171,17 @@ class IcBands extends BandSet {
             return false;
         }
 
+	@Override
+	public int hashCode() {
+	    int hash = 5;
+	    hash = 97 * hash + (this.C != null ? this.C.hashCode() : 0);
+	    hash = 97 * hash + this.F;
+	    hash = 97 * hash + (this.C2 != null ? this.C2.hashCode() : 0);
+	    hash = 97 * hash + (this.N != null ? this.N.hashCode() : 0);
+	    return hash;
+	}
+
+	@Override
         public String toString() {
             return C.toString();
         }

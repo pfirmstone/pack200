@@ -33,6 +33,23 @@ class CPString extends CPConstant {
         return string.compareTo(((CPString)arg0).string);
     }
 
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPString)) return false;
+	CPString that = (CPString) o;
+	if (!string.equals(that.string)) return false;
+	return utf8.equals(that.utf8);
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 89 * hash + (this.string != null ? this.string.hashCode() : 0);
+	hash = 89 * hash + (this.utf8 != null ? this.utf8.hashCode() : 0);
+	return hash;
+    }
+    
+    @Override
     public String toString() {
         return string;
     }

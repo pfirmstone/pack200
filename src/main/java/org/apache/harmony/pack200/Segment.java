@@ -524,7 +524,7 @@ class Segment extends ClassVisitor {
             }
             nameRU.add(name);
             nestTypeRS.add(desc);
-            nestPairN.add(new Integer(0));
+            nestPairN.add(Integer.valueOf(0));
             return new AnnotationVisitorImpl();
         }
 
@@ -535,7 +535,7 @@ class Segment extends ClassVisitor {
                 name = "";
             }
             nameRU.add(name);
-            caseArrayN.add(new Integer(0));
+            caseArrayN.add(Integer.valueOf(0));
             return new ArrayVisitor(caseArrayN, T, nameRU, values);
         }
 
@@ -576,7 +576,7 @@ class Segment extends ClassVisitor {
 	    @Override
 	    public void visit(String name, Object value) {
 		Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
-		nestPairN.add(new Integer(numPairs.intValue() + 1));
+		nestPairN.add(Integer.valueOf(numPairs.intValue() + 1));
 		nestNameRU.add(name);
 		addValueAndTag(value, T, values);
 	    }
@@ -601,7 +601,7 @@ class Segment extends ClassVisitor {
 	    @Override
 	    public void visitEnum(String name, String desc, String value) {
 		Integer numPairs = (Integer) nestPairN.remove(nestPairN.size() - 1);
-		nestPairN.add(new Integer(numPairs.intValue() + 1));
+		nestPairN.add(Integer.valueOf(numPairs.intValue() + 1));
 		T.add("e");
 		nestNameRU.add(name);
 		values.add(desc);
@@ -630,7 +630,7 @@ class Segment extends ClassVisitor {
 	@Override
         public void visit(String name, Object value) {
             Integer numCases = (Integer) caseArrayN.remove(indexInCaseArrayN);
-            caseArrayN.add(indexInCaseArrayN, new Integer(numCases.intValue() + 1));
+            caseArrayN.add(indexInCaseArrayN, Integer.valueOf(numCases.intValue() + 1));
             if (name == null) {
                 name = "";
             }
@@ -650,7 +650,7 @@ class Segment extends ClassVisitor {
                 name = "";
             }
             nameRU.add(name);
-            caseArrayN.add(new Integer(0));
+            caseArrayN.add(Integer.valueOf(0));
             return new ArrayVisitor(caseArrayN, T, nameRU, values);
         }
 
@@ -661,7 +661,7 @@ class Segment extends ClassVisitor {
 	@Override
         public void visitEnum(String name, String desc, String value) {
             Integer numCases = (Integer) caseArrayN.remove(caseArrayN.size() - 1);
-            caseArrayN.add(new Integer(numCases.intValue() + 1));
+            caseArrayN.add(Integer.valueOf(numCases.intValue() + 1));
             T.add("e");
             values.add(desc);
             values.add(value);

@@ -36,6 +36,19 @@ class CPLong extends CPConstant {
             return -1;
         }
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPLong)) return false;
+	return theLong == ((CPLong)o).theLong;
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 71 * hash + (int) (this.theLong ^ (this.theLong >>> 32));
+	return hash;
+    }
 
     public long getLong() {
         return theLong;

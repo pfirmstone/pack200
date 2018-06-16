@@ -30,6 +30,20 @@ class CPDouble extends CPConstant {
     public int compareTo(Object obj) {
         return Double.compare(theDouble, ((CPDouble)obj).theDouble);
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPDouble)) return false;
+	return theDouble == ((CPDouble)o).theDouble;
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 5;
+	hash = 73 * hash + (int) (Double.doubleToLongBits(this.theDouble) 
+		^ (Double.doubleToLongBits(this.theDouble) >>> 32));
+	return hash;
+    }
 
     public double getDouble() {
         return theDouble;

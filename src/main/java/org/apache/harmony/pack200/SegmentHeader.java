@@ -297,7 +297,7 @@ class SegmentHeader extends BandSet {
     /**
      * Counter for major/minor class file numbers so we can work out the default
      */
-    private class Counter {
+    private static class Counter {
 
         private final int[] objs = new int[8];
         private final int[] counts = new int[8];

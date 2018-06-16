@@ -264,35 +264,34 @@ public class PackingOptions {
                 String name, action;
                 boolean prototypeExists;
                 NewAttribute newAttribute;
-                for (Iterator<String> iteratorI = attributeActions.keySet().iterator(); iteratorI
-                        .hasNext();) {
-                    name = (String) iteratorI.next();
-                    action = (String) attributeActions.get(name);
-                    prototypeExists = false;
-                    for (Iterator iteratorJ = prototypes.iterator(); iteratorJ
-                            .hasNext();) {
-                        newAttribute = (NewAttribute) iteratorJ.next();
-                        if (newAttribute.type.equals(name)) {
-                            // if the attribute exists, update its context
-                            newAttribute.addContext(tag);
-                            prototypeExists = true;
-                            break;
-                        }
-                    }
-                    // if no attribute is found, add a new attribute
-                    if (!prototypeExists) {
-                        if (ERROR.equals(action)) {
-                            newAttribute = new NewAttribute.ErrorAttribute(name, tag);
-                        } else if (STRIP.equals(action)) {
-                            newAttribute = new NewAttribute.StripAttribute(name, tag);
-                        } else if (PASS.equals(action)) {
-                            newAttribute = new NewAttribute.PassAttribute(name, tag);
-                        } else {
-                            newAttribute = new NewAttribute(name, action, tag);
-                        }
-                        prototypes.add(newAttribute);
-                    }
-                }
+		for (Map.Entry<String,String> entry : attributeActions.entrySet()) {
+		    name = (String) entry.getKey();
+		    action = (String) entry.getValue();
+		    prototypeExists = false;
+		    for (Iterator iteratorJ = prototypes.iterator(); iteratorJ
+			    .hasNext();) {
+			newAttribute = (NewAttribute) iteratorJ.next();
+			if (newAttribute.type.equals(name)) {
+			    // if the attribute exists, update its context
+			    newAttribute.addContext(tag);
+			    prototypeExists = true;
+			    break;
+			}
+		    }
+		    // if no attribute is found, add a new attribute
+		    if (!prototypeExists) {
+			if (ERROR.equals(action)) {
+			    newAttribute = new NewAttribute.ErrorAttribute(name, tag);
+			} else if (STRIP.equals(action)) {
+			    newAttribute = new NewAttribute.StripAttribute(name, tag);
+			} else if (PASS.equals(action)) {
+			    newAttribute = new NewAttribute.PassAttribute(name, tag);
+			} else {
+			    newAttribute = new NewAttribute(name, action, tag);
+			}
+			prototypes.add(newAttribute);
+		    }
+		}
             }
         }
     }

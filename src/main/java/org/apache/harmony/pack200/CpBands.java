@@ -131,7 +131,7 @@ class CpBands extends BandSet {
             if (suffix.length > 1000) { // big suffix (1000 is arbitrary - can we
                 // do better?)
                 cpUtf8Suffix[i - 1] = 0;
-                bigSuffix.add(new Integer(suffix.length));
+                bigSuffix.add(Integer.valueOf(suffix.length));
                 addCharacters(bigChars, suffix);
             } else {
                 cpUtf8Suffix[i - 1] = suffix.length;
@@ -186,7 +186,7 @@ class CpBands extends BandSet {
 
     private void addCharacters(List chars, char[] charArray) {
         for (int i = 0; i < charArray.length; i++) {
-            chars.add(new Character(charArray[i]));
+            chars.add(Character.valueOf(charArray[i]));
         }
     }
 
@@ -437,12 +437,12 @@ class CpBands extends BandSet {
             CPClass className = mOrF.getClassName();
             Integer index = (Integer) classNameToIndex.get(className);
             if (index == null) {
-                classNameToIndex.put(className, new Integer(1));
+                classNameToIndex.put(className, Integer.valueOf(1));
                 mOrF.setIndexInClass(0);
             } else {
                 int theIndex = index.intValue();
                 mOrF.setIndexInClass(theIndex);
-                classNameToIndex.put(className, new Integer(theIndex + 1));
+                classNameToIndex.put(className, Integer.valueOf(theIndex + 1));
             }
         }
         classNameToIndex.clear();
@@ -452,22 +452,22 @@ class CpBands extends BandSet {
             CPClass className = mOrF.getClassName();
             Integer index = (Integer) classNameToIndex.get(className);
             if (index == null) {
-                classNameToIndex.put(className, new Integer(1));
+                classNameToIndex.put(className, Integer.valueOf(1));
                 mOrF.setIndexInClass(0);
             } else {
                 int theIndex = index.intValue();
                 mOrF.setIndexInClass(theIndex);
-                classNameToIndex.put(className, new Integer(theIndex + 1));
+                classNameToIndex.put(className, Integer.valueOf(theIndex + 1));
             }
             if(mOrF.getDesc().getName().equals("<init>")) {
                 Integer constructorIndex = (Integer) classNameToConstructorIndex.get(className);
                 if (constructorIndex == null) {
-                    classNameToConstructorIndex.put(className, new Integer(1));
+                    classNameToConstructorIndex.put(className, Integer.valueOf(1));
                     mOrF.setIndexInClassForConstructor(0);
                 } else {
                     int theIndex = constructorIndex.intValue();
                     mOrF.setIndexInClassForConstructor(theIndex);
-                    classNameToConstructorIndex.put(className, new Integer(theIndex + 1));
+                    classNameToConstructorIndex.put(className, Integer.valueOf(theIndex + 1));
                 }
             }
         }

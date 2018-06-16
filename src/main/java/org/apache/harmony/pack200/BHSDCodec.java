@@ -364,7 +364,7 @@ public final class BHSDCodec extends Codec {
                     byteN += h;
                 }
             }
-            byteList.add(new Byte((byte) byteN));
+            byteList.add(Byte.valueOf((byte) byteN));
             if (byteN < l) {
                 break;
             }

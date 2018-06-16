@@ -250,15 +250,15 @@ class BcBands extends BandSet {
 
     private List getIndexInClassForConstructor(List<CPMethodOrField> cPMethodList) {
         List indices = new ArrayList(cPMethodList.size());
-        for (int i = 0; i < cPMethodList.size(); i++) {
+        for (int i = 0, l = cPMethodList.size(); i < l; i++) {
             CPMethodOrField cpMF = (CPMethodOrField) cPMethodList.get(i);
-            indices.add(new Integer(cpMF.getIndexInClassForConstructor()));
+            indices.add(Integer.valueOf(cpMF.getIndexInClassForConstructor()));
         }
         return indices;
     }
 
     public void visitEnd() {
-        for (int i = 0; i < bciRenumbering.size(); i++) {
+        for (int i = 0, l = bciRenumbering.size(); i < l; i++) {
             if (bciRenumbering.get(i) == -1) {
                 bciRenumbering.remove(i);
                 bciRenumbering.add(i, ++renumberedOffset);
@@ -276,7 +276,7 @@ class BcBands extends BandSet {
                     bcLabel.remove(i);
                     Integer offset = (Integer) labelsToOffsets.get(label);
                     int relativeOffset = bcLabelRelativeOffsets.get(i);
-                    bcLabel.add(i, new Integer(bciRenumbering.get(offset.intValue()) - bciRenumbering.get(relativeOffset)));
+                    bcLabel.add(i, Integer.valueOf(bciRenumbering.get(offset.intValue()) - bciRenumbering.get(relativeOffset)));
                 }
             }
             bcCodes.add(endMarker);
@@ -290,7 +290,7 @@ class BcBands extends BandSet {
     }
 
     public void visitLabel(Label label) {
-        labelsToOffsets.put(label, new Integer(byteCodeOffset));
+        labelsToOffsets.put(label, Integer.valueOf(byteCodeOffset));
     }
 
     public void visitFieldInsn(int opcode, String owner, String name,

@@ -42,7 +42,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
         this.maxStack = maxStack;
         this.codeLength = 0;
         this.exceptionTable = exceptionTable;
-        byteCodeOffsets.add(new Integer(0));
+        byteCodeOffsets.add(Integer.valueOf(0));
         int byteCodeIndex = 0;
         for (int i = 0; i < codePacked.length; i++) {
             ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
@@ -59,14 +59,14 @@ public class CodeAttribute extends BCIRenumberedAttribute {
             // replaced by a single-byte bytecode followed by
             // another bytecode.
             if (byteCode.hasMultipleByteCodes()) {
-                byteCodeOffsets.add(new Integer(lastBytecodePosition + 1));
+                byteCodeOffsets.add(Integer.valueOf(lastBytecodePosition + 1));
                 byteCodeIndex++;
             }
             // I've already added the first element (at 0) before
             // entering this loop, so make sure I don't add one
             // after the last element.
             if (i < (codePacked.length - 1)) {
-                byteCodeOffsets.add(new Integer(lastBytecodePosition
+                byteCodeOffsets.add(Integer.valueOf(lastBytecodePosition
                         + byteCode.getLength()));
             }
             if (byteCode.getOpcode() == 0xC4) {

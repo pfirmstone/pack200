@@ -361,15 +361,15 @@ abstract class BandSet {
             BHSDCodec defaultCodec, BandData bandData, BandAnalysisResults results) throws Pack200Exception {
         results.numCodecsTried += 3; // quite a bit more effort to try this codec
         final Map distinctValues = bandData.distinctValues;
-
-        List favoured = new ArrayList();
-        for (Iterator iterator = distinctValues.keySet().iterator(); iterator
+	int size = distinctValues.size();
+        List favoured = new ArrayList(size);
+	boolean small = size < 256;
+        for (Iterator<Map.Entry> iterator = distinctValues.entrySet().iterator(); iterator
                 .hasNext();) {
-            Integer value = (Integer) iterator.next();
-            Integer count = (Integer) distinctValues.get(value);
-            if(count.intValue() > 2 || distinctValues.size() < 256) { // TODO: tweak
-                favoured.add(value);
-            }
+	    Map.Entry entry =  iterator.next();
+            Integer value = (Integer) entry.getKey();
+            Integer count = (Integer) entry.getValue();
+            if( small || count.intValue() > 2 ) favoured.add(value);
         }
 
         // Sort the favoured list with the most commonly occurring first
@@ -385,7 +385,7 @@ abstract class BandSet {
         Map favouredToIndex = new HashMap();
         for (int i = 0; i < favoured.size(); i++) {
             Integer value = (Integer) favoured.get(i);
-            favouredToIndex.put(value, new Integer(i));
+            favouredToIndex.put(value, Integer.valueOf(i));
         }
 
         int[] tokens = new int[band.length];
@@ -674,7 +674,7 @@ abstract class BandSet {
          */
         public BandData(int[] band) {
             this.band = band;
-            Integer one = new Integer(1);
+            Integer one = Integer.valueOf(1);
             for (int i = 0; i < band.length; i++) {
                 if(band[i] < smallest) {
                     smallest = band[i];
@@ -766,7 +766,7 @@ abstract class BandSet {
     /**
      * Results obtained by trying different Codecs to encode a band
      */
-    public class BandAnalysisResults {
+    public static class BandAnalysisResults {
 
         // The number of Codecs tried so far
         private int numCodecsTried = 0;

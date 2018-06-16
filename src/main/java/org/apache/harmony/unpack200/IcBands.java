@@ -231,8 +231,8 @@ public class IcBands extends BandSet {
 		Collections.sort(relevantTuples, new Comparator() {
 
 			public int compare(Object arg0, Object arg1) {
-				Integer index1 = new Integer(((IcTuple)arg0).getTupleIndex());
-				Integer index2 = new Integer(((IcTuple)arg1).getTupleIndex());
+				Integer index1 = Integer.valueOf(((IcTuple)arg0).getTupleIndex());
+				Integer index2 = Integer.valueOf(((IcTuple)arg1).getTupleIndex());
 				return index1.compareTo(index2);
 			}
 

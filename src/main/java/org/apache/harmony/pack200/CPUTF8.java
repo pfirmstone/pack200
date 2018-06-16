@@ -30,6 +30,19 @@ class CPUTF8 extends ConstantPoolEntry implements Comparable {
     public int compareTo(Object arg0) {
         return string.compareTo(((CPUTF8)arg0).string);
     }
+    
+    @Override
+    public boolean equals(Object o){
+	if (!(o instanceof CPUTF8)) return false;
+	return string.equals(((CPUTF8)o).string);
+    }
+
+    @Override
+    public int hashCode() {
+	int hash = 3;
+	hash = 67 * hash + (this.string != null ? this.string.hashCode() : 0);
+	return hash;
+    }
 
     public String toString() {
         return string;

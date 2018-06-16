@@ -858,7 +858,7 @@ class NewAttributeBands extends BandSet {
         }
 
         public boolean hasTag(long l) {
-            return tags.contains(new Integer((int) l));
+            return tags.contains(Integer.valueOf((int) l));
         }
 
         public UnionCase(List tags, List body) throws IOException {
@@ -995,7 +995,7 @@ class NewAttributeBands extends BandSet {
         if (read != digits.length) {
             throw new IOException("Error reading from the input stream");
         }
-        return new Integer(Integer.parseInt((negative ? "-" : "")
+        return Integer.valueOf(Integer.parseInt((negative ? "-" : "")
                 + new String(digits)));
     }
 

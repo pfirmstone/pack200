@@ -274,7 +274,7 @@ class ClassBands extends BandSet {
             cpBands.addCPUtf8("Synthetic");
             anySyntheticFields = true;
         }
-        tempFieldFlags.add(new Long(flags));
+        tempFieldFlags.add(Long.valueOf(flags));
     }
 
     /**
@@ -323,7 +323,7 @@ class ClassBands extends BandSet {
                 codeMaxStack.remove(i - removed);
                 removed++;
             } else if (!segment.getSegmentHeader().have_all_code_flags()) {
-                codeFlags.add(new Long(0));
+                codeFlags.add(Long.valueOf(0));
             }
         }
 
@@ -998,7 +998,7 @@ class ClassBands extends BandSet {
             flags = flags & ~Opcodes.ACC_DEPRECATED;
             flags = flags | (1<<20);
         }
-        tempMethodFlags.add(new Long(flags));
+        tempMethodFlags.add(Long.valueOf(flags));
         numMethodArgs = countArgs(desc);
         if(!anySyntheticMethods && ((flags & (1 << 12)) != 0) && segment.getCurrentClassReader().hasSyntheticAttributes()) {
             cpBands.addCPUtf8("Synthetic");
@@ -1031,7 +1031,7 @@ class ClassBands extends BandSet {
             if(latestCodeFlag == (1 << 2) && latestLocalVariableTableN == 0) {
                 codeLocalVariableTableN.remove(codeLocalVariableTableN.size() - 1);
                 codeFlags.remove(codeFlags.size() - 1);
-                codeFlags.add(new Integer(0));
+                codeFlags.add(Integer.valueOf(0));
             }
         }
     }
@@ -1145,7 +1145,7 @@ class ClassBands extends BandSet {
                 bands.addAttribute(attribute);
                 int flagIndex = bands.getFlagIndex();
                 Long flags = (Long)tempFieldFlags.remove(tempFieldFlags.size() - 1);
-                tempFieldFlags.add(new Long(flags.longValue() | (1 << flagIndex)));
+                tempFieldFlags.add(Long.valueOf(flags.longValue() | (1 << flagIndex)));
                 return;
             }
         }
@@ -1160,7 +1160,7 @@ class ClassBands extends BandSet {
                 bands.addAttribute(attribute);
                 int flagIndex = bands.getFlagIndex();
                 Long flags = (Long)tempMethodFlags.remove(tempMethodFlags.size() - 1);
-                tempMethodFlags.add(new Long(flags.longValue() | (1 << flagIndex)));
+                tempMethodFlags.add(Long.valueOf(flags.longValue() | (1 << flagIndex)));
                 return;
             }
         }
@@ -1175,7 +1175,7 @@ class ClassBands extends BandSet {
                 bands.addAttribute(attribute);
                 int flagIndex = bands.getFlagIndex();
                 Long flags = (Long)codeFlags.remove(codeFlags.size() - 1);
-                codeFlags.add(new Long(flags.longValue() | (1 << flagIndex)));
+                codeFlags.add(Long.valueOf(flags.longValue() | (1 << flagIndex)));
                 return;
             }
         }
@@ -1185,7 +1185,7 @@ class ClassBands extends BandSet {
     public void addMaxStack(int maxStack, int maxLocals) {
         Long latestFlag = (Long) tempMethodFlags
                 .remove(tempMethodFlags.size() - 1);
-        Long newFlag = new Long(latestFlag.intValue() | (1 << 17));
+        Long newFlag = Long.valueOf(latestFlag.intValue() | (1 << 17));
         tempMethodFlags.add(newFlag);
         codeMaxStack.add(maxStack);
         if ((newFlag.longValue() & (1 << 3)) == 0) { // not static
@@ -1198,7 +1198,7 @@ class ClassBands extends BandSet {
     public void addCode() {
         codeHandlerCount.add(0);
         if(!stripDebug) {
-            codeFlags.add(new Long((1 << 2)));
+            codeFlags.add(Long.valueOf((1 << 2)));
             codeLocalVariableTableN.add(0);
         }
     }
@@ -1217,7 +1217,7 @@ class ClassBands extends BandSet {
         Long latestCodeFlag = (Long) codeFlags.get(codeFlags.size() - 1);
         if ((latestCodeFlag.intValue() & (1 << 1)) == 0) {
             codeFlags.remove(codeFlags.size() - 1);
-            codeFlags.add(new Long(latestCodeFlag.intValue() | (1 << 1)));
+            codeFlags.add(Long.valueOf(latestCodeFlag.intValue() | (1 << 1)));
             codeLineNumberTableN.add(1);
         } else {
             codeLineNumberTableN
@@ -1233,7 +1233,7 @@ class ClassBands extends BandSet {
             Long latestCodeFlag = (Long) codeFlags.get(codeFlags.size() - 1);
             if ((latestCodeFlag.intValue() & (1 << 3)) == 0) {
                 codeFlags.remove(codeFlags.size() - 1);
-                codeFlags.add(new Long(latestCodeFlag.intValue() | (1 << 3)));
+                codeFlags.add(Long.valueOf(latestCodeFlag.intValue() | (1 << 3)));
                 codeLocalVariableTypeTableN.add(1);
             } else {
                 codeLocalVariableTypeTableN
@@ -1298,7 +1298,7 @@ class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                list.add(i, new Integer(bciRenumbering.get(bytecodeIndex.intValue())));
+                list.add(i, Integer.valueOf(bciRenumbering.get(bytecodeIndex.intValue())));
             }
         }
     }
@@ -1312,7 +1312,7 @@ class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                Integer renumberedOffset = new Integer(bciRenumbering
+                Integer renumberedOffset = Integer.valueOf(bciRenumbering
                         .get(bytecodeIndex.intValue())
                         - ((Integer) relative.get(i)).intValue());
                 list.add(i, renumberedOffset);
@@ -1330,7 +1330,7 @@ class ClassBands extends BandSet {
             } else if (label instanceof Label) {
                 list.remove(i);
                 Integer bytecodeIndex = (Integer) labelsToOffsets.get(label);
-                Integer renumberedOffset = new Integer(bciRenumbering
+                Integer renumberedOffset = Integer.valueOf(bciRenumbering
                         .get(bytecodeIndex.intValue())
                         - ((Integer) relative.get(i)).intValue() - ((Integer) firstOffset.get(i)).intValue());
                 list.add(i, renumberedOffset);
@@ -1358,14 +1358,14 @@ class ClassBands extends BandSet {
                 tempMethodRVPA.addParameterAnnotation(parameter, desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
             }
             Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
-            tempMethodFlags.add(new Long(flag.longValue() | (1<<23)));
+            tempMethodFlags.add(Long.valueOf(flag.longValue() | (1<<23)));
         } else {
             if(tempMethodRIPA == null) {
                 tempMethodRIPA = new TempParamAnnotation(numMethodArgs);
                 tempMethodRIPA.addParameterAnnotation(parameter, desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
             }
             Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
-            tempMethodFlags.add(new Long(flag.longValue() | (1<<24)));
+            tempMethodFlags.add(Long.valueOf(flag.longValue() | (1<<24)));
         }
     }
 
@@ -1434,7 +1434,7 @@ class ClassBands extends BandSet {
                 } else {
                     field_RVA_bands.newEntryInAnnoN();
                 }
-                tempFieldFlags.add(new Long(flag.intValue() | (1<<21)));
+                tempFieldFlags.add(Long.valueOf(flag.intValue() | (1<<21)));
             } else {
                 field_RIA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
                 Long flag = (Long) tempFieldFlags.remove(tempFieldFlags.size() - 1);
@@ -1443,7 +1443,7 @@ class ClassBands extends BandSet {
                 } else {
                     field_RIA_bands.newEntryInAnnoN();
                 }
-                tempFieldFlags.add(new Long(flag.intValue() | (1<<22)));
+                tempFieldFlags.add(Long.valueOf(flag.intValue() | (1<<22)));
             }
             break;
         case MetadataBandGroup.CONTEXT_METHOD:
@@ -1455,7 +1455,7 @@ class ClassBands extends BandSet {
                 } else {
                     method_RVA_bands.newEntryInAnnoN();
                 }
-                tempMethodFlags.add(new Long(flag.intValue() | (1<<21)));
+                tempMethodFlags.add(Long.valueOf(flag.intValue() | (1<<21)));
             } else {
                 method_RIA_bands.addAnnotation(desc, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
                 Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
@@ -1464,7 +1464,7 @@ class ClassBands extends BandSet {
                 } else {
                     method_RIA_bands.newEntryInAnnoN();
                 }
-                tempMethodFlags.add(new Long(flag.intValue() | (1<<22)));
+                tempMethodFlags.add(Long.valueOf(flag.intValue() | (1<<22)));
             }
             break;
         }
@@ -1473,7 +1473,7 @@ class ClassBands extends BandSet {
     public void addAnnotationDefault(List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
         method_AD_bands.addAnnotation(null, nameRU, t, values, caseArrayN, nestTypeRS, nestNameRU, nestPairN);
         Long flag = (Long) tempMethodFlags.remove(tempMethodFlags.size() - 1);
-        tempMethodFlags.add(new Long(flag.longValue() | (1<<25)));
+        tempMethodFlags.add(Long.valueOf(flag.longValue() | (1<<25)));
     }
 
     /**
