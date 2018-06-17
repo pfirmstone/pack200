@@ -127,20 +127,18 @@ public class Segment {
         int fullNameIndexInCpClass = classBands.getClassThisInts()[classNum];
         String fullName = cpBands.getCpClass()[fullNameIndexInCpClass];
         // SourceFile attribute
-        int i = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
+        int beginSimpleClassName = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
         // -1+1=0, so str.substring(0)
         // == str
 
         // Get the source file attribute
         ArrayList classAttributes = classBands.getClassAttributes()[classNum];
         SourceFileAttribute sourceFileAttribute = null;
-        for (int index = 0; index < classAttributes.size(); index++) {
-            if (((Attribute) classAttributes.get(index))
-                    .isSourceFileAttribute()) {
-                sourceFileAttribute = ((SourceFileAttribute) classAttributes
-                        .get(index));
-            }
-        }
+	for (Object classAttribute : classAttributes) {
+	    if (((Attribute) classAttribute).isSourceFileAttribute()) {
+		sourceFileAttribute = ((SourceFileAttribute) classAttribute);
+	    }
+	}
 
         if (sourceFileAttribute == null) {
             // If we don't have a source file attribute yet, we need
@@ -156,12 +154,12 @@ public class Segment {
                         firstDollar = index;
                     }
                 }
-                String fileName = null;
+                String fileName;
 
-                if (firstDollar > -1 && (i <= firstDollar)) {
-                    fileName = fullName.substring(i, firstDollar) + ".java";
+                if (firstDollar > -1 && (beginSimpleClassName <= firstDollar)) {
+                    fileName = fullName.substring(beginSimpleClassName, firstDollar) + ".java";
                 } else {
-                    fileName = fullName.substring(i) + ".java";
+                    fileName = fullName.substring(beginSimpleClassName) + ".java";
                 }
                 sourceFileAttribute = new SourceFileAttribute(cpBands
                         .cpUTF8Value(fileName, false));
@@ -180,12 +178,12 @@ public class Segment {
         // be written out. Keep SourceFileAttributes out since we just
         // did them above.
         ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList(classAttributes.size());
-        for (int index = 0; index < classAttributes.size(); index++) {
-            Attribute attrib = (Attribute) classAttributes.get(index);
-            if (!attrib.isSourceFileAttribute()) {
-                classAttributesWithoutSourceFileAttribute.add(attrib);
-            }
-        }
+	for (Object classAttribute : classAttributes) {
+	    Attribute attrib = (Attribute) classAttribute;
+	    if (!attrib.isSourceFileAttribute()) {
+		classAttributesWithoutSourceFileAttribute.add(attrib);
+	    }
+	}
         Attribute[] originalAttributes = classFile.attributes;
         classFile.attributes = new Attribute[originalAttributes.length
                 + classAttributesWithoutSourceFileAttribute.size()];
@@ -206,7 +204,7 @@ public class Segment {
         // add interfaces
         ClassFileEntry cfInterfaces[] = new ClassFileEntry[classBands
                 .getClassInterfacesInts()[classNum].length];
-        for (i = 0; i < cfInterfaces.length; i++) {
+        for (int i = 0, l = cfInterfaces.length; i < l; i++) {
             cfInterfaces[i] = cp.add(cpBands.cpClassValue(classBands
                     .getClassInterfacesInts()[classNum][i]));
         }
@@ -214,7 +212,7 @@ public class Segment {
         ClassFileEntry cfFields[] = new ClassFileEntry[classBands
                 .getClassFieldCount()[classNum]];
         // fieldDescr and fieldFlags used to create this
-        for (i = 0; i < cfFields.length; i++) {
+        for (int i = 0, l = cfFields.length; i < l; i++) {
             int descriptorIndex = classBands.getFieldDescrInts()[classNum][i];
             int nameIndex = cpBands.getCpDescriptorNameInts()[descriptorIndex];
             int typeIndex = cpBands.getCpDescriptorTypeInts()[descriptorIndex];
@@ -228,7 +226,7 @@ public class Segment {
         ClassFileEntry cfMethods[] = new ClassFileEntry[classBands
                 .getClassMethodCount()[classNum]];
         // methodDescr and methodFlags used to create this
-        for (i = 0; i < cfMethods.length; i++) {
+        for (int i = 0, l = cfMethods.length; i < l; i++) {
             int descriptorIndex = classBands.getMethodDescrInts()[classNum][i];
             int nameIndex = cpBands.getCpDescriptorNameInts()[descriptorIndex];
             int typeIndex = cpBands.getCpDescriptorTypeInts()[descriptorIndex];
@@ -248,43 +246,39 @@ public class Segment {
                 "InnerClasses");
         IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
         List ic_stored = computeIcStored(ic_local, ic_relevant);
-        for (int index = 0; index < ic_stored.size(); index++) {
-        	IcTuple icStored = (IcTuple)ic_stored.get(index);
-            int innerClassIndex = icStored.thisClassIndex();
-            int outerClassIndex = icStored.outerClassIndex();
-            int simpleClassNameIndex = icStored.simpleClassNameIndex();
-
-            String innerClassString = icStored.thisClassString();
-            String outerClassString = icStored.outerClassString();
-            String simpleClassName = icStored.simpleClassName();
-
-            CPClass innerClass = null;
-            CPUTF8 innerName = null;
-            CPClass outerClass = null;
-
-            innerClass = innerClassIndex != -1 ? cpBands
-                    .cpClassValue(innerClassIndex) : cpBands
-                    .cpClassValue(innerClassString);
-            if (!icStored.isAnonymous()) {
-                innerName = simpleClassNameIndex != -1 ? cpBands.cpUTF8Value(
-                        simpleClassNameIndex) : cpBands
-                        .cpUTF8Value(simpleClassName);
-            }
-
-            if (icStored.isMember()) {
+	for (Object ic_stored1 : ic_stored) {
+	    IcTuple icStored = (IcTuple) ic_stored1;
+	    int innerClassIndex = icStored.thisClassIndex();
+	    int outerClassIndex = icStored.outerClassIndex();
+	    int simpleClassNameIndex = icStored.simpleClassNameIndex();
+	    String innerClassString = icStored.thisClassString();
+	    String outerClassString = icStored.outerClassString();
+	    String simpleClassName = icStored.simpleClassName();
+	    CPClass innerClass;
+	    CPUTF8 innerName = null;
+	    CPClass outerClass = null;
+	    innerClass = innerClassIndex != -1 ? cpBands
+		    .cpClassValue(innerClassIndex) : cpBands
+			    .cpClassValue(innerClassString);
+	    if (!icStored.isAnonymous()) {
+		innerName = simpleClassNameIndex != -1 ? cpBands.cpUTF8Value(
+			simpleClassNameIndex) : cpBands
+				.cpUTF8Value(simpleClassName);
+	    }
+	    if (icStored.isMember()) {
                 outerClass = outerClassIndex != -1 ? cpBands
-                        .cpClassValue(outerClassIndex) : cpBands
-                        .cpClassValue(outerClassString);
-            }
-            int flags = icStored.F;
-            innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass,
+			.cpClassValue(outerClassIndex) : cpBands
+				.cpClassValue(outerClassString);
+	    }
+	    int flags = icStored.F;
+	    innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass,
                     innerName, flags);
-            addInnerClassesAttr = true;
-        }
-        // If ic_local is sent and it's empty, don't add
-        // the inner classes attribute.
-        if (ic_local_sent && (ic_local.length == 0)) {
-            addInnerClassesAttr = false;
+	    addInnerClassesAttr = true;
+	}
+	// If ic_local is sent and it's empty, don't add
+	// the inner classes attribute.
+	if (ic_local_sent && (ic_local.length == 0)) {
+	    addInnerClassesAttr = false;
         }
 
         // If ic_local is not sent and ic_relevant is empty,
@@ -298,7 +292,7 @@ public class Segment {
             // existing classFile attributes.
             Attribute[] originalAttrs = classFile.attributes;
             Attribute[] newAttrs = new Attribute[originalAttrs.length + 1];
-            for (int index = 0; index < originalAttrs.length; index++) {
+            for (int index = 0, length = originalAttrs.length; index < length; index++) {
                 newAttrs[index] = originalAttrs[index];
             }
             newAttrs[newAttrs.length - 1] = innerClassesAttribute;
@@ -314,7 +308,7 @@ public class Segment {
         classFile.superClass = cp.indexOf(cfSuper);
         // TODO placate format of file for writing purposes
         classFile.interfaces = new int[cfInterfaces.length];
-        for (i = 0; i < cfInterfaces.length; i++) {
+        for (int i = 0, l = cfInterfaces.length; i < l; i++) {
             classFile.interfaces[i] = cp.indexOf(cfInterfaces[i]);
         }
         classFile.fields = cfFields;
@@ -344,7 +338,7 @@ public class Segment {
 
     	// add ic_local
     	if (ic_local != null) {
-    		for(int index = 0; index < ic_local.length; index++) {
+    		for(int index = 0, length = ic_local.length; index < length; index++) {
     			if (isInResult.add(ic_local[index])) {
     				result.add(ic_local[index]);
     			}
@@ -352,7 +346,7 @@ public class Segment {
     	}
 
     	// add ic_relevant
-		for(int index = 0; index < ic_relevant.length; index++) {
+		for(int index = 0, length = ic_relevant.length; index < length; index++) {
 			if (isInResult.add(ic_relevant[index])) {
 				result.add(ic_relevant[index]);
 			} else {
@@ -361,7 +355,7 @@ public class Segment {
 		}
 
 		// eliminate "duplicates"
-		for(int index = 0; index < duplicates.size(); index++) {
+		for(int index = 0, size = duplicates.size(); index < size; index++) {
 			IcTuple tuple = (IcTuple)duplicates.get(index);
 			result.remove(tuple);
 		}
@@ -587,7 +581,7 @@ public class Segment {
         return cpBands.getConstantPool();
     }
 
-    public SegmentHeader getSegmentHeader() {
+    SegmentHeader getSegmentHeader() {
         return header;
     }
 
@@ -595,15 +589,15 @@ public class Segment {
         doPreRead = value;
     }
 
-    protected AttrDefinitionBands getAttrDefinitionBands() {
+    AttrDefinitionBands getAttrDefinitionBands() {
         return attrDefinitionBands;
     }
 
-    protected ClassBands getClassBands() {
+    ClassBands getClassBands() {
         return classBands;
     }
 
-    protected CpBands getCpBands() {
+    CpBands getCpBands() {
         return cpBands;
     }
 
