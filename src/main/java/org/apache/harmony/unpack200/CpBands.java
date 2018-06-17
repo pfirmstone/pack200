@@ -562,7 +562,7 @@ class CpBands extends BandSet {
     }
 
     public CPLong cpLongValue(int index) {
-        Long l = new Long(cpLong[index]);
+        Long l = Long.valueOf(cpLong[index]);
         CPLong cpLong = (CPLong) longsToCPLongs.get(l);
         if (cpLong == null) {
             cpLong = new CPLong(l, index + longOffset);
