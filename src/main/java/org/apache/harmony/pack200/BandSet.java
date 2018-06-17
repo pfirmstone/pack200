@@ -390,7 +390,7 @@ abstract class BandSet {
 
         int[] tokens = new int[band.length];
         for (int i = 0; i < band.length; i++) {
-            Integer favouredIndex = (Integer)favouredToIndex.get(new Integer(band[i]));
+            Integer favouredIndex = (Integer)favouredToIndex.get(Integer.valueOf(band[i]));
             if(favouredIndex == null) {
                 tokens[i] = 0;
                 unfavoured.add(band[i]);
@@ -706,12 +706,12 @@ abstract class BandSet {
                     if(distinctValues == null) {
                         distinctValues = new HashMap();
                     }
-                    Integer value = new Integer(band[i]);
+                    Integer value = Integer.valueOf(band[i]);
                     Integer count = (Integer) distinctValues.get(value);
                     if(count == null) {
                         count = one;
                     } else {
-                        count = new Integer(count.intValue() + 1);
+                        count = Integer.valueOf(count.intValue() + 1);
                     }
                     distinctValues.put(value, count);
                 }
