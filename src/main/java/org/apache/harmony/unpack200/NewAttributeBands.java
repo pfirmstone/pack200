@@ -28,14 +28,20 @@ import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
+import org.apache.harmony.unpack200.bytecode.CPAnyMemberRef;
+import org.apache.harmony.unpack200.bytecode.CPBootstrapMethod;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
 import org.apache.harmony.unpack200.bytecode.CPFieldRef;
 import org.apache.harmony.unpack200.bytecode.CPFloat;
 import org.apache.harmony.unpack200.bytecode.CPInteger;
 import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPInvokeDynamic;
+import org.apache.harmony.unpack200.bytecode.CPLoadableValue;
 import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodHandle;
 import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPMethodType;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
@@ -56,7 +62,7 @@ class NewAttributeBands extends BandSet {
             throws IOException {
         super(segment);
         this.attributeLayout = attributeLayout;
-        parseLayout();
+        parseLayout(); // sets backwardsCallCount
         attributeLayout.setBackwardsCallCount(backwardsCallCount);
     }
 
@@ -703,6 +709,15 @@ class NewAttributeBands extends BandSet {
             } else if (tag.startsWith("KS")) { // String
                 band = parseCPStringReferences(attributeLayout.getName(), in,
                         Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("KM")) { // MethodHandle
+                band = parseCPMethodHandleReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("KT")) { // Methodtype
+                band = parseCPMethodTypeReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("KL")) { // LoadableValue
+                band = parseCPLoadableValueReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
             } else if (tag.startsWith("RC")) { // Class
                 band = parseCPClassReferences(attributeLayout.getName(), in,
                         Codec.UNSIGNED5, count);
@@ -724,6 +739,18 @@ class NewAttributeBands extends BandSet {
             } else if (tag.startsWith("RU")) { // UTF8 String
                 band = parseCPUTF8References(attributeLayout.getName(), in,
                         Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("RY")) { // InvokeDynamic
+                band = parseCPInvokeDynamicReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("RB")) { // BootstrapMethod
+                band = parseCPBootstrapMethodReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("RN")) { // AnyMember
+                band = parseCPAnyMemberReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
+            } else if (tag.startsWith("RQ")) { // All
+                band = parseCPAllReferences(attributeLayout.getName(), in,
+                        Codec.UNSIGNED5, count);
             }
         }
 
@@ -738,6 +765,12 @@ class NewAttributeBands extends BandSet {
                 attribute.addToBody(length, ((CPDouble[]) band)[n]);
             } else if (tag.startsWith("KS")) { // String
                 attribute.addToBody(length, ((CPString[]) band)[n]);
+            } else if (tag.startsWith("KM")) { // MethodHandle
+                attribute.addToBody(length, ((CPMethodHandle[]) band)[n]);
+            } else if (tag.startsWith("KT")) { // MethodType
+                attribute.addToBody(length, ((CPMethodType[]) band)[n]);
+            } else if (tag.startsWith("KL")) { // LoadableValue
+                attribute.addToBody(length, ((CPLoadableValue[]) band)[n]);
             } else if (tag.startsWith("RC")) { // Class
                 attribute.addToBody(length, ((CPClass[]) band)[n]);
             } else if (tag.startsWith("RS")) { // Signature
@@ -753,6 +786,12 @@ class NewAttributeBands extends BandSet {
                         ((CPInterfaceMethodRef[]) band)[n]);
             } else if (tag.startsWith("RU")) { // UTF8 String
                 attribute.addToBody(length, ((CPUTF8[]) band)[n]);
+            } else if (tag.startsWith("RY")) { // InvokeDynamic
+                attribute.addToBody(length, ((CPInvokeDynamic[]) band)[n]);
+            } else if (tag.startsWith("RB")) { // BootstrapMethod
+                attribute.addToBody(length, ((CPBootstrapMethod[]) band)[n]);
+            } else if (tag.startsWith("RN")) { // AnyMember
+                attribute.addToBody(length, ((CPAnyMemberRef[]) band)[n]);
             }
         }
 
@@ -932,7 +971,7 @@ class NewAttributeBands extends BandSet {
                 && layoutElement.indexOf("KS") < 0 //$NON-NLS-1$
                 && layoutElement.indexOf("RS") < 0) { //$NON-NLS-1$
             return Codec.SIGNED5;
-        } else if (layoutElement.indexOf('B') >= 0) {
+        } else if (layoutElement.indexOf('B') >= 0 && layoutElement.indexOf("RB") < 0) {
             return Codec.BYTE1;
         } else {
             return Codec.UNSIGNED5;

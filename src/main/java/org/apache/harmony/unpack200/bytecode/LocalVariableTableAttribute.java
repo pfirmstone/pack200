@@ -114,6 +114,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
      *
      * @see org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute#renumber(java.util.List)
      */
+    @Override
     public void renumber(List byteCodeOffsets) throws Pack200Exception {
         // Remember the unrenumbered start_pcs, since that's used later
         // to calculate end position.

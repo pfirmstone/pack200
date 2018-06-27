@@ -32,22 +32,22 @@ import java.util.jar.JarOutputStream;
  * 
  * @author peter
  */
-public class Pack200InputStream extends JarInputStream {
+public class UnPack200PipedInputStream extends JarInputStream {
     private ExecutorService es;
     
-    public Pack200InputStream(InputStream in) throws IOException {
+    public UnPack200PipedInputStream(InputStream in) throws IOException {
 	this(in, true);
     }
     
-    public Pack200InputStream(InputStream in, boolean verify) throws IOException {
+    public UnPack200PipedInputStream(InputStream in, boolean verify) throws IOException {
 	this(new PipedInputStream(16384), in, verify);
     }
 
-    private Pack200InputStream(PipedInputStream pin, InputStream in, boolean verify) throws IOException{
+    private UnPack200PipedInputStream(PipedInputStream pin, InputStream in, boolean verify) throws IOException{
 	this(pin, verify, in, new PipedOutputStream(pin));
     }
     
-    private Pack200InputStream(PipedInputStream pin, boolean verify, InputStream in, PipedOutputStream out) throws IOException{
+    private UnPack200PipedInputStream(PipedInputStream pin, boolean verify, InputStream in, PipedOutputStream out) throws IOException{
 	this(pin, verify, create(in, out));
     }
     
@@ -64,7 +64,7 @@ public class Pack200InputStream extends JarInputStream {
 	return e;
     }
     
-    private Pack200InputStream(PipedInputStream pin, boolean verify, ExecutorService es) throws IOException {
+    private UnPack200PipedInputStream(PipedInputStream pin, boolean verify, ExecutorService es) throws IOException {
 	super(pin, verify);
 	this.es = es;
     }

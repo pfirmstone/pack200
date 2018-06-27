@@ -508,7 +508,7 @@ public class Segment {
             logStream.close();
         }
     }
-
+    
     /**
      * Writes the segment to an output stream. The output stream should be
      * pre-buffered for efficiency. Also takes the same input stream for

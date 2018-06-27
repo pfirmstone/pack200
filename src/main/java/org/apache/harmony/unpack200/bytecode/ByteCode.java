@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.unpack200.bytecode;
 
+import org.apache.harmony.unpack200.OperandManager;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -92,6 +93,7 @@ public class ByteCode extends ClassFileEntry {
         return getByteCodeForm().getName();
     }
 
+    @Override
     public ClassFileEntry[] getNestedClassFileEntries() {
         return nested;
     }
@@ -109,6 +111,7 @@ public class ByteCode extends ClassFileEntry {
      *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
+    @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         if (nested.length > 0) {
@@ -359,6 +362,7 @@ public class ByteCode extends ClassFileEntry {
      *
      * Note that this should not be called from bytecodes which have a static
      * rewrite; use the table in ByteCodeForm instead to specify those rewrites.
+     * @return 
      */
     public int[] getRewrite() {
         return rewrite;

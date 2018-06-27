@@ -27,14 +27,14 @@ public class SignatureAttribute extends Attribute {
     private int signature_index;
     private final CPUTF8 signature;
 
-    private static CPUTF8 attributeName;
+    private static CPUTF8 ATTRIBUTE_NAME;
 
     public static void setAttributeName(CPUTF8 cpUTF8Value) {
-        attributeName = cpUTF8Value;
+        ATTRIBUTE_NAME = cpUTF8Value;
     }
 
     public SignatureAttribute(CPUTF8 value) {
-        super(attributeName);
+        super(ATTRIBUTE_NAME);
         this.signature = value;
     }
 
@@ -47,10 +47,12 @@ public class SignatureAttribute extends Attribute {
         return 2;
     }
 
+    @Override
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { getAttributeName(), signature };
     }
 
+    @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         signature.resolve(pool);

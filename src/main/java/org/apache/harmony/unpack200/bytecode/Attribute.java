@@ -73,6 +73,7 @@ public abstract class Attribute extends ClassFileEntry {
         return getLength() + 2 + 4;
     }
 
+    @Override
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { getAttributeName() };
     }

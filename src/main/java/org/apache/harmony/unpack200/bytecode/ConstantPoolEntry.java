@@ -24,15 +24,32 @@ import java.io.IOException;
  */
 public abstract class ConstantPoolEntry extends ClassFileEntry {
 
-    public static final byte CP_Class = 7;
-
-    public static final byte CP_Double = 6;
-
-    public static final byte CP_Fieldref = 9;
-
-    public static final byte CP_Float = 4;
-
+    // Note the following are constant pool tags from the class file format
+    // these are different to the definition order used for CONSTANTS in the pack 200 spec. 
+    
+    // Class file tag CONSTANT's
+    public static final byte CP_UTF8 = 1;
     public static final byte CP_Integer = 3;
+    public static final byte CP_Float = 4;
+    public static final byte CP_Long = 5;
+    public static final byte CP_Double = 6;
+    public static final byte CP_String = 8;
+    public static final byte CP_Class = 7;
+    // CP_Signature (none)
+    public static final byte CP_NameAndType = 12;
+    public static final byte CP_Fieldref = 9;
+    public static final byte CP_Methodref = 10;
+    public static final byte CP_InterfaceMethodref = 11;
+    public static final byte CP_MethodHandle = 15;
+    public static final byte CP_MethodType = 16;
+    // CP_BootstrapMethod (none: side table to constant pool)
+    public static final byte CP_InvokeDynamic = 18; // Also called CONSTANT_DynamicCallSite
+    public static final byte CP_Module = 19; // Supplimental to pack200 standard Java 9
+    public static final byte CP_Package = 20; // Supplimental to pack200 standard Java 9
+    public static final byte CP_Dynamic = 17; // Supplimental to pack200 standard Java 11
+    // JDK-8161256 proposed general data in constant pools
+    // public static final byte CP_Group = 13;
+    // public static final byte CP_Bytes = 2;
 
     /*
      * class MemberRef extends ConstantPoolEntry { private int index;
@@ -40,18 +57,6 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
      * writeBody(DataOutputStream dos) throws IOException {
      * dos.writeShort(index); } }
      */
-
-    public static final byte CP_InterfaceMethodref = 11;
-
-    public static final byte CP_Long = 5;
-
-    public static final byte CP_Methodref = 10;
-
-    public static final byte CP_NameAndType = 12;
-
-    public static final byte CP_String = 8;
-
-    public static final byte CP_UTF8 = 1;
 
     byte tag;
 

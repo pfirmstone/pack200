@@ -34,9 +34,9 @@ class SegmentOptions {
 
     private static final int HAVE_CLASS_FLAGS_HI = 1 << 9;
 
-    // private static final int UNUSED_3 = 2^3;
+    private static final int HAVE_CP_EXTRA_COUNTS = 1 << 3;
 
-    private static final int HAVE_CODE_FLAGS_HI = 1 << 10;
+    private static final int HAVE_CODE_FLAGS_HI = 1 << 12; // Was incorrectly listed as 10
 
     private static final int HAVE_CP_NUMBERS = 1 << 1;
 
@@ -53,12 +53,19 @@ class SegmentOptions {
     private static final int HAVE_METHOD_FLAGS_HI = 1 << 11;
 
     private static final int HAVE_SPECIAL_FORMATS = 1 << 0;
+    
+    // Experimental support for Java 9 and 11 constant pool entrys
+    // this is supplimentary to the Pack200 standard
+    private static final int HAVE_CP_SUPPLEMENTARY = 1 << 13; 
+    
+    // JDK-8161256 unsupported, future work.
+//    private static final int HAVE_CP_GENERAL_DATA = 1 << 14;
 
     /**
      * The bit flags that are defined as unused by the specification;
-     * specifically, every bit above bit 13 and bit 3.
+     * specifically, every bit greater than bit 13.
      */
-    private static final int UNUSED = -1 << 13 | 1 << 3;
+    private static final int UNUSED = -1 << 14;
 
     private int options;
 
@@ -68,7 +75,7 @@ class SegmentOptions {
      * @param options
      *            the integer value to use as the flags
      * @throws Pack200Exception
-     *             if an unused bit (bit 3 or bit 13+) is non-zero
+     *             if an unused bit (bit 14+) is non-zero
      */
     public SegmentOptions(int options) throws Pack200Exception {
         if ((options & UNUSED) != 0)
@@ -95,6 +102,10 @@ class SegmentOptions {
     public boolean hasCPNumberCounts() {
         return (options & HAVE_CP_NUMBERS) != 0;
     }
+    
+    public boolean hasCPExtraCounts(){
+	return (options & HAVE_CP_EXTRA_COUNTS) != 0;
+    }
 
     public boolean hasFieldFlagsHi() {
         return (options & HAVE_FIELD_FLAGS_HI) != 0;
@@ -119,6 +130,14 @@ class SegmentOptions {
     public boolean hasSpecialFormats() {
         return (options & HAVE_SPECIAL_FORMATS) != 0;
     }
+    
+    public boolean hasCPSupplementary() {
+	return (options & HAVE_CP_SUPPLEMENTARY) != 0;
+    }
+    
+//    public boolean hasCPGeneralData(){
+//	return (options & HAVE_CP_GENERAL_DATA) != 0;
+//    }
 
     public boolean shouldDeflate() {
         return (options & DEFLATE_HINT) != 0;

@@ -15,10 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.unpack200.bytecode;
-
-import org.apache.harmony.unpack200.Segment;
-import org.apache.harmony.unpack200.SegmentConstantPool;
+package org.apache.harmony.unpack200;
 
 /**
  * This class keeps track of operands used. It provides API to let other classes
@@ -48,6 +45,10 @@ public class OperandManager {
     int[] bcSuperMethod;
     int[] bcInitRef;
     int[] wideByteCodes;
+    
+    // Major version 170 and later
+    private final int[] bcLoadableValueRef;
+    private final int[] bcIndyRef;
 
     int bcCaseCountIndex;
     int bcCaseValueIndex;
@@ -70,6 +71,10 @@ public class OperandManager {
     int bcSuperMethodIndex;
     int bcInitRefIndex;
     int wideByteCodeIndex;
+    
+    // Major version 170 and later
+    private int bcLoadableValueRefIndex;
+    private int bcIndyRefIndex;
 
     Segment segment;
 
@@ -77,13 +82,15 @@ public class OperandManager {
     String superClass;
     String newClass;
 
-    public OperandManager(int[] bcCaseCount, int[] bcCaseValue, int[] bcByte,
-            int[] bcShort, int[] bcLocal, int[] bcLabel, int[] bcIntRef,
-            int[] bcFloatRef, int[] bcLongRef, int[] bcDoubleRef,
-            int[] bcStringRef, int[] bcClassRef, int[] bcFieldRef,
-            int[] bcMethodRef, int[] bcIMethodRef, int[] bcThisField,
-            int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod,
-            int[] bcInitRef, int[] wideByteCodes) {
+    OperandManager(int[] bcCaseCount, int[] bcCaseValue, int[] bcByte,
+	    int[] bcShort, int[] bcLocal, int[] bcLabel, int[] bcIntRef,
+	    int[] bcFloatRef, int[] bcLongRef, int[] bcDoubleRef,
+	    int[] bcStringRef, int[] bcClassRef, int[] bcFieldRef,
+	    int[] bcMethodRef, int[] bcIMethodRef, int[] bcThisField,
+	    int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod,
+	    int[] bcInitRef, int[] wideByteCodes, int[] bcLoadableValueRef,
+	    int[] bcIndyRef) 
+    {
         this.bcCaseCount = bcCaseCount;
         this.bcCaseValue = bcCaseValue;
         this.bcByte = bcByte;
@@ -106,6 +113,8 @@ public class OperandManager {
         this.bcSuperMethod = bcSuperMethod;
         this.bcInitRef = bcInitRef;
         this.wideByteCodes = wideByteCodes;
+	this.bcLoadableValueRef = bcLoadableValueRef;
+	this.bcIndyRef = bcIndyRef;
     }
 
     public int nextCaseCount() {
@@ -190,6 +199,14 @@ public class OperandManager {
 
     public int nextWideByteCode() {
         return wideByteCodes[wideByteCodeIndex++];
+    }
+    
+    public int nextBcLoadableValueRef(){
+	return bcLoadableValueRef[bcLoadableValueRefIndex++];
+    }
+    
+    public int nextBcIndyRef(){
+	return bcIndyRef[bcIndyRefIndex++];
     }
 
     public void setSegment(Segment segment) {

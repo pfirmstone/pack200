@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Constant pool entry for a class
  */
-public class CPClass extends ConstantPoolEntry {
+public class CPClass extends CPLoadableValue {
 
     private int index;
 
@@ -59,6 +59,7 @@ public class CPClass extends ConstantPoolEntry {
         return utf8.equals(other.utf8);
     }
 
+    @Override
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { utf8, };
     }
@@ -77,6 +78,7 @@ public class CPClass extends ConstantPoolEntry {
         return cachedHashCode;
     }
 
+    @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         index = pool.indexOf(utf8);

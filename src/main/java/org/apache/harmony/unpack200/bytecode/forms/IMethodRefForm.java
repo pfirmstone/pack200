@@ -19,7 +19,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * This class implements the byte code form for those bytecodes which have

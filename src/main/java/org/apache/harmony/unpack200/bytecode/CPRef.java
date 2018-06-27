@@ -23,7 +23,7 @@ import java.io.IOException;
  * Abstract superclass for reference constant pool entries, such as a method or
  * field reference.
  */
-public abstract class CPRef extends ConstantPoolEntry {
+public abstract class CPRef extends CPAnyMemberRef {
 
     CPClass className;
     transient int classNameIndex;
@@ -51,6 +51,14 @@ public abstract class CPRef extends ConstantPoolEntry {
         }
     }
 
+    @Override
+    public int hashCode() {
+	int hash = 5;
+	hash = 23 * hash + (this.className != null ? this.className.hashCode() : 0);
+	hash = 23 * hash + (this.nameAndType != null ? this.nameAndType.hashCode() : 0);
+	return hash;
+    }
+
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -69,6 +77,7 @@ public abstract class CPRef extends ConstantPoolEntry {
         return true;
     }
 
+    @Override
     protected ClassFileEntry[] getNestedClassFileEntries() {
         ClassFileEntry[] entries = new ClassFileEntry[2];
         entries[0] = className;
@@ -76,6 +85,7 @@ public abstract class CPRef extends ConstantPoolEntry {
         return entries;
     }
 
+    @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         nameAndTypeIndex = pool.indexOf(nameAndType);

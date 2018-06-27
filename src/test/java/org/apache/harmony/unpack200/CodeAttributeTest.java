@@ -31,7 +31,6 @@ import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
 import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * Tests for CodeAttribute
@@ -94,8 +93,11 @@ public class CodeAttributeTest extends TestCase {
                     new int[] {}, // bcSuperField
                     new int[] { 0 }, // bcThisMethod
                     new int[] {}, // bcSuperMethod
-                    new int[] {} // bcInitRef
-                    , null);
+                    new int[] {}, // bcInitRef
+                    null, 
+		    new int[] {}, // bcLoadableValueRef,
+		    new int[] {} // bcIndyRef InvokeDynamic
+		    );
         }
     }
 

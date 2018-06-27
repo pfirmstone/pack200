@@ -18,7 +18,7 @@ package org.apache.harmony.unpack200.bytecode.forms;
 
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * Some bytecodes (such as (a)ldc, fldc and ildc) have single- byte references

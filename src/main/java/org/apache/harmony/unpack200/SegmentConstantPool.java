@@ -38,20 +38,36 @@ public class SegmentConstantPool {
     }
 
     // define in archive order
-
+    // Names defined in JSR 200 and Pack 200 Standards
     public static final int ALL = 0;
-    public static final int UTF_8 = 1;
-    public static final int CP_INT = 2;
-    public static final int CP_FLOAT = 3;
-    public static final int CP_LONG = 4;
-    public static final int CP_DOUBLE = 5;
-    public static final int CP_STRING = 6;
-    public static final int CP_CLASS = 7;
-    public static final int SIGNATURE = 8; // TODO and more to come --
-    public static final int CP_DESCR = 9;
-    public static final int CP_FIELD = 10;
-    public static final int CP_METHOD = 11;
-    public static final int CP_IMETHOD = 12;
+    public static final int UTF_8 = 1; // CONSTANT_Utf8
+    public static final int CP_INT = 2; // CONSTANT_Integer
+    public static final int CP_FLOAT = 3; // CONSTANT_Float
+    public static final int CP_LONG = 4; // CONSTANT_Long
+    public static final int CP_DOUBLE = 5; // CONSTANT_Double
+    public static final int CP_STRING = 6; // CONSTANT_String
+    public static final int CP_CLASS = 7; // CONSTANT_Class
+    public static final int SIGNATURE = 8; // (none)
+    public static final int CP_DESCR = 9; // CONSTANT_NameAndType
+    public static final int CP_FIELD = 10; // CONSTANT_Fieldref
+    public static final int CP_METHOD = 11; // CONSTANT_Methodref
+    public static final int CP_IMETHOD = 12; // CONSTANT_InterfaceMethodref
+    public static final int CP_METHOD_HANDLE = 13; // CONSTANT_MethodHandle
+    public static final int CP_METHOD_TYPE = 14; // CONSTANT_MethodType
+    public static final int CP_BOOTSTRAP_METHOD = 15; // (none; side table to constant pool)  class filed elements are attribute.bootstrap_methods[i]
+    public static final int CP_INVOKE_DYNAMIC = 16; // CONSTANT_InvokeDynamic
+    // Java 9
+    public static final int CP_MODULE = 17; // CONSTANT_Module
+    public static final int CP_PACKAGE = 18; // CONSTANT_Package
+    // Java 11
+    public static final int CP_DYNAMIC = 19; // CONSTANT_Dynamic
+    // Java 12 JDK-8161256 Informational only, unreleased
+    // CP_GROUP
+    // CP_BYTES
+    
+    // Negative numbers represent groups
+    public static final int CP_LOADABLE_VALUE = -2;
+    public static final int CP_ANY_MEMBER = -3;
 
     protected static final String REGEX_MATCH_ALL = ".*";
     protected static final String INITSTRING = "<init>";
@@ -59,31 +75,50 @@ public class SegmentConstantPool {
 
     public ClassFileEntry getValue(int cp, long value) throws Pack200Exception {
         int index = (int) value;
-        if (index == -1) {
-            return null;
-        } else if (index < 0) {
-            throw new Pack200Exception("Cannot have a negative range");
-        } else if (cp == UTF_8) {
-            return bands.cpUTF8Value(index);
-        } else if (cp == CP_INT) {
-            return bands.cpIntegerValue(index);
-        } else if (cp == CP_FLOAT) {
-            return bands.cpFloatValue(index);
-        } else if (cp == CP_LONG) {
-            return bands.cpLongValue(index);
-        } else if (cp == CP_DOUBLE) {
-            return bands.cpDoubleValue(index);
-        } else if (cp == CP_STRING) {
-            return bands.cpStringValue(index);
-        } else if (cp == CP_CLASS) {
-            return bands.cpClassValue(index);
-        } else if (cp == SIGNATURE) {
-            return bands.cpSignatureValue(index);
-        } else if (cp == CP_DESCR) {
-            return bands.cpNameAndTypeValue(index);
-        } else {
-            throw new Error("Tried to get a value I don't know about: " + cp);
-        }
+	if (index == -1) return null;
+	if (index < -1) throw new Pack200Exception("Cannot have a negative range");
+	switch (cp){
+	    case UTF_8:
+		return bands.cpUTF8Value(index);
+	    case CP_INT:
+		return bands.cpIntegerValue(index);
+	    case CP_FLOAT:
+		return bands.cpFloatValue(index);
+	    case CP_LONG:
+		return bands.cpLongValue(index);
+	    case CP_DOUBLE:
+		return bands.cpDoubleValue(index);
+	    case CP_STRING:
+		return bands.cpStringValue(index);
+	    case CP_CLASS:
+		return bands.cpClassValue(index);
+	    case SIGNATURE:
+		return bands.cpSignatureValue(index);
+	    case CP_DESCR:
+		return bands.cpNameAndTypeValue(index);
+	    case CP_METHOD_HANDLE:
+		return bands.cpMethodHandleValue(index);
+	    case CP_METHOD_TYPE:
+		return bands.cpMethodTypeValue(index);
+	    case CP_BOOTSTRAP_METHOD:
+		return bands.cpBootstrapMethodValue(index);
+	    case CP_INVOKE_DYNAMIC:
+		return bands.cpInvokeDynamicValue(index);
+	    case CP_MODULE:
+		return bands.cpModuleValue(index);
+	    case CP_PACKAGE:
+		return bands.cpPackageValue(index);
+	    case CP_DYNAMIC:
+		return bands.cpDynamicValue(index);
+	    case CP_LOADABLE_VALUE:
+		return bands.cpLoadableValue(index);
+	    case CP_ANY_MEMBER:
+		return bands.cpAnyMemberValue(index);
+	    case ALL:
+		return bands.all(index);
+	    default:
+		throw new Error("Tried to get a value I don't know about: " + cp);
+	}
     }
 
     /**

@@ -20,7 +20,7 @@ package org.apache.harmony.unpack200.bytecode;
  * Abstract superclass for constant pool constant entries such as numbers or
  * Strings
  */
-public abstract class CPConstant extends ConstantPoolEntry {
+public abstract class CPConstant extends CPLoadableValue {
 
     private final Object value;
 

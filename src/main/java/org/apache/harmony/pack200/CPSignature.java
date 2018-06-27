@@ -92,6 +92,7 @@ class CPSignature extends ConstantPoolEntry implements Comparable {
         return classes;
     }
 
+    @Override
     public String toString() {
         return signature;
     }

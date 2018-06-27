@@ -168,7 +168,12 @@ public class ArchiveTest extends TestCase {
         file = File.createTempFile("annotations", ".jar");
         out = new JarOutputStream(new FileOutputStream(file));
         UnPack200Archive archive = new UnPack200Archive(in, out);
-        archive.unpack();
+	try {
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.out);
+	    throw e;
+	}
     }
 
     // Test with an archive packed with the -E0 option

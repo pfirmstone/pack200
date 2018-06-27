@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * <code>segment_header</code> in the pack200 specification.
  */
 class SegmentHeader extends BandSet {
-
+    
     /**
      * Create a new SegmentHeader
      */
@@ -34,8 +34,8 @@ class SegmentHeader extends BandSet {
     }
 
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
-    private static final int archive_minver = 7;
-    private static final int archive_majver = 150;
+    private static final int archive_minver = 1; // previously 7
+    private static final int archive_majver = 170; // previously 150
 
     private int archive_options;
 
@@ -51,12 +51,17 @@ class SegmentHeader extends BandSet {
     private int cp_Field_count;
     private int cp_Method_count;
     private int cp_Imethod_count;
+    // cp_extra_counts
+    private int cp_MethodHandle_count;
+    private int cp_MethodType_count;
+    private int cp_BootstrapMethod_count;
+    private int cp_InvokeDynamic_count;
 
     private int attribute_definition_count;
     private final IntList band_headers = new IntList();
 
     private boolean have_all_code_flags = true; // true by default
-
+    private boolean have_cp_extra_counts;
     private int archive_size_hi;
     private int archive_size_lo;
     private int archive_next_count;
@@ -95,17 +100,22 @@ class SegmentHeader extends BandSet {
     }
 
     private void calculateArchiveOptions() {
-        if (attribute_definition_count > 0 || band_headers.size() > 0) {
+        if (attribute_definition_count > 0 || band_headers.size() > 0) { // have_special_formats
             archive_options |= 1;
         }
         if (cp_Int_count > 0 || cp_Float_count > 0 || cp_Long_count > 0
-                || cp_Double_count > 0) {
+                || cp_Double_count > 0) { // have_cp_numbers
             archive_options |= (1 << 1);
         }
         if (have_all_code_flags) {
             archive_options |= (1 << 2);
         }
-        if (file_count > 0) {
+	if (cp_MethodHandle_count > 0 || cp_MethodType_count > 0 
+	    || cp_BootstrapMethod_count > 0 || cp_InvokeDynamic_count > 0) 
+	{ //have_cp_extra_counts
+	    archive_options |= (1 << 3);
+	}
+        if (file_count > 0) { // have_file_headers
             archive_options |= (1 << 4);
         }
         if (deflate_hint) {
@@ -258,6 +268,12 @@ class SegmentHeader extends BandSet {
         out.write(encodeScalar(cp_Field_count, Codec.UNSIGNED5));
         out.write(encodeScalar(cp_Method_count, Codec.UNSIGNED5));
         out.write(encodeScalar(cp_Imethod_count, Codec.UNSIGNED5));
+	if ((archive_options & (1 << 3)) != 0 ) {
+	    out.write(encodeScalar(cp_MethodHandle_count, Codec.UNSIGNED5));
+            out.write(encodeScalar(cp_MethodType_count, Codec.UNSIGNED5));
+            out.write(encodeScalar(cp_BootstrapMethod_count, Codec.UNSIGNED5));
+            out.write(encodeScalar(cp_InvokeDynamic_count, Codec.UNSIGNED5));
+	}
     }
 
     private void writeClassCounts(OutputStream out) throws IOException,

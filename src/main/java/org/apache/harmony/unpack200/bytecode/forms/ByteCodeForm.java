@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 public abstract class ByteCodeForm {
 

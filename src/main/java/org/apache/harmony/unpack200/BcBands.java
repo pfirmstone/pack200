@@ -32,7 +32,6 @@ import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
 import org.apache.harmony.unpack200.bytecode.ExceptionTableEntry;
 import org.apache.harmony.unpack200.bytecode.NewAttribute;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * Bytecode bands
@@ -71,6 +70,10 @@ class BcBands extends BandSet {
     private int[][] bcEscByte;
 
     private List wideByteCodes;
+    
+    // Major version 170 and later.
+    private int[] bcLoadableValueRef;
+    private int[] bcIndyRef;
 
     /**
      * @param segment
@@ -112,6 +115,9 @@ class BcBands extends BandSet {
         int bcInitRefCount = 0;
         int bcEscCount = 0;
         int bcEscRefCount = 0;
+	// Major version 170 and later
+	int bcLoadableValueRefCount = 0;
+	int bcInvokeDynamicCount = 0;
 
         AttributeLayout abstractModifier = attributeDefinitionMap
                 .getAttributeLayout(AttributeLayout.ACC_ABSTRACT,
@@ -152,8 +158,8 @@ class BcBands extends BandSet {
                         case 17: // sipush
                             bcShortCount++;
                             break;
-                        case 18: // (a)ldc
-                        case 19: // aldc_w
+                        case 18: // (a)ldc renamed to sldc
+                        case 19: // aldc_w renamed to sldc_w
                             bcStringRefCount++;
                             break;
                         case 234: // ildc
@@ -169,6 +175,7 @@ class BcBands extends BandSet {
                             // fallthrough intended
                         case 233: // cldc
                         case 236: // cldc_w
+			
                         case 187: // new
                         case 189: // anewarray
                         case 192: // checkcast
@@ -214,6 +221,9 @@ class BcBands extends BandSet {
                         case 185: // invokeinterface
                             bcIMethodRefCount++;
                             break;
+			case 186: // invokedynamic
+			    bcInvokeDynamicCount++;
+			    break;
                         case 202: // getstatic_this
                         case 203: // putstatic_this
                         case 204: // getfield_this
@@ -279,6 +289,10 @@ class BcBands extends BandSet {
                         case 232: // invokespecial_new_init
                             bcInitRefCount++;
                             break;
+			case 240: // qldc
+			case 241: // qldc_w
+			    bcLoadableValueRefCount++;
+			    break;
                         case 253: // ref_escape
                             bcEscRefCount++;
                             break;
@@ -355,6 +369,12 @@ class BcBands extends BandSet {
                 bcEscRefCount);
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
+	
+	// When major version is 170 or higher.
+	bcLoadableValueRef =
+		 decodeBandInt("bc_Loadablevalueref", in, Codec.DELTA5,
+			 bcLoadableValueRefCount);
+	bcIndyRef = decodeBandInt("bc_indyref", in, Codec.DELTA5, bcInvokeDynamicCount);
     }
 
     public void unpack() throws Pack200Exception {
@@ -389,7 +409,7 @@ class BcBands extends BandSet {
                 bcFloatRef, bcLongRef, bcDoubleRef, bcStringRef, bcClassRef,
                 bcFieldRef, bcMethodRef, bcIMethodRef, bcThisField,
                 bcSuperField, bcThisMethod, bcSuperMethod, bcInitRef,
-                wideByteCodeArray);
+                wideByteCodeArray, bcLoadableValueRef, bcIndyRef);
         operandManager.setSegment(segment);
 
         int i = 0;
@@ -502,88 +522,102 @@ class BcBands extends BandSet {
     private boolean endsWithStore(int codePacked) {
         return (codePacked >= 54 && codePacked <= 58);
     }
+    
+    // The following methods are for testing
 
-    public byte[][][] getMethodByteCodePacked() {
+    byte[][][] getMethodByteCodePacked() {
         return methodByteCodePacked;
     }
 
-    public int[] getBcCaseCount() {
+    int[] getBcCaseCount() {
         return bcCaseCount;
     }
 
-    public int[] getBcCaseValue() {
+    int[] getBcCaseValue() {
         return bcCaseValue;
     }
 
-    public int[] getBcByte() {
+    int[] getBcByte() {
         return bcByte;
     }
 
-    public int[] getBcClassRef() {
+    int[] getBcClassRef() {
         return bcClassRef;
     }
 
-    public int[] getBcDoubleRef() {
+    int[] getBcDoubleRef() {
         return bcDoubleRef;
     }
 
-    public int[] getBcFieldRef() {
+    int[] getBcFieldRef() {
         return bcFieldRef;
     }
 
-    public int[] getBcFloatRef() {
+    int[] getBcFloatRef() {
         return bcFloatRef;
     }
 
-    public int[] getBcIMethodRef() {
+    int[] getBcIMethodRef() {
         return bcIMethodRef;
     }
 
-    public int[] getBcInitRef() {
+    int[] getBcInitRef() {
         return bcInitRef;
     }
 
-    public int[] getBcIntRef() {
+    int[] getBcIntRef() {
         return bcIntRef;
     }
 
-    public int[] getBcLabel() {
+    int[] getBcLabel() {
         return bcLabel;
     }
 
-    public int[] getBcLocal() {
+    int[] getBcLocal() {
         return bcLocal;
     }
 
-    public int[] getBcLongRef() {
+    int[] getBcLongRef() {
         return bcLongRef;
     }
 
-    public int[] getBcMethodRef() {
+    int[] getBcMethodRef() {
         return bcMethodRef;
     }
 
-    public int[] getBcShort() {
+    int[] getBcShort() {
         return bcShort;
     }
 
-    public int[] getBcStringRef() {
+    int[] getBcStringRef() {
         return bcStringRef;
     }
 
-    public int[] getBcSuperField() {
+    int[] getBcSuperField() {
         return bcSuperField;
     }
 
-    public int[] getBcSuperMethod() {
+    int[] getBcSuperMethod() {
         return bcSuperMethod;
     }
 
-    public int[] getBcThisField() {
+    int[] getBcThisField() {
         return bcThisField;
     }
 
-    public int[] getBcThisMethod() {
+    int[] getBcThisMethod() {
         return bcThisMethod;
+    }
+    
+    int[] getBcLoadableValueRef(){
+	return bcLoadableValueRef;
+    }
+    
+    int[] getBcIndyRef(){
+	return bcIndyRef;
+    }
+    
+    int[] getBcEscRef() { //bc_escref (cp_ALL)
+	return bcEscRef;
     }
 }

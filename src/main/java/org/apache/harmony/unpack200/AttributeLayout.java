@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.unpack200;
 
+import java.util.regex.Matcher;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
@@ -43,8 +44,8 @@ class AttributeLayout implements IMatcher {
     public static final String ACC_VOLATILE = "ACC_VOLATILE"; //$NON-NLS-1$
     public static final String ATTRIBUTE_ANNOTATION_DEFAULT = "AnnotationDefault"; //$NON-NLS-1$
     public static final String ATTRIBUTE_CLASS_FILE_VERSION = "class-file version"; //$NON-NLS-1$
-    public static final String ATTRIBUTE_CODE = "Code"; //$NON-NLS-1$
-    public static final String ATTRIBUTE_CONSTANT_VALUE = "ConstantValue"; //$NON-NLS-1$
+    public static final String ATTRIBUTE_CODE = "Code"; //$NON-NLS-1$ // critical to correct interpretation of class file
+    public static final String ATTRIBUTE_CONSTANT_VALUE = "ConstantValue"; //$NON-NLS-1$ // critical to correct interpretation of class file
     public static final String ATTRIBUTE_DEPRECATED = "Deprecated"; //$NON-NLS-1$
     public static final String ATTRIBUTE_ENCLOSING_METHOD = "EnclosingMethod"; //$NON-NLS-1$
     public static final String ATTRIBUTE_EXCEPTIONS = "Exceptions"; //$NON-NLS-1$
@@ -58,38 +59,78 @@ class AttributeLayout implements IMatcher {
     public static final String ATTRIBUTE_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS = "RuntimeVisibleParameterAnnotations"; //$NON-NLS-1$
     public static final String ATTRIBUTE_SIGNATURE = "Signature"; //$NON-NLS-1$
     public static final String ATTRIBUTE_SOURCE_FILE = "SourceFile"; //$NON-NLS-1$
+    //Java 6 Attributes
+    public static final String ATTRIBUTE_STACK_MAP_TABLE = "StackMapTable"; // critical to correct interpretation of class file
+    //Java 7 Attributes
+    public static final String ATTRIBUTE_BOOTSTRAP_METHODS = "BootstrapMethods"; // critical to correct interpretation of class file
+    //Java 8 Attributes
+    public static final String ATTRIBUTE_RUNTIME_VISIBLE_TYPE_ANNOTATIONS = "RuntimeVisibleTypeAnnotations";
+    public static final String ATTRIBUTE_RUNTIME_INVISIBLE_TYPE_ANNOTATIONS = "RuntimeInvisibleTypeAnnotations";
+    public static final String ATTRIBUTE_METHOD_PARAMETERS = "MethodParameters";
+    //Java 9 Attributes
+    public static final String ATTRIBUTE_MODULE = "Module";
+    public static final String ATTRIBUTE_MODULE_PACKAGES = "ModulePackages";
+    public static final String ATTRIBUTE_MODULE_MAIN_CLASS = "ModuleMainClass";
+    
     public static final int CONTEXT_CLASS = 0;
     public static final int CONTEXT_CODE = 3;
     public static final int CONTEXT_FIELD = 1;
     public static final int CONTEXT_METHOD = 2;
     public static final String[] contextNames = { "Class", "Field", "Method", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "Code", }; //$NON-NLS-1$
-
+    
     private static ClassFileEntry getValue(String layout, long value,
             SegmentConstantPool pool) throws Pack200Exception {
         if (layout.startsWith("R")) { //$NON-NLS-1$
             // references
-            if (layout.indexOf('N') != -1)
-                value--;
-            if (layout.startsWith("RU")) { //$NON-NLS-1$
-                return pool.getValue(SegmentConstantPool.UTF_8, value);
-            } else if (layout.startsWith("RS")) { //$NON-NLS-1$
-                return pool.getValue(SegmentConstantPool.SIGNATURE, value);
-            }
+            if (layout.indexOf('N') != -1) value--; // contains N
+	    char type = layout.charAt(1);
+	    switch (type) {
+		case 'U': //$NON-NLS-1$
+		    return pool.getValue(SegmentConstantPool.UTF_8, value);
+		case 'S': //$NON-NLS-1$
+		    return pool.getValue(SegmentConstantPool.SIGNATURE, value);
+		case 'C':
+		    return pool.getValue(SegmentConstantPool.CP_CLASS, value);
+		case 'D':
+		    return pool.getValue(SegmentConstantPool.CP_DESCR, value);
+		case 'F':
+		    return pool.getValue(SegmentConstantPool.CP_FIELD, value);
+		case 'M':
+		    return pool.getValue(SegmentConstantPool.CP_METHOD, value);
+		case 'I':
+		    return pool.getValue(SegmentConstantPool.CP_IMETHOD, value);
+		case 'Y':
+		    return pool.getValue(SegmentConstantPool.CP_INVOKE_DYNAMIC, value);
+		case 'B':
+		    return pool.getValue(SegmentConstantPool.CP_BOOTSTRAP_METHOD, value);
+		case 'Q':
+		    return pool.getValue(SegmentConstantPool.ALL, value);
+		default:
+		    throw new Pack200Exception("Unknown layout encoding: " + layout);
+	    }
         } else if (layout.startsWith("K")) { //$NON-NLS-1$
             char type = layout.charAt(1);
             switch (type) {
-            case 'S': // String
-                return pool.getValue(SegmentConstantPool.CP_STRING, value);
-            case 'I': // Int (or byte or short)
-            case 'C': // Char
-                return pool.getValue(SegmentConstantPool.CP_INT, value);
-            case 'F': // Float
-                return pool.getValue(SegmentConstantPool.CP_FLOAT, value);
-            case 'J': // Long
-                return pool.getValue(SegmentConstantPool.CP_LONG, value);
-            case 'D': // Double
-                return pool.getValue(SegmentConstantPool.CP_DOUBLE, value);
+		case 'S': // String
+		    return pool.getValue(SegmentConstantPool.CP_STRING, value);
+		case 'I': // Int (or byte or short)
+		case 'C': // Char
+		    return pool.getValue(SegmentConstantPool.CP_INT, value);
+		case 'F': // Float
+		    return pool.getValue(SegmentConstantPool.CP_FLOAT, value);
+		case 'J': // Long
+		    return pool.getValue(SegmentConstantPool.CP_LONG, value);
+		case 'D': // Double
+		    return pool.getValue(SegmentConstantPool.CP_DOUBLE, value);
+		case 'M': // MethodHandle
+		    return pool.getValue(SegmentConstantPool.CP_METHOD_HANDLE, value);
+		case 'T': // MethodType
+		    return pool.getValue(SegmentConstantPool.CP_METHOD_TYPE, value);
+		case 'L': // Loadable value group
+		    return pool.getValue(SegmentConstantPool.CP_LOADABLE_VALUE, value);
+		default:
+		    throw new Pack200Exception("Unknown layout encoding: " + layout);
             }
         }
         throw new Pack200Exception("Unknown layout encoding: " + layout);
@@ -124,25 +165,43 @@ class AttributeLayout implements IMatcher {
 
     public AttributeLayout(String name, int context, String layout, int index,
             boolean isDefault) throws Pack200Exception {
-        super();
-        this.index = index;
-        this.context = context;
-        if (index >= 0) {
-            this.mask = 1L << index;
-        } else {
-            this.mask = 0;
-        }
-        if (context != CONTEXT_CLASS && context != CONTEXT_CODE
-                && context != CONTEXT_FIELD && context != CONTEXT_METHOD)
-            throw new Pack200Exception("Attribute context out of range: "
-                    + context);
-        if (layout == null) // || layout.length() == 0)
-            throw new Pack200Exception("Cannot have a null layout");
-        if (name == null || name.length() == 0)
-            throw new Pack200Exception("Cannot have an unnamed layout");
-        this.name = name;
-        this.layout = layout;
-        this.isDefault = isDefault;
+	super();
+	this.index = index;
+	this.context = context;
+	if (index >= 0) {
+	    this.mask = 1L << index;
+	} else {
+	    this.mask = 0;
+	}
+	if (context != CONTEXT_CLASS && context != CONTEXT_CODE && context != CONTEXT_FIELD && context != CONTEXT_METHOD) {
+	    throw new Pack200Exception("Attribute context out of range: " + context);
+	}
+	if (layout == null) {
+	    throw new Pack200Exception("Cannot have a null layout");
+	}
+	if (name == null || name.length() == 0) {
+	    throw new Pack200Exception("Cannot have an unnamed layout");
+	}
+	this.name = name;
+	this.layout = layout;
+	this.isDefault = isDefault;
+	char [] lay = layout.toCharArray();
+	int backCallCount = 0;
+	for (int i = 0, l = lay.length; i < l; i++){
+	    if (i > 0 && 
+		(lay[i] == 48 /*0*/ || 
+		(lay[i-1] == '-' && lay[i] >= 48 /*0*/ && lay[i] <= 57 /*9*/)))
+	    {
+		for ( int b = i - 1; b > 0; b--){
+		    if (lay[b] == 93 /*]*/ || lay[b] <=90 /*Z*/ && lay[b] >= 65 /*A*/)  break;
+		    if (lay[b] == 91 /*[*/){
+			backCallCount ++;
+			break;
+		    }
+		}
+	    }
+	}
+	this.backwardsCallCount = backCallCount;
     }
 
     public Codec getCodec() {
@@ -153,7 +212,7 @@ class AttributeLayout implements IMatcher {
         } else if (layout.indexOf('S') >= 0 && layout.indexOf("KS") < 0 //$NON-NLS-1$
                 && layout.indexOf("RS") < 0) { //$NON-NLS-1$
             return Codec.SIGNED5;
-        } else if (layout.indexOf('B') >= 0) {
+        } else if (layout.indexOf('B') >= 0 && layout.indexOf("RB") < 0) { //RB governs indexes to bootstrap method specifiers
             return Codec.BYTE1;
         } else {
             return Codec.UNSIGNED5;
@@ -227,11 +286,7 @@ class AttributeLayout implements IMatcher {
     }
 
     public int numBackwardsCallables() {
-        if (layout == "*") {
-            return 1;
-        } else {
-            return backwardsCallCount;
-        }
+	return backwardsCallCount;
     }
 
     public boolean isDefaultLayout() {

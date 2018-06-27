@@ -31,6 +31,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
+import java.util.jar.Pack200;
 
 
 import org.apache.harmony.pack200.Pack200Archive;
@@ -243,9 +244,11 @@ public class ArchiveTest {
         file = File.createTempFile("annotations", ".pack");
         file.deleteOnExit();
         out = new FileOutputStream(file);
-        PackingOptions options = new PackingOptions();
-        options.setGzip(false);
-        new Pack200Archive(in, out, options).pack();
+//        PackingOptions options = new PackingOptions();
+//        options.setGzip(false);
+//        new Pack200Archive(in, out, options).pack();
+	Pack200.Packer packer = Pack200.newPacker();
+	packer.pack(in, out);
         in.close();
         out.close();
 
@@ -256,7 +259,12 @@ public class ArchiveTest {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.UnPack200Archive archive = new org.apache.harmony.unpack200.UnPack200Archive(
                 in2, out2);
-        archive.unpack();
+	try{
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.out);
+	    throw e;
+	}
         JarFile jarFile = new JarFile(file2);
         JarFile jarFile2 = new JarFile(new File(Pack200Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/annotationsUnpacked.jar").toURI()));
@@ -286,7 +294,12 @@ public class ArchiveTest {
         JarOutputStream out2 = new JarOutputStream(new FileOutputStream(file2));
         org.apache.harmony.unpack200.UnPack200Archive archive = new org.apache.harmony.unpack200.UnPack200Archive(
                 in2, out2);
-        archive.unpack();
+	try{
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.out);
+	    throw e;
+	}
 
         // TODO: This isn't quite right - to fix
         JarFile jarFile = new JarFile(file2);
@@ -306,7 +319,12 @@ public class ArchiveTest {
         JarOutputStream jout = new JarOutputStream(new FileOutputStream(file));
         org.apache.harmony.unpack200.UnPack200Archive archive = new org.apache.harmony.unpack200.UnPack200Archive(
                 i, jout);
-        archive.unpack();
+	try {
+	    archive.unpack();
+	} catch (RuntimeException e){
+	    e.printStackTrace(System.out);
+	    throw e;
+	}
         JarFile jarFile = new JarFile(file);
         JarFile jarFile2 = new JarFile(new File(Pack200Archive.class.getResource(
                 "/org/apache/harmony/pack200/tests/annotationsRI.jar")

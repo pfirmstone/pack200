@@ -125,6 +125,9 @@ public class NewAttributeBandsTest extends TestCase {
         tryReference("KDH");
         tryReference("KSH");
         tryReference("KQH");
+        tryReference("KMH");// MethodHandle
+        tryReference("KTH");// MethodType
+        tryReference("KLH");// LoadableValue
         tryReference("RCH");
         tryReference("RSH");
         tryReference("RDH");
@@ -135,6 +138,9 @@ public class NewAttributeBandsTest extends TestCase {
         tryReference("RQH");
         tryReference("RQNH");
         tryReference("RQNI");
+	tryReference("RYH"); // InvokeDynamic
+	tryReference("RBH"); // BootstrapMethod
+	tryReference("RNH"); // AnyMember
     }
 
     private void tryReference(String layoutStr) throws IOException {

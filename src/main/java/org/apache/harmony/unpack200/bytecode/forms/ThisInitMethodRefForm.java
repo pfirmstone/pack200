@@ -16,7 +16,7 @@
  */
 package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * This class is used to determine which init method should be called, based on

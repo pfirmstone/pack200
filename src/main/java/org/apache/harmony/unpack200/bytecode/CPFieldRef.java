@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Field reference constant pool entry.
  */
-public class CPFieldRef extends ConstantPoolEntry {
+public class CPFieldRef extends CPAnyMemberRef {
 
     CPClass className;
     transient int classNameIndex;
@@ -35,10 +35,12 @@ public class CPFieldRef extends ConstantPoolEntry {
         this.nameAndType = descriptor;
     }
 
+    @Override
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { className, nameAndType };
     }
 
+    @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         nameAndTypeIndex = pool.indexOf(nameAndType);

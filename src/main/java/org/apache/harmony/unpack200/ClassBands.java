@@ -19,6 +19,7 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -35,8 +36,28 @@ import org.apache.harmony.unpack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.unpack200.bytecode.LineNumberTableAttribute;
 import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
 import org.apache.harmony.unpack200.bytecode.LocalVariableTypeTableAttribute;
+import org.apache.harmony.unpack200.bytecode.MethodParametersAttribute;
 import org.apache.harmony.unpack200.bytecode.SignatureAttribute;
 import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.AppendFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.ChopFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.DoubleVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.FloatVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.FullFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.IntegerVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.LongVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.NullVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.ObjectVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.SameFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.SameFrameExtended;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.SameLocals1StackItemFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.SameLocals1StackItemFrameExtended;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.StackMapFrame;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.TopVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.UninitializedThisVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.UnitializedVariableInfo;
+import org.apache.harmony.unpack200.bytecode.StackMapTableAttribute.VerificationTypeInfo;
 
 /**
  * Class Bands
@@ -337,7 +358,7 @@ class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_METHOD);
         int count = SegmentUtils.countMatches(methodFlags,
                 methodExceptionsLayout);
-        int[] numExceptions = decodeBandInt("method_Exceptions_n", in,
+        int[] numExceptions = decodeBandInt("method_Exceptions_N", in,
                 Codec.UNSIGNED5, count);
         int[][] methodExceptionsRS = decodeBandInt("method_Exceptions_RC",
                 in, Codec.UNSIGNED5, numExceptions);
@@ -350,7 +371,7 @@ class ClassBands extends BandSet {
                 methodSignatureLayout);
         int[] methodSignatureRS = decodeBandInt("method_signature_RS", in,
                 Codec.UNSIGNED5, count1);
-
+	
         AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_DEPRECATED,
                 AttributeLayout.CONTEXT_METHOD);
@@ -397,7 +418,61 @@ class ClassBands extends BandSet {
 
         // Parse method metadata bands
         int backwardsCallsUsed = parseMethodMetadataBands(in, methodAttrCalls);
+	
+	// Parse MethodParameters
+	AttributeLayout methodParametersLayout = 
+		attrMap.getAttributeLayout(
+		    AttributeLayout.ATTRIBUTE_METHOD_PARAMETERS,
+		    AttributeLayout.CONTEXT_METHOD
+		);
+	if (methodParametersLayout != null){
+	    int count2 = SegmentUtils.countMatches(methodFlags,
+		    methodParametersLayout);
+	    if (count2 > 0){
+		int[] methodMethodParametersNB = // 
+			decodeBandInt("method_MethodParameters_NB", in, Codec.BYTE1, count2);
+		count2 = 0;
+		for (int i =0, l = methodMethodParametersNB.length; i < l; i++){
+		    count2 += methodMethodParametersNB[i];
+		}
+		int[] methodMethodParametersNameRUN = // NULL or Cp_Utf8 u2
+			decodeBandInt("method_MethodParameters_name_RUN", in, Codec.UNSIGNED5, count2);
+		int[] methodMethodParametersFlagFH =  // access flags u2
+			decodeBandInt("method_MethodParameters_flag_FH", in, Codec.UNSIGNED5, count2);
 
+		int methodParameterNBIndex = 0;
+		for (int i = 0; i < methodAttributes.length; i++) {
+		    for (int j = 0; j < methodAttributes[i].length; j++) {
+			long flag = methodFlags[i][j];
+			if (methodExceptionsLayout.matches(flag)) {
+			    int n = methodMethodParametersNB[methodParameterNBIndex];
+			    CPUTF8 [] method_MethodParameters_name_RUN =
+				    new CPUTF8[n];
+			    int [] method_MethodParameters_flag_FH =
+				    new int [n];
+			    for (int k = 0; k < n; k++) {
+				method_MethodParameters_name_RUN[k] = 
+				    cpBands.cpUTF8Value(
+					methodMethodParametersNameRUN[k + methodParameterNBIndex]
+				    );
+				method_MethodParameters_flag_FH[k] = 
+					methodMethodParametersFlagFH[k + methodParameterNBIndex];
+			    }
+			    methodAttributes[i][j].add(
+				new MethodParametersAttribute(
+				    n,
+				    method_MethodParameters_name_RUN,
+				    method_MethodParameters_flag_FH
+				)
+			    );
+			    methodParameterNBIndex++;
+			}
+
+		    }
+		}
+	    }
+	}
+	
         // Parse non-predefined attribute bands
         int backwardsCallIndex = backwardsCallsUsed;
         int limit = options.hasMethodFlagsHi() ? 62 : 31;
@@ -758,25 +833,23 @@ class ClassBands extends BandSet {
         codeHandlerCount = new int[codeCount];
         int special = 0;
         for (int i = 0; i < codeCount; i++) {
-            int header = 0xff & codeHeaders[i];
-            if (header < 0) {
-                throw new IllegalStateException("Shouldn't get here");
-            } else if (header == 0) {
+            int codeHeader = 0xff & codeHeaders[i];
+	    if (codeHeader == 0) {
                 codeMaxStack[i] = codeMaxStackSpecials[special];
                 codeMaxNALocals[i] = codeMaxNALocalsSpecials[special];
                 codeHandlerCount[i] = codeHandlerCountSpecials[special];
                 special++;
-            } else if (header <= 144) {
-                codeMaxStack[i] = (header - 1) % 12;
-                codeMaxNALocals[i] = (header - 1) / 12;
+            } else if (codeHeader <= 144) {
+                codeMaxStack[i] = (codeHeader - 1) % 12;
+                codeMaxNALocals[i] = (codeHeader - 1) / 12;
                 codeHandlerCount[i] = 0;
-            } else if (header <= 208) {
-                codeMaxStack[i] = (header - 145) % 8;
-                codeMaxNALocals[i] = (header - 145) / 8;
+            } else if (codeHeader <= 208) {
+                codeMaxStack[i] = (codeHeader - 145) % 8;
+                codeMaxNALocals[i] = (codeHeader - 145) / 8;
                 codeHandlerCount[i] = 1;
-            } else if (header <= 255) {
-                codeMaxStack[i] = (header - 209) % 7;
-                codeMaxNALocals[i] = (header - 209) / 7;
+            } else if (codeHeader <= 255) {
+                codeMaxStack[i] = (codeHeader - 209) % 7;
+                codeMaxNALocals[i] = (codeHeader - 209) / 7;
                 codeHandlerCount[i] = 2;
             } else {
                 throw new IllegalStateException("Shouldn't get here either");
@@ -799,6 +872,10 @@ class ClassBands extends BandSet {
         }
         parseCodeAttrBands(in, codeFlagsCount);
     }
+    
+//    private static VerificationTypeInfo getVarificationTypeInfo(int tag){
+//	
+//    }
 
     private void parseCodeAttrBands(InputStream in, int codeFlagsCount)
             throws IOException, Pack200Exception {
@@ -821,6 +898,285 @@ class ClassBands extends BandSet {
         }
         int[] codeAttrCalls = decodeBandInt("code_attr_calls", in,
                 Codec.UNSIGNED5, callCount);
+	
+	AttributeLayout stackMapTableLayout = attrMap.getAttributeLayout(
+		AttributeLayout.ATTRIBUTE_STACK_MAP_TABLE, 
+		AttributeLayout.CONTEXT_CODE);
+	
+	if (stackMapTableLayout != null){  // version 150.7 doesn't support StackMapTable
+	    // TODO: StackMapTable
+	    int stackMapTableCount = SegmentUtils.countMatches(codeFlags, stackMapTableLayout);
+	    int[] stackMapTableN = decodeBandInt("code_StackMapTable_N", in,
+		    Codec.UNSIGNED5, stackMapTableCount);
+	    // frame type
+	    int[][] stackMapTableFrameT = decodeBandInt("code_StackMaptTable_frame_T", in,
+		    Codec.BYTE1, stackMapTableN);
+	    int fullFrameCount = 0;
+	    int offsetDeltaCount = 0;
+	    int verification_type_info_Length = 0;
+	    for (int i = 0, l = stackMapTableFrameT.length; i < l; i ++){
+		for (int k = 0, j = stackMapTableFrameT[i].length; k<j; k++){
+		    int frame_type = stackMapTableFrameT[i][k];
+		    if (frame_type == 255) fullFrameCount ++;  // Full frame
+		    if (frame_type >= 247 && frame_type <= 255) offsetDeltaCount ++; // has field offset_delta
+		    if (frame_type >=64 && frame_type <= 127) verification_type_info_Length ++; // has field verification_type_info stack[1]
+		    if (frame_type == 247) verification_type_info_Length ++; // has field verification_type_info stack[1]
+		    if (frame_type >= 252 && frame_type <= 254) verification_type_info_Length += (frame_type - 251); // has field verification_type_info locals[frame_type - 251]
+		}
+	    }
+	    int[] stackMapTable_local_N = decodeBandInt("code_StackMapTable_local_N", in, 
+		    Codec.UNSIGNED5, fullFrameCount);
+	    // verification_type_info locals[number_of_locals]
+	    for (int i = 0, length = stackMapTable_local_N.length; i < length; i++){
+		verification_type_info_Length += stackMapTable_local_N[i];
+	    }
+	    int[] stackMapTable_stack_N = decodeBandInt("code_StackMapTable_stack_N", in, 
+		    Codec.UNSIGNED5, fullFrameCount);
+	    // verification_type_info stack[number_of_stack_items]
+	    for (int i = 0, length = stackMapTable_stack_N.length; i < length; i++){
+		verification_type_info_Length += stackMapTable_stack_N[i];
+	    }
+	    int[] stackMapTable_offset = decodeBandInt("code_StackMapTable_offset", in, 
+		    Codec.UNSIGNED5, offsetDeltaCount);
+	    int[] stackMapTable_T = decodeBandInt("codeStackMapTable_T", in,
+		    Codec.BYTE1, verification_type_info_Length);
+	    int stackMapTable_RC_Count = 0;
+	    int stackMapTable_P_Count = 0;
+	    for(int i = 0, l = stackMapTable_T.length; i < l; i++){
+		if (stackMapTable_T[i] == 7) stackMapTable_RC_Count++; 
+		else if (stackMapTable_T[i] == 8) stackMapTable_P_Count++;
+	    }
+	    int[] stackMapTable_RC = decodeBandInt("code_StackMapTable_RC", in,
+		    Codec.UNSIGNED5, stackMapTable_RC_Count);
+	    int[] stackMapTable_P = decodeBandInt("code_StackMapTable_P", in,
+		    Codec.UNSIGNED5, stackMapTable_P_Count);
+	    StackMapTableAttribute [] entries = new StackMapTableAttribute[stackMapTableCount];
+	    int fullFrameIndex = 0;
+	    int offsetDeltaIndex = 0;
+	    int verificationTypeInfoIndex = 0;
+	    int stackMapTableRCIndex = 0; // for Object_variable_info.cpool_index's
+	    int stackMapTablePIndex = 0; // for Unitialized_variable_info.offset's
+	    for (int i = 0, l = stackMapTableFrameT.length; i < l; i ++){
+		int count = stackMapTableFrameT[i].length;
+		StackMapFrame [] frames = new StackMapFrame[count];
+		for (int k = 0; k < count; k++ ){
+		    int frame_type = stackMapTableFrameT[i][k];
+		    if (frame_type >= 0 && frame_type <= 63) { // same_frame
+			frames[k] = new SameFrame(frame_type);
+		    } else if (frame_type >= 64 && frame_type <= 127) {// same_locals1_stack_item_frame
+			VerificationTypeInfo [] stack = new VerificationTypeInfo [1];
+			int verification_type = stackMapTable_T[verificationTypeInfoIndex++];
+			switch (verification_type){
+			    case (0):
+				stack[0] = new TopVariableInfo();
+				break;
+			    case (1):
+				stack[0] = new IntegerVariableInfo();
+				break;
+			    case (2):
+				stack[0] = new FloatVariableInfo();
+				break;
+			    case (5):
+				stack[0] = new NullVariableInfo();
+				break;
+			    case (6):
+				stack[0] = new UninitializedThisVariableInfo();
+				break;
+			    case (7):
+				int cpool_index = stackMapTable_RC[stackMapTableRCIndex++];
+				stack[0] = new ObjectVariableInfo(segment.getCpBands().cpClassValue(cpool_index));
+				break;
+			    case (8):
+				int offset = stackMapTable_P[stackMapTablePIndex++];
+				stack[0] = new UnitializedVariableInfo(offset);
+				break;
+			    case (4):
+				stack[0] = new LongVariableInfo();
+				break;
+			    case (3):
+				stack[0] = new DoubleVariableInfo();
+				break;
+			    default:
+				throw new Pack200Exception("Unknown verification type" + verification_type);
+			}
+			frames[k] = new SameLocals1StackItemFrame(frame_type, stack);
+		    } else if (frame_type == 247) { // same_locals_1_stack_item_frame_extended
+			int offset_delta = stackMapTable_offset[offsetDeltaIndex++];
+			VerificationTypeInfo [] stack = new VerificationTypeInfo [1];
+			int verification_type = stackMapTable_T[verificationTypeInfoIndex++];
+			switch (verification_type){
+			    case (0):
+				stack[0] = new TopVariableInfo();
+				break;
+			    case (1):
+				stack[0] = new IntegerVariableInfo();
+				break;
+			    case (2):
+				stack[0] = new FloatVariableInfo();
+				break;
+			    case (5):
+				stack[0] = new NullVariableInfo();
+				break;
+			    case (6):
+				stack[0] = new UninitializedThisVariableInfo();
+				break;
+			    case (7):
+				int cpool_index = stackMapTable_RC[stackMapTableRCIndex++];
+				stack[0] = new ObjectVariableInfo(segment.getCpBands().cpClassValue(cpool_index));
+				break;
+			    case (8):
+				int offset = stackMapTable_P[stackMapTablePIndex++];
+				stack[0] = new UnitializedVariableInfo(offset);
+				break;
+			    case (4):
+				stack[0] = new LongVariableInfo();
+				break;
+			    case (3):
+				stack[0] = new DoubleVariableInfo();
+				break;
+			    default:
+				throw new Pack200Exception("Unknown verification type" + verification_type);
+			}
+			frames [k] = new SameLocals1StackItemFrameExtended(offset_delta, stack);
+		    } else if (frame_type > 247 && frame_type <= 250){
+			int offset_delta = stackMapTable_offset[offsetDeltaIndex++];
+			frames[k] = new ChopFrame(frame_type, offset_delta);
+		    } else if (frame_type == 251){
+			int offset_delta = stackMapTable_offset[offsetDeltaIndex++];
+			frames[k] = new SameFrameExtended(offset_delta);
+		    } else if (frame_type > 251 && frame_type < 255){ // append_frame
+			int offset_delta = stackMapTable_offset[offsetDeltaIndex++];
+			int number_of_locals = frame_type - 251;
+			VerificationTypeInfo [] locals = new VerificationTypeInfo[number_of_locals];
+			for (int m = 0; m < number_of_locals; m++){
+			    int verification_type = stackMapTable_T[verificationTypeInfoIndex++];
+			    switch (verification_type){
+				case (0):
+				    locals[m] = new TopVariableInfo();
+				    break;
+				case (1):
+				    locals[m] = new IntegerVariableInfo();
+				    break;
+				case (2):
+				    locals[m] = new FloatVariableInfo();
+				    break;
+				case (5):
+				    locals[m] = new NullVariableInfo();
+				    break;
+				case (6):
+				    locals[m] = new UninitializedThisVariableInfo();
+				    break;
+				case (7):
+				    int cpool_index = stackMapTable_RC[stackMapTableRCIndex++];
+				    locals[m] = new ObjectVariableInfo(segment.getCpBands().cpClassValue(cpool_index));
+				    break;
+				case (8):
+				    int offset = stackMapTable_P[stackMapTablePIndex++];
+				    locals[m] = new UnitializedVariableInfo(offset);
+				    break;
+				case (4):
+				    locals[m] = new LongVariableInfo();
+				    break;
+				case (3):
+				    locals[m] = new DoubleVariableInfo();
+				    break;
+				default:
+				    throw new Pack200Exception("Unknown verification type" + verification_type);
+			    }
+			}
+			frames[k] = new AppendFrame(frame_type, offset_delta, locals);
+		    } else if (frame_type == 255){ // full_frame
+			int offset_delta = stackMapTable_offset[offsetDeltaIndex++];
+			int number_of_locals = stackMapTable_local_N[fullFrameIndex];
+			VerificationTypeInfo [] locals = new VerificationTypeInfo[number_of_locals];
+			for (int m = 0; m < number_of_locals; m++){
+			    int verification_type = stackMapTable_T[verificationTypeInfoIndex++];
+			    switch (verification_type){
+				case (0):
+				    locals[m] = new TopVariableInfo();
+				    break;
+				case (1):
+				    locals[m] = new IntegerVariableInfo();
+				    break;
+				case (2):
+				    locals[m] = new FloatVariableInfo();
+				    break;
+				case (5):
+				    locals[m] = new NullVariableInfo();
+				    break;
+				case (6):
+				    locals[m] = new UninitializedThisVariableInfo();
+				    break;
+				case (7):
+				    int cpool_index = stackMapTable_RC[stackMapTableRCIndex++];
+				    locals[m] = new ObjectVariableInfo(segment.getCpBands().cpClassValue(cpool_index));
+				    break;
+				case (8):
+				    int offset = stackMapTable_P[stackMapTablePIndex++];
+				    locals[m] = new UnitializedVariableInfo(offset);
+				    break;
+				case (4):
+				    locals[m] = new LongVariableInfo();
+				    break;
+				case (3):
+				    locals[m] = new DoubleVariableInfo();
+				    break;
+				default:
+				    throw new Pack200Exception("Unknown verification type" + verification_type);
+			    }
+			}
+			int number_of_stack_items = stackMapTable_stack_N[fullFrameIndex];
+			VerificationTypeInfo [] stack = new VerificationTypeInfo[number_of_stack_items];
+			for (int m = 0; m < number_of_stack_items; m++){
+			    int verification_type = stackMapTable_T[verificationTypeInfoIndex++];
+			    switch (verification_type){
+				case (0):
+				    stack[m] = new TopVariableInfo();
+				    break;
+				case (1):
+				    stack[m] = new IntegerVariableInfo();
+				    break;
+				case (2):
+				    stack[m] = new FloatVariableInfo();
+				    break;
+				case (5):
+				    stack[m] = new NullVariableInfo();
+				    break;
+				case (6):
+				    stack[m] = new UninitializedThisVariableInfo();
+				    break;
+				case (7):
+				    int cpool_index = stackMapTable_RC[stackMapTableRCIndex++];
+				    stack[m] = new ObjectVariableInfo(segment.getCpBands().cpClassValue(cpool_index));
+				    break;
+				case (8):
+				    int offset = stackMapTable_P[stackMapTablePIndex++];
+				    stack[m] = new UnitializedVariableInfo(offset);
+				    break;
+				case (4):
+				    stack[m] = new LongVariableInfo();
+				    break;
+				case (3):
+				    stack[m] = new DoubleVariableInfo();
+				    break;
+				default:
+				    throw new Pack200Exception("Unknown verification type" + verification_type);
+			    }
+			}
+			frames [k] = new FullFrame(offset_delta, locals, stack);
+			fullFrameIndex++;
+		    }
+		}
+		entries[i] = new StackMapTableAttribute(frames);
+	    }
+	    
+	    int stackMapTableIndex = 0;
+	    for (int i = 0; i < codeFlagsCount; i++) {
+		if (stackMapTableLayout.matches(codeFlags[i])) {
+		    codeAttributes[i].add(entries[stackMapTableIndex++]);
+		}
+	    }
+	}
 
         AttributeLayout lineNumberTableLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE,
@@ -978,17 +1334,18 @@ class ClassBands extends BandSet {
         int riaCount = SegmentUtils.countMatches(fieldFlags, riaLayout);
         int[] RxACount = new int[] { rvaCount, riaCount };
         int[] backwardsCalls = new int[] { 0, 0 };
-        if (rvaCount > 0) {
-            backwardsCalls[0] = fieldAttrCalls[0];
-            backwardsCallsUsed++;
-            if (riaCount > 0) {
-                backwardsCalls[1] = fieldAttrCalls[1];
-                backwardsCallsUsed++;
-            }
-        } else if (riaCount > 0) {
-            backwardsCalls[1] = fieldAttrCalls[0];
-            backwardsCallsUsed++;
-        }
+	System.out.println("fieldAttrCalls: " + Arrays.toString(fieldAttrCalls));
+	if (rvaCount > 0) {
+	    backwardsCalls[0] = fieldAttrCalls[0];
+	    backwardsCallsUsed++;
+	    if (riaCount > 0) {
+		backwardsCalls[1] = fieldAttrCalls[1];
+		backwardsCallsUsed++;
+	    }
+	} else if (riaCount > 0) {
+	    backwardsCalls[1] = fieldAttrCalls[0];
+	    backwardsCallsUsed++;
+	}
         MetadataBandGroup[] mb = parseMetadata(in, RxA, RxACount,
                 backwardsCalls, "field");
         List rvaAttributes = mb[0].getAttributes();
@@ -1144,16 +1501,17 @@ class ClassBands extends BandSet {
                     .countMatches(methodFlags, rxaLayouts[i]);
         }
         int[] backwardsCalls = new int[5];
-        int methodAttrIndex = 0;
-        for (int i = 0; i < backwardsCalls.length; i++) {
-            if (rxaCounts[i] > 0) {
-                backwardsCallsUsed++;
-                backwardsCalls[i] = methodAttrCalls[methodAttrIndex];
-                methodAttrIndex++;
-            } else {
-                backwardsCalls[i] = 0;
-            }
-        }
+	System.out.println("methodAttrCalls: " + Arrays.toString(methodAttrCalls));
+	int methodAttrIndex = 0;
+	for (int i = 0; i < backwardsCalls.length; i++) {
+	    if (rxaCounts[i] > 0) {
+		backwardsCallsUsed++;
+		backwardsCalls[i] = methodAttrCalls[methodAttrIndex];
+		methodAttrIndex++;
+	    } else {
+		backwardsCalls[i] = 0;
+	    }
+	}
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, rxaCounts,
                 backwardsCalls, "method");
         List[] attributeLists = new List[RxA.length];

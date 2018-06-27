@@ -24,23 +24,31 @@ import java.util.Map;
 
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.unpack200.bytecode.CPAnyMemberRef;
+import org.apache.harmony.unpack200.bytecode.CPBootstrapMethod;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
 import org.apache.harmony.unpack200.bytecode.CPFieldRef;
 import org.apache.harmony.unpack200.bytecode.CPFloat;
 import org.apache.harmony.unpack200.bytecode.CPInteger;
 import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPInvokeDynamic;
+import org.apache.harmony.unpack200.bytecode.CPLoadableValue;
 import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodHandle;
 import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPMethodType;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 /**
  * Constant Pool bands
  */
 class CpBands extends BandSet {
-
+    
+    
     public SegmentConstantPool getConstantPool() {
         return pool;
     }
@@ -73,7 +81,15 @@ class CpBands extends BandSet {
     private String[] cpString;
     private int[] cpStringInts;
     private String[] cpUTF8;
-
+    private int[] cpMethodHandleRefkindInts;
+    private CPAnyMemberRef[] cpMethodHandleMember;
+    private int[] cpMethodTypeInts;
+    private int[] cpBootstrapMethodRef;
+    private int[] cpBootstrapMethodArgInts;
+    private int[][] cpBootstrapMethodArg;
+    private int[] cpInvokeDynamicSpec;
+    private int[] cpInvokeDynamicDescr;
+    
     private final Map stringsToCPUTF8 = new HashMap();
     private final Map stringsToCPStrings = new HashMap();
     private final Map longsToCPLongs = new HashMap();
@@ -90,6 +106,7 @@ class CpBands extends BandSet {
 // TODO: Not used
     private Map mapSignature;
 
+    // All group
     private int intOffset;
     private int floatOffset;
     private int longOffset;
@@ -101,7 +118,26 @@ class CpBands extends BandSet {
     private int fieldOffset;
     private int methodOffset;
     private int imethodOffset;
-
+    private int methodHandleOffset;
+    private int methodTypeOffset;
+    private int bootstrapMethodOffset;
+    private int invokeDynamicOffset;
+    
+    // Any member group
+    private int anyMemberFieldOffset;
+    private int anyMemberMethodOffset;
+    private int anyMemberIMethodOffset;
+    
+    // loadable value group
+    private int lVIntOffset;
+    private int lVFloatOffset;
+    private int lVLongOffset;
+    private int lVDoubleOffset;
+    private int lVStringOffset;
+    private int lVClassOffset;
+    private int lVMethodHandleOffset;
+    private int lVMethodTypeOffset;
+    
     public CpBands(Segment segment) {
         super(segment);
     }
@@ -119,7 +155,34 @@ class CpBands extends BandSet {
         parseCpField(in);
         parseCpMethod(in);
         parseCpIMethod(in);
+	parseCpMethodHandle(in);
+	parseCpMethodType(in);
+	parseCpBootstrapMethod(in);
+	
+	// cp_AnyMember group method handle component.
+	anyMemberFieldOffset = 0;
+	anyMemberMethodOffset = cpFieldClass.length;
+	anyMemberIMethodOffset = cpMethodClass.length + anyMemberMethodOffset;
+	
+	parseCpMethodHandle(in);
+	parseCpMethodType(in);
+	
+	// cp_LoadableValue group for bootstrap method argument
+	lVIntOffset = 0;
+	lVFloatOffset = cpInt.length;
+	lVLongOffset = cpFloat.length + lVFloatOffset;
+	lVDoubleOffset = cpLong.length + lVLongOffset;
+	lVStringOffset = cpDouble.length + lVDoubleOffset;
+	lVClassOffset = cpString.length + lVStringOffset;
+	lVMethodHandleOffset = cpClass.length + lVClassOffset;
+	lVMethodTypeOffset = cpMethodHandleRefkindInts.length + lVMethodHandleOffset;
+	
+	parseCpBootstrapMethod(in);
+	parseCpInvokeDynamic(in);
+	parseCpModule(in);
+	parseCpPackage(in);
 
+	// cp_All group
         intOffset = cpUTF8.length;
         floatOffset = intOffset + cpInt.length;
         longOffset = floatOffset + cpFloat.length;
@@ -131,6 +194,10 @@ class CpBands extends BandSet {
         fieldOffset = descrOffset + cpDescriptor.length;
         methodOffset = fieldOffset + cpFieldClass.length;
         imethodOffset = methodOffset + cpMethodClass.length;
+	methodHandleOffset = imethodOffset + cpIMethodClass.length;
+	methodTypeOffset = methodHandleOffset + cpMethodHandleRefkindInts.length;
+	bootstrapMethodOffset = methodTypeOffset + cpBootstrapMethodRef.length;
+	invokeDynamicOffset = bootstrapMethodOffset + cpInvokeDynamicSpec.length;
     }
 
     public void unpack() {
@@ -163,7 +230,7 @@ class CpBands extends BandSet {
 
     /**
      * Parses the constant pool descriptor definitions, using
-     * {@link #cpDescriptorCount} to populate {@link #cpDescriptor}. For ease
+     * {@link #cpDescriptorCount} to populate {@link #cpNameAndTypeValue}. For ease
      * of use, the cpDescriptor is stored as a string of the form <i>name:type</i>,
      * largely to make it easier for representing field and method descriptors
      * (e.g. <code>out:java.lang.PrintStream</code>) in a way that is
@@ -346,7 +413,7 @@ class CpBands extends BandSet {
         for (int i = 0; i < cpSignatureCount; i++) {
             String form = cpSignatureForm[i];
             char[] chars = form.toCharArray();
-            for (int j = 0; j < chars.length; j++) {
+            for (int j = 0, length = chars.length; j <length; j++) {
                 if (chars[j] == 'L') {
                     cpSignatureInts[i] = -1;
                     lCount++;
@@ -359,7 +426,7 @@ class CpBands extends BandSet {
         for (int i = 0; i < cpSignatureCount; i++) {
             String form = cpSignatureForm[i];
             int len = form.length();
-            StringBuffer signature = new StringBuffer(64);
+            StringBuilder signature = new StringBuilder(64);
             ArrayList list = new ArrayList();
             for (int j = 0; j < len; j++) {
                 char c = form.charAt(j);
@@ -468,6 +535,56 @@ class CpBands extends BandSet {
             }
         }
     }
+    
+    private void parseCpMethodHandle(InputStream in) throws IOException, Pack200Exception {
+	int cpMethodHandleCount = header.getCpMethodHandleCount();
+	cpMethodHandleRefkindInts = decodeBandInt("cp_MethodHandle_refkind", in,
+                Codec.DELTA5, cpMethodHandleCount);
+	int [] cpMethodHandleMemberInts = decodeBandInt("cp_MethodHandle_member", in,
+		Codec.UDELTA5, cpMethodHandleCount);
+	cpMethodHandleMember = new CPAnyMemberRef [cpMethodHandleCount];
+	for (int i = 0; i < cpMethodHandleCount; i++){
+	    cpMethodHandleMember[i] = cpAnyMemberValue(cpMethodHandleMemberInts[i]);
+	}
+    }
+
+    private void parseCpMethodType(InputStream in) throws IOException, Pack200Exception {
+	int cpMethodTypeCount = header.getCpMethodTypeCount();
+	cpMethodTypeInts = decodeBandInt("cp_MethodType_form", in,
+                Codec.DELTA5, cpMethodTypeCount);
+    }
+
+    private void parseCpBootstrapMethod(InputStream in) throws IOException, Pack200Exception {
+	int cpBootstrapMethodCount = header.getCpBootstrapMethodCount();
+	cpBootstrapMethodRef = decodeBandInt("cp_BootstrapMethod_ref", in,
+                Codec.DELTA5, cpBootstrapMethodCount);
+	cpBootstrapMethodArgInts = decodeBandInt("cp_BootstrapMethod_arg_count", in,
+                Codec.UDELTA5, cpBootstrapMethodCount);
+//	int sumBootstrapMethodArgInts = 0;
+	cpBootstrapMethodArg = new int [cpBootstrapMethodCount][];
+	for (int i = 0, l = cpBootstrapMethodArgInts.length; i < l; i++){
+//	    sumBootstrapMethodArgInts += cpBootstrapMethodArgInts[i];
+	    cpBootstrapMethodArg[i] = decodeBandInt("cp_BootstrapMethod_arg", in,
+                Codec.DELTA5, cpBootstrapMethodArgInts[i]);
+	}
+    }
+
+    private void parseCpInvokeDynamic(InputStream in) throws IOException, Pack200Exception {
+	int cpInvokeDynamicCount = header.getCpInvokeDynamicCount();
+	cpInvokeDynamicSpec = decodeBandInt("cp_InvokeDynamic_spec", in,
+                Codec.DELTA5, cpInvokeDynamicCount);
+	cpInvokeDynamicDescr = decodeBandInt("cp_InvokeDynamic_descr", in,
+                Codec.UDELTA5, cpInvokeDynamicCount);
+    }
+
+    private void parseCpModule(InputStream in) {
+	
+    }
+
+    private void parseCpPackage(InputStream in) {
+	
+    }
+
 
     public String[] getCpClass() {
         return cpClass;
@@ -582,7 +699,7 @@ class CpBands extends BandSet {
     }
 
     public CPFloat cpFloatValue(int index) {
-        Float f = new Float(cpFloat[index]);
+        Float f = Float.valueOf(cpFloat[index]);
         CPFloat cpFloat = (CPFloat) floatsToCPFloats.get(f);
         if (cpFloat == null) {
             cpFloat = new CPFloat(f, index + floatOffset);
@@ -617,7 +734,7 @@ class CpBands extends BandSet {
     }
 
     public CPDouble cpDoubleValue(int index) {
-        Double dbl = new Double(cpDouble[index]);
+        Double dbl = Double.valueOf(cpDouble[index]);
         CPDouble cpDouble = (CPDouble) doublesToCPDoubles.get(dbl);
         if (cpDouble == null) {
             cpDouble = new CPDouble(dbl, index + doubleOffset);
@@ -640,6 +757,45 @@ class CpBands extends BandSet {
             descriptorsToCPNameAndTypes.put(descriptor, cpNameAndType);
         }
         return cpNameAndType;
+    }
+    
+    public CPAnyMemberRef cpAnyMemberValue(int index){
+	if (index < 0) throw new IndexOutOfBoundsException(String.valueOf(index));
+	if (index < anyMemberMethodOffset) return cpFieldValue(index - anyMemberFieldOffset);
+	if (index < anyMemberIMethodOffset) return cpMethodValue(index - anyMemberMethodOffset);
+	return cpIMethodValue(index - anyMemberIMethodOffset); // throws ArrayIndexOutOfBoundsException if wrong.
+    }
+    
+    public CPLoadableValue cpLoadableValue(int index){
+	if (index < 0) throw new IndexOutOfBoundsException(String.valueOf(index));
+	if (index < lVFloatOffset) return cpIntegerValue(index);
+	if (index < lVLongOffset) return cpFloatValue(index - lVFloatOffset);
+	if (index < lVDoubleOffset) return cpLongValue(index - lVLongOffset);
+	if (index < lVStringOffset) return cpDoubleValue(index - lVDoubleOffset);
+	if (index < lVClassOffset) return cpStringValue(index - lVStringOffset);
+	if (index < lVMethodHandleOffset) return cpClassValue(index - lVClassOffset);
+	if (index < lVMethodTypeOffset) return cpMethodHandleValue(index - lVMethodHandleOffset);
+	return cpMethodTypeValue(index - lVMethodTypeOffset); // throws ArrayIndexOutOfBoundsException if wrong.
+    }
+    
+    public ClassFileEntry all(int index){
+	if (index < 0) throw new IndexOutOfBoundsException(String.valueOf(index));
+	if (index < intOffset) return cpUTF8Value(index);
+	if (index < floatOffset) return cpIntegerValue(index - intOffset);
+	if (index < longOffset) return cpFloatValue(index - floatOffset);
+	if (index < doubleOffset) return cpLongValue(index - longOffset);
+	if (index < stringOffset) return cpDoubleValue(index - doubleOffset);
+	if (index < classOffset) return cpStringValue(index - stringOffset);
+	if (index < signatureOffset) return cpClassValue(index - classOffset);
+	if (index < descrOffset) return cpSignatureValue(index - signatureOffset);
+	if (index < fieldOffset) return cpNameAndTypeValue(index - descrOffset);
+	if (index < methodOffset) return cpFieldValue(index - fieldOffset);
+	if (index < imethodOffset) return cpMethodValue(index - methodOffset);
+	if (index < methodHandleOffset) return cpIMethodValue(index - imethodOffset);
+	if (index < methodTypeOffset) return cpMethodHandleValue(index - methodHandleOffset);
+	if (index < bootstrapMethodOffset) return cpMethodTypeValue(index - methodTypeOffset);
+	if (index < invokeDynamicOffset) return cpBootstrapMethodValue(index - bootstrapMethodOffset);
+	return this.cpInvokeDynamicValue(index - invokeDynamicOffset);
     }
 
     public CPInterfaceMethodRef cpIMethodValue(int index) {
@@ -707,4 +863,48 @@ class CpBands extends BandSet {
         return cpDescriptorTypeInts;
     }
 
+    CPMethodHandle cpMethodHandleValue(int index) {
+	return new CPMethodHandle(cpMethodHandleRefkindInts[index], 
+		cpMethodHandleMember[index], index + methodHandleOffset);
+    }
+
+    CPMethodType cpMethodTypeValue(int index) {
+	return new CPMethodType(cpSignatureValue(cpMethodTypeInts[index]),
+		index + methodTypeOffset);
+    }
+    
+    CPBootstrapMethod cpBootstrapMethodValue(int index) {
+	int length = cpBootstrapMethodArg[index].length;
+	CPLoadableValue [] bootstrapMethodArg = new CPLoadableValue [length];
+	for (int i = 0;  i < length; i++ ){
+	    int cpLoadableValueIndex = cpBootstrapMethodArg[index][i];
+	    bootstrapMethodArg[i] = cpLoadableValue(cpLoadableValueIndex);
+	}
+	return new CPBootstrapMethod(
+		cpMethodHandleValue(cpBootstrapMethodRef[index]),
+		cpBootstrapMethodArgInts[index],
+		bootstrapMethodArg, index
+	);
+    }
+
+    CPInvokeDynamic cpInvokeDynamicValue(int index) {
+	return new CPInvokeDynamic(
+		cpBootstrapMethodValue(cpInvokeDynamicSpec[index]),
+		cpNameAndTypeValue(cpInvokeDynamicDescr[index]),
+		index + invokeDynamicOffset );
+    }
+    
+    ClassFileEntry cpModuleValue(int index) {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    ClassFileEntry cpPackageValue(int index) {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    ClassFileEntry cpDynamicValue(int index) {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
 }

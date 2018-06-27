@@ -31,6 +31,100 @@ import org.apache.harmony.pack200.Pack200Exception;
  * internationalized, and should not be translated.
  */
 class AttributeLayoutMap {
+    
+    private static final String STACK_MAP_LAYOUTS; //5.5.5
+    private static final String NON_PARAMETER_METADATA_ANNOTATIONS;
+    private static final String METHOD_PARAMETER_ANNOTATIONS;
+    private static final String RUNTIME_TYPE_ANNOTATIONS;
+    
+    static {
+	StringBuilder sb = new StringBuilder(1024);
+	// STACK_MAP_LAYOUTS
+	sb.append("[NH[(1)]]");
+	sb.append("[TB");
+	for (int i = 64, l = 128; i < l; i++){
+	    sb.append('(').append(i).append(")[(2)]");
+	}
+	sb.append("(247)[(1)(2)]");
+	for (int i = 248, l = 252; i<l; i++){
+	    sb.append('(').append(i).append(")[(1)]");
+	}
+	sb.append("(252)[(1)(2)]");
+	sb.append("(253)[(1)(2)(2)]");
+	sb.append("(254)[(1)(2)(2)(2)]");
+	sb.append("(255)[(1)NH[(2)]NH[(2)]]");
+	sb.append("()[]");
+	sb.append(']');
+	sb.append("[H]");
+	sb.append("[TB");
+	sb.append("(7)[RCH]");
+	sb.append("(8)[PH]");
+	sb.append("()[]");
+	sb.append(']');
+	STACK_MAP_LAYOUTS = sb.toString();
+	sb.delete(0, sb.length());
+	// METADATA_LAYOUTS common
+	sb.append("[RSHNH[RUH(1)]]");
+	sb.append("[TB");
+	sb.append("(66)[KIH]");
+	sb.append("(67)[KIH]");
+	sb.append("(73)[KIH]");
+	sb.append("(83)[KIH]");
+	sb.append("(90)[KIH]");
+	sb.append("(68)[KDH]");
+	sb.append("(70)[KFH]");
+	sb.append("(74)[KJH]");
+	sb.append("(99)[RSH]");
+	sb.append("(101)[RSHRUH]");
+	sb.append("(115)[RUH]");
+	sb.append("(91)[NH[(0)]]");
+	sb.append("(64)[RSHNH[RUH(0)]]");
+	sb.append("()[]");
+	sb.append(']');
+	String metadataLayoutCommon = sb.toString();
+	sb.delete(0, sb.length());
+	// NON PARAMETER METADATA ANNOTATIONS
+	sb.append("[NH[(1)]]");
+	sb.append(metadataLayoutCommon);
+	NON_PARAMETER_METADATA_ANNOTATIONS = sb.toString();
+	sb.delete(0, sb.length());
+	// METHOD_PARAMETER_ANNOTATIONS
+	sb.append("[NH[(1)]]");
+	sb.append("[NH[(1)]]");
+	sb.append(metadataLayoutCommon);
+	METHOD_PARAMETER_ANNOTATIONS = sb.toString();
+	sb.delete(0, sb.length());
+	// RUNTIME_TYPE_ANNOTATIONS
+	sb.append("[NH[(1)(2)(3)]]");
+	sb.append("[TB");
+	sb.append("(0)[B]");
+	sb.append("(1)[B]");
+	sb.append("(16)[FH]");
+	sb.append("(17)[BB]");
+	sb.append("(18)[BB]");
+	sb.append("(19)[]");
+	sb.append("(20)[]");
+	sb.append("(21)[]");
+	sb.append("(22)[B]");
+	sb.append("(23)[H]");
+	sb.append("(64)[NH[PHOHH]]");
+	sb.append("(65)[NH[PHOHH]]");
+	sb.append("(66)[H]");
+	sb.append("(67)[PH]");
+	sb.append("(68)[PH]");
+	sb.append("(69)[PH]");
+	sb.append("(70)[PH]");
+	sb.append("(71)[PHB]");
+	sb.append("(72)[PHB]");
+	sb.append("(73)[PHB]");
+	sb.append("(74)[PHB]");
+	sb.append("(75)[PHB]");
+	sb.append("()[]");
+	sb.append(']');
+	sb.append("[NB[BB]]");
+	sb.append(metadataLayoutCommon);
+	RUNTIME_TYPE_ANNOTATIONS = sb.toString();
+    }
 
     // Create all the default AttributeLayouts here
     private static AttributeLayout[] getDefaultAttributeLayouts()
@@ -42,6 +136,12 @@ class AttributeLayoutMap {
                         AttributeLayout.CONTEXT_FIELD, "", 0),
                 new AttributeLayout(AttributeLayout.ACC_PUBLIC,
                         AttributeLayout.CONTEXT_METHOD, "", 0),
+		new AttributeLayout( // Java 6
+			AttributeLayout.ATTRIBUTE_STACK_MAP_TABLE,
+			AttributeLayout.CONTEXT_CODE, 
+			STACK_MAP_LAYOUTS,
+			0),
+		
                 new AttributeLayout(AttributeLayout.ACC_PRIVATE,
                         AttributeLayout.CONTEXT_CLASS, "", 1),
                 new AttributeLayout(AttributeLayout.ACC_PRIVATE,
@@ -51,7 +151,7 @@ class AttributeLayoutMap {
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE,
                         AttributeLayout.CONTEXT_CODE, "NH[PHH]", 1),
-
+		
                 new AttributeLayout(AttributeLayout.ACC_PROTECTED,
                         AttributeLayout.CONTEXT_CLASS, "", 2),
                 new AttributeLayout(AttributeLayout.ACC_PROTECTED,
@@ -162,36 +262,91 @@ class AttributeLayoutMap {
                         AttributeLayout.CONTEXT_METHOD, "", 20),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_CLASS, "*", 21),
+                        AttributeLayout.CONTEXT_CLASS,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			21),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_FIELD, "*", 21),
+                        AttributeLayout.CONTEXT_FIELD,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			21),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_METHOD, "*", 21),
+                        AttributeLayout.CONTEXT_METHOD,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			21),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_CLASS, "*", 22),
+                        AttributeLayout.CONTEXT_CLASS,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			22),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_FIELD, "*", 22),
+                        AttributeLayout.CONTEXT_FIELD,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			22),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_METHOD, "*", 22),
+                        AttributeLayout.CONTEXT_METHOD,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			22),
                 new AttributeLayout(AttributeLayout.ATTRIBUTE_INNER_CLASSES,
                         AttributeLayout.CONTEXT_CLASS, "", 23),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_METHOD, "*", 23),
+                        AttributeLayout.CONTEXT_METHOD,
+//			"*",
+			METHOD_PARAMETER_ANNOTATIONS,
+			23),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_CLASS_FILE_VERSION,
                         AttributeLayout.CONTEXT_CLASS, "", 24),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
-                        AttributeLayout.CONTEXT_METHOD, "*", 24),
+                        AttributeLayout.CONTEXT_METHOD,
+//			"*",
+			METHOD_PARAMETER_ANNOTATIONS,
+			24),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_ANNOTATION_DEFAULT,
-                        AttributeLayout.CONTEXT_METHOD, "*", 25) };
+                        AttributeLayout.CONTEXT_METHOD,
+//			"*",
+			NON_PARAMETER_METADATA_ANNOTATIONS,
+			25), // TODO: CHECK METADATA LAYOUT
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_METHOD_PARAMETERS,
+			AttributeLayout.CONTEXT_METHOD, "NB[RUNHFH]", 26),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_CLASS, RUNTIME_TYPE_ANNOTATIONS, 27),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_FIELD, RUNTIME_TYPE_ANNOTATIONS, 27),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_METHOD, RUNTIME_TYPE_ANNOTATIONS, 27),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_CODE, RUNTIME_TYPE_ANNOTATIONS, 27),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_CLASS, RUNTIME_TYPE_ANNOTATIONS, 28),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_FIELD, RUNTIME_TYPE_ANNOTATIONS, 28),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_METHOD, RUNTIME_TYPE_ANNOTATIONS, 28),
+		new AttributeLayout(
+			AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_TYPE_ANNOTATIONS,
+			AttributeLayout.CONTEXT_CODE, RUNTIME_TYPE_ANNOTATIONS, 28),
+	};
     }
 
     private final Map classLayouts = new HashMap();

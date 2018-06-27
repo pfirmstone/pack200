@@ -27,7 +27,7 @@ class SuperInitMethodRefForm extends InitMethodReferenceForm {
     }
 
     protected String context(
-            org.apache.harmony.unpack200.bytecode.OperandManager operandManager) {
+            org.apache.harmony.unpack200.OperandManager operandManager) {
         return operandManager.getSuperClass();
     }
 }

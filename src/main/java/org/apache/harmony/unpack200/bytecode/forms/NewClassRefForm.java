@@ -21,7 +21,7 @@ import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * This class is an extension of the ClassRefForm. It has two purposes: 1. To

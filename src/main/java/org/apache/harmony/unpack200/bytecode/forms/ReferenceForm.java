@@ -20,7 +20,7 @@ import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * Abstract class of all ByteCodeForms which add a nested entry from the

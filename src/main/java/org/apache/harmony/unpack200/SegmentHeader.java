@@ -45,30 +45,34 @@ class SegmentHeader {
     private int bandHeadersSize;
 
     private int classCount;
-
-    private int cpClassCount;
-
-    private int cpDescriptorCount;
-
-    private int cpDoubleCount;
-
-    private int cpFieldCount;
-
-    private int cpFloatCount;
-
-    private int cpIMethodCount;
-
-    private int cpIntCount;
-
-    private int cpLongCount;
-
-    private int cpMethodCount;
-
-    private int cpSignatureCount;
-
-    private int cpStringCount;
-
+    
+    // cp_counts :
     private int cpUTF8Count;
+	// cp_number_counts:
+	private int cpIntCount;
+	private int cpFloatCount;
+	private int cpLongCount;
+	private int cpDoubleCount;
+    private int cpStringCount;
+    private int cpClassCount;
+    private int cpSignatureCount;
+    private int cpDescriptorCount;
+    private int cpFieldCount;
+    private int cpMethodCount;
+    private int cpIMethodCount;
+	// cp_extra_counts:
+	private int cpMethodHandleCount;
+	private int cpMethodTypeCount;
+	private int cpBootstrapMethodCount;
+	private int cpInvokeDynamicCount;
+	// cp_supplimentary_counts:  Experimental support for Java 9 and 11 bytecode.
+	// only referencable from cp_All
+	private int cpModuleCount;
+	private int cpPackageCount;
+	private int cpDynamicCount;
+	// cp_general_data_counts : JDK-8161256, possible future work, likely to only be referenceable from cp_All
+//	private int cpGroupCount;
+//	private int cpBytesCount;
 
     private int defaultClassMajorVersion;
 
@@ -89,7 +93,7 @@ class SegmentHeader {
      * get their inspiration from ...
      */
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
-
+    
     public SegmentHeader(Segment segment) {
         this.segment = segment;
     }
@@ -101,7 +105,7 @@ class SegmentHeader {
     private int archiveSizeOffset;
 
     public void read(InputStream in) throws IOException, Pack200Exception,
-            Error, Pack200Exception {
+            Error {
 
         int word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
                 magic.length);
@@ -118,6 +122,7 @@ class SegmentHeader {
         parseArchiveSpecialCounts(in);
         parseCpCounts(in);
         parseClassCounts(in);
+	parseCpExtraCounts(in); // Java 7, 8 and 9.
 
         if (getBandHeadersSize() > 0) {
             byte[] bandHeaders = new byte[getBandHeadersSize()];
@@ -141,9 +146,11 @@ class SegmentHeader {
      *             if the minor version is not 7
      */
     private void setArchiveMinorVersion(int version) throws Pack200Exception {
-        if (version != 7)
+        if (version == 7 || version == 1){
+	    archiveMinor = version;
+	} else {
             throw new Pack200Exception("Invalid segment minor version");
-        archiveMinor = version;
+	}
     }
 
     /**
@@ -155,10 +162,20 @@ class SegmentHeader {
      *             if the major version is not 150
      */
     private void setArchiveMajorVersion(int version) throws Pack200Exception {
-        if (version != 150)
+        if ((archiveMinor == 7 && version == 150 )||( archiveMinor == 1 &&( version == 160 || version ==170))){
+	    archiveMajor = version;
+	} else {
             throw new Pack200Exception("Invalid segment major version: "
                     + version);
-        archiveMajor = version;
+	}
+    }
+    
+    public int getArchiveMajor(){
+	return archiveMajor;
+    }
+    
+    public int getArchiveMinor(){
+	return archiveMinor;
     }
 
     public long getArchiveModtime() {
@@ -220,7 +237,54 @@ class SegmentHeader {
     public int getCpUTF8Count() {
         return cpUTF8Count;
     }
+    
+    public int getCpMethodHandleCount(){
+	return cpMethodHandleCount;
+    }
+    
+    public int getCpMethodTypeCount(){
+	return cpMethodTypeCount;
+    }
+    
+    public int getCpBootstrapMethodCount(){
+	return cpBootstrapMethodCount;
+    }
+    
+    public int getCpInvokeDynamicCount(){
+	return cpInvokeDynamicCount;
+    }
 
+    public int getCpModuleCount(){
+	return cpModuleCount;
+    }
+    
+    public int getCpPackageCount(){
+	return cpPackageCount;
+    }
+    
+    public int getCpDynamicCount(){
+	return cpDynamicCount;
+    }
+    
+    public int getCpLoadableValueCount(){
+	return getCpIntCount() + getCpFloatCount() + getCpLongCount() 
+		+ getCpDoubleCount() + getCpStringCount() + getCpClassCount()
+		+ getCpMethodHandleCount() + getCpMethodTypeCount();
+    }
+    
+    public int getCpAnyMemberCount(){
+	return getCpFieldCount() + getCpMethodCount() + getCpIMethodCount();
+    }
+    
+    // Future work
+//    public int getCpGroupCount(){
+//	return cpGroupCount;
+//    }
+//    
+//    public int getCpBytesCount(){
+//	return cpBytesCount;
+//    }
+    
     public int getDefaultClassMajorVersion() {
         return defaultClassMajorVersion;
     }
@@ -327,6 +391,25 @@ class SegmentHeader {
                 Codec.UNSIGNED5);
         cpIMethodCount = decodeScalar("cp_Imethod_count", in,
                 Codec.UNSIGNED5);
+    }
+    
+     private void parseCpExtraCounts(InputStream in) throws IOException, Pack200Exception {
+	if (getOptions().hasCPExtraCounts()){
+	    cpMethodHandleCount = decodeScalar("cp_MethodHandle_count", in, Codec.UNSIGNED5);
+	    cpMethodTypeCount = decodeScalar("cp_MethodType_count", in, Codec.UNSIGNED5);
+	    cpBootstrapMethodCount = decodeScalar("cp_BootstrapMethod_count", in, Codec.UNSIGNED5);
+	    cpInvokeDynamicCount = decodeScalar("cp_InvokeDynamic_count", in, Codec.UNSIGNED5);
+	}
+	if (getOptions().hasCPSupplementary()){
+	    cpModuleCount = decodeScalar("cp_Module_count", in, Codec.UNSIGNED5);
+	    cpPackageCount = decodeScalar("cp_Package_count", in, Codec.UNSIGNED5);
+	    cpDynamicCount = decodeScalar("cp_Dynamic_count", in, Codec.UNSIGNED5);
+	}
+	// JDK-8161256 unsupported, future work.
+//	if (getOptions().hasCPGeneralData()){
+//	    cpGroupCount = decodeScalar("cp_Group_count", in, Codec.UNSIGNED5);
+//	    cpBytesCount = decodeScalar("cp_Bytes_count", in, Codec.UNSIGNED5);
+//	}
     }
 
     /**

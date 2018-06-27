@@ -17,7 +17,7 @@
 package org.apache.harmony.unpack200.bytecode.forms;
 
 import org.apache.harmony.unpack200.bytecode.ByteCode;
-import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.OperandManager;
 
 /**
  * This class implements the form for bytecodes which have single byte operands.

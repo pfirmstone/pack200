@@ -25,17 +25,24 @@ import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.PopulationCodec;
+import org.apache.harmony.unpack200.bytecode.CPAnyMemberRef;
+import org.apache.harmony.unpack200.bytecode.CPBootstrapMethod;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
 import org.apache.harmony.unpack200.bytecode.CPFieldRef;
 import org.apache.harmony.unpack200.bytecode.CPFloat;
 import org.apache.harmony.unpack200.bytecode.CPInteger;
 import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPInvokeDynamic;
+import org.apache.harmony.unpack200.bytecode.CPLoadableValue;
 import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodHandle;
 import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPMethodType;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 /**
  * Abstract superclass for a set of bands
@@ -85,9 +92,9 @@ abstract class BandSet {
             int count) throws IOException, Pack200Exception {
         int[] band;
         // Useful for debugging
-//        if(count > 0) {
-//            System.out.println("decoding " + name + " " + count);
-//        }
+        if(count > 0) {
+            System.out.println("decoding " + name + " " + count);
+        }
         Codec codecUsed = codec;
         if (codec.getB() == 1 || count == 0) {
             return codec.decodeInts(count, in);
@@ -113,10 +120,10 @@ abstract class BandSet {
             band = codec.decodeInts(count - 1, in, first);
         }
         // Useful for debugging -E options:
-//        if(!codecUsed.equals(codec)) {
-//            int bytes = codecUsed.lastBandLength;
-//            System.out.println(count + " " + name + " encoded with " + codecUsed + " "  + bytes);
-//        }
+        if(!codecUsed.equals(codec)) {
+            int bytes = codecUsed.lastBandLength;
+            System.out.println(count + " " + name + " encoded with " + codecUsed + " "  + bytes);
+        }
         if (codecUsed instanceof PopulationCodec) {
             PopulationCodec popCodec = (PopulationCodec) codecUsed;
             int[] favoured = (int[]) popCodec.getFavoured().clone();
@@ -531,6 +538,82 @@ abstract class BandSet {
             result[i1] = segment.getCpBands().cpClassValue(index);
         }
         return result;
+    }
+    
+    public CPMethodHandle [] parseCPMethodHandleReferences(String name,
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPMethodHandle [] result = new CPMethodHandle[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpMethodHandleValue(il);
+	}
+	return result;
+    }
+
+    public CPMethodType [] parseCPMethodTypeReferences(String name, 
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPMethodType [] result = new CPMethodType[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpMethodTypeValue(il);
+	}
+	return result;
+    }
+
+    public CPBootstrapMethod [] parseCPBootstrapMethodReferences(String name,
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPBootstrapMethod [] result = new CPBootstrapMethod[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpBootstrapMethodValue(il);
+	}
+	return result;
+    }
+
+    public CPInvokeDynamic [] parseCPInvokeDynamicReferences(String name,
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPInvokeDynamic [] result = new CPInvokeDynamic[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpInvokeDynamicValue(il);
+	}
+	return result;
+    }
+
+    public CPLoadableValue [] parseCPLoadableValueReferences(String name,
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPLoadableValue [] result = new CPLoadableValue[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpLoadableValue(il);
+	}
+	return result;
+    }
+
+    public CPAnyMemberRef [] parseCPAnyMemberReferences(String name, 
+	    InputStream in, BHSDCodec codec, int count) 
+	    throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	CPAnyMemberRef [] result = new CPAnyMemberRef[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().cpAnyMemberValue(il);
+	}
+	return result;
+    }
+   
+    public ClassFileEntry [] parseCPAllReferences(String name, InputStream in,
+	    BHSDCodec codec, int count) throws IOException, Pack200Exception {
+	int[] indices = decodeBandInt(name, in, codec, count);
+	ClassFileEntry [] result = new ClassFileEntry[indices.length];
+	for (int il = 0; il < count; il++){
+	    result[il] = segment.getCpBands().all(il);
+	}
+	return result;
     }
 
     protected String[] getReferences(int[] ints, String[] reference) {
