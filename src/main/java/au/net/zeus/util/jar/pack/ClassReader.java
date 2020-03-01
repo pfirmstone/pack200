@@ -23,18 +23,18 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.ClassEntry;
-import com.sun.java.util.jar.pack.ConstantPool.DescriptorEntry;
-import com.sun.java.util.jar.pack.ConstantPool.Entry;
-import com.sun.java.util.jar.pack.ConstantPool.SignatureEntry;
-import com.sun.java.util.jar.pack.ConstantPool.MemberEntry;
-import com.sun.java.util.jar.pack.ConstantPool.MethodHandleEntry;
-import com.sun.java.util.jar.pack.ConstantPool.BootstrapMethodEntry;
-import com.sun.java.util.jar.pack.ConstantPool.Utf8Entry;
-import com.sun.java.util.jar.pack.Package.Class;
-import com.sun.java.util.jar.pack.Package.InnerClass;
+import au.net.zeus.util.jar.pack.ConstantPool.ClassEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.DescriptorEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.SignatureEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.MemberEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.MethodHandleEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.BootstrapMethodEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.Utf8Entry;
+import au.net.zeus.util.jar.pack.Package.Class;
+import au.net.zeus.util.jar.pack.Package.InnerClass;
 import java.io.DataInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * Reader for a class file that is being incorporated into a package.
@@ -605,7 +605,7 @@ class ClassReader {
     }
 
     static class ClassFormatException extends IOException {
-        @java.io.Serial
+//        @java.io.Serial
         private static final long serialVersionUID = -3564121733989501833L;
 
         public ClassFormatException(String message) {

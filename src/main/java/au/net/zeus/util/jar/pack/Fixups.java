@@ -23,9 +23,9 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.Entry;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;

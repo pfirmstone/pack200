@@ -38,8 +38,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Pack200;
-import java.util.jar.Pack200.Packer;
+import au.net.zeus.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200.Packer;
 import java.util.logging.Logger;
 
 /*
@@ -96,9 +96,9 @@ public class Pack200Props {
         log.info("start");
         Map<String, String> expectedDefaults = new HashMap<>();
         Packer p = Pack200.newPacker();
-        expectedDefaults.put("com.sun.java.util.jar.pack.disable.native",
+        expectedDefaults.put("au.net.zeus.util.jar.pack.disable.native",
                 p.FALSE);
-        expectedDefaults.put("com.sun.java.util.jar.pack.verbose", "0");
+        expectedDefaults.put("au.net.zeus.util.jar.pack.verbose", "0");
         expectedDefaults.put(p.CLASS_ATTRIBUTE_PFX + "CompilationID", "RUH");
         expectedDefaults.put(p.CLASS_ATTRIBUTE_PFX + "SourceID", "RUH");
         expectedDefaults.put(p.CODE_ATTRIBUTE_PFX + "CharacterRangeTable",

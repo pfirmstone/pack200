@@ -23,11 +23,11 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
 import java.io.IOException;
 import java.util.Arrays;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * A parsed bytecode instruction.
@@ -679,7 +679,7 @@ class Instruction  {
         }
     }
     static class FormatException extends IOException {
-        @java.io.Serial
+//        @java.io.Serial
         private static final long serialVersionUID = 3175572275651367015L;
 
         FormatException(String message) {

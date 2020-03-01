@@ -22,14 +22,18 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package java.util.jar;
+package au.net.zeus.util.jar;
 
 import java.util.SortedMap;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.File;
 import java.io.IOException;
-import sun.security.action.GetPropertyAction;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
 
 
 /**
@@ -707,9 +711,9 @@ public abstract class Pack200 {
                 if (implName != null && !implName.isEmpty())
                     impl = Class.forName(implName);
                 else if (PACK_PROVIDER.equals(prop))
-                    impl = com.sun.java.util.jar.pack.PackerImpl.class;
+                    impl = au.net.zeus.util.jar.pack.PackerImpl.class;
                 else
-                    impl = com.sun.java.util.jar.pack.UnpackerImpl.class;
+                    impl = au.net.zeus.util.jar.pack.UnpackerImpl.class;
             }
             // We have a class.  Now instantiate it.
             @SuppressWarnings("deprecation")
@@ -728,6 +732,16 @@ public abstract class Pack200 {
                                 ":\ncheck property " + prop +
                                 " in your properties file.", e);
         }
+    }
+    
+    private static class GetPropertyAction {
+
+        private static String privilegedGetProperty(final String prop, final String string) {
+            return AccessController.doPrivileged(
+                (PrivilegedAction<String>) () -> System.getProperty(prop, string)
+            );
+        }
+
     }
 
 }

@@ -24,7 +24,7 @@
  */
 
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
 import java.io.BufferedInputStream;
 import java.io.File;

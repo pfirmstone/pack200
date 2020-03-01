@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 
 /*
  * @test

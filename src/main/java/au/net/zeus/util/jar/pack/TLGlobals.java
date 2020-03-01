@@ -22,18 +22,18 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.ClassEntry;
-import com.sun.java.util.jar.pack.ConstantPool.DescriptorEntry;
-import com.sun.java.util.jar.pack.ConstantPool.LiteralEntry;
-import com.sun.java.util.jar.pack.ConstantPool.MemberEntry;
-import com.sun.java.util.jar.pack.ConstantPool.MethodHandleEntry;
-import com.sun.java.util.jar.pack.ConstantPool.MethodTypeEntry;
-import com.sun.java.util.jar.pack.ConstantPool.InvokeDynamicEntry;
-import com.sun.java.util.jar.pack.ConstantPool.BootstrapMethodEntry;
-import com.sun.java.util.jar.pack.ConstantPool.SignatureEntry;
-import com.sun.java.util.jar.pack.ConstantPool.Utf8Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.ClassEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.DescriptorEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.LiteralEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.MemberEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.MethodHandleEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.MethodTypeEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.InvokeDynamicEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.BootstrapMethodEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.SignatureEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.Utf8Entry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;

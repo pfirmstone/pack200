@@ -22,7 +22,7 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
 import java.util.ArrayList;
 import java.util.Collection;

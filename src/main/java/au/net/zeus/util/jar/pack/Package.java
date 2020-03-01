@@ -23,17 +23,17 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
 import java.util.jar.Pack200;
-import com.sun.java.util.jar.pack.Attribute.Layout;
-import com.sun.java.util.jar.pack.ConstantPool.ClassEntry;
-import com.sun.java.util.jar.pack.ConstantPool.DescriptorEntry;
-import com.sun.java.util.jar.pack.ConstantPool.BootstrapMethodEntry;
-import com.sun.java.util.jar.pack.ConstantPool.Index;
-import com.sun.java.util.jar.pack.ConstantPool.LiteralEntry;
-import com.sun.java.util.jar.pack.ConstantPool.Utf8Entry;
-import com.sun.java.util.jar.pack.ConstantPool.Entry;
+import au.net.zeus.util.jar.pack.Attribute.Layout;
+import au.net.zeus.util.jar.pack.ConstantPool.ClassEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.DescriptorEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.BootstrapMethodEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.Index;
+import au.net.zeus.util.jar.pack.ConstantPool.LiteralEntry;
+import au.net.zeus.util.jar.pack.ConstantPool.Utf8Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.Entry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,7 +54,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * Define the main data structure transmitted by pack/unpack.

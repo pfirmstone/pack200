@@ -23,11 +23,11 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.Entry;
-import com.sun.java.util.jar.pack.ConstantPool.Index;
-import com.sun.java.util.jar.pack.Package.Class.Field;
+import au.net.zeus.util.jar.pack.ConstantPool.Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.Index;
+import au.net.zeus.util.jar.pack.Package.Class.Field;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Pack200;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 import java.util.LinkedList;
 
 /**

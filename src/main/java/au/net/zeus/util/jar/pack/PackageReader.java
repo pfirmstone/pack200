@@ -23,12 +23,12 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.*;
-import com.sun.java.util.jar.pack.Package.Class;
-import com.sun.java.util.jar.pack.Package.File;
-import com.sun.java.util.jar.pack.Package.InnerClass;
+import au.net.zeus.util.jar.pack.ConstantPool.*;
+import au.net.zeus.util.jar.pack.Package.Class;
+import au.net.zeus.util.jar.pack.Package.File;
+import au.net.zeus.util.jar.pack.Package.InnerClass;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.PrintStream;
@@ -48,7 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * Reader for a package file.

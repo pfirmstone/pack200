@@ -23,10 +23,10 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.ConstantPool.Entry;
-import com.sun.java.util.jar.pack.ConstantPool.Index;
+import au.net.zeus.util.jar.pack.ConstantPool.Entry;
+import au.net.zeus.util.jar.pack.ConstantPool.Index;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * Represents an attribute in a class-file.
@@ -716,7 +716,7 @@ class Attribute implements Comparable<Attribute> {
 
     public static
     class FormatException extends IOException {
-        @java.io.Serial
+//        @java.io.Serial
         private static final long serialVersionUID = -2542243830788066513L;
 
         private int ctype;

@@ -23,9 +23,7 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
-
-import sun.nio.cs.UTF_8;
+package au.net.zeus.util.jar.pack;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -62,7 +60,7 @@ import java.util.zip.GZIPOutputStream;
 @SuppressWarnings({"removal"})
 class Driver {
     private static final ResourceBundle RESOURCE =
-        ResourceBundle.getBundle("com.sun.java.util.jar.pack.DriverResource");
+        ResourceBundle.getBundle("au.net.zeus.util.jar.pack.DriverResource");
     private static boolean suppressDeprecateMsg = false;
 
     public static void main(String[] ava) throws IOException {
@@ -445,7 +443,7 @@ class Driver {
                     // Skip sig4, disks4, entries4, clen4, coff4, cmt2
                     i += 4+4+4+4+4+2;
                     if (i < tail.length)
-                        return new String(tail, i, tail.length-i, UTF_8.INSTANCE);
+                        return new String(tail, i, tail.length-i, "UTF8");
                     return "";
                 }
             }

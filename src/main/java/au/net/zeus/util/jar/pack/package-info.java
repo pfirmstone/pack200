@@ -98,4 +98,4 @@
  * <li>
  * @since 1.5</li>
  */
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;

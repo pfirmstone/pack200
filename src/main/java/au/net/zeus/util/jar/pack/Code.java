@@ -23,13 +23,13 @@
  * questions.
  */
 
-package com.sun.java.util.jar.pack;
+package au.net.zeus.util.jar.pack;
 
-import com.sun.java.util.jar.pack.Package.Class;
+import au.net.zeus.util.jar.pack.Package.Class;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
-import static com.sun.java.util.jar.pack.Constants.*;
+import static au.net.zeus.util.jar.pack.Constants.*;
 
 /**
  * Represents a chunk of bytecodes.
