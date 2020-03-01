@@ -14,3 +14,4 @@ NashornProfile.txt
 **/JTreport/**
 **/JTwork/**
 /target/
+/nb-configuration.xml
