@@ -47,8 +47,8 @@ import java.util.jar.JarOutputStream;
  * <p>
  * Here is an example using  packer and unpacker:
  * <pre>{@code
- *    import java.util.jar.Pack200;
- *    import java.util.jar.Pack200.*;
+ *    import au.net.zeus.util.jar.Pack200;
+ *    import au.net.zeus.util.jar.Pack200.*;
  *    ...
  *    // Create the Packer object
  *    Packer packer = Pack200.newPacker();
@@ -113,7 +113,7 @@ public abstract class Pack200 {
     /**
      * Obtain new instance of a class that implements Packer.
      * <ul>
-     * <li><p>If the system property {@systemProperty java.util.jar.Pack200.Packer}
+     * <li><p>If the system property au.net.zeus.util.jar.Pack200.Packer
      * is defined, then the value is taken to be the fully-qualified name
      * of a concrete implementation class, which must implement Packer.
      * This class is loaded and instantiated.  If this process fails
@@ -139,7 +139,7 @@ public abstract class Pack200 {
     /**
      * Obtain new instance of a class that implements Unpacker.
      * <ul>
-     * <li><p>If the system property {@systemProperty java.util.jar.Pack200.Unpacker}
+     * <li><p>If the system property au.net.zeus.util.jar.Pack200.Unpacker
      * is defined, then the value is taken to be the fully-qualified
      * name of a concrete implementation class, which must implement Unpacker.
      * The class is loaded and instantiated.  If this process fails
@@ -686,8 +686,8 @@ public abstract class Pack200 {
 
     // Private stuff....
 
-    private static final String PACK_PROVIDER = "java.util.jar.Pack200.Packer";
-    private static final String UNPACK_PROVIDER = "java.util.jar.Pack200.Unpacker";
+    private static final String PACK_PROVIDER = "au.net.zeus.util.jar.Pack200.Packer";
+    private static final String UNPACK_PROVIDER = "au.net.zeus.util.jar.Pack200.Unpacker";
 
     private static Class<?> packerImpl;
     private static Class<?> unpackerImpl;

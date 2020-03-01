@@ -1211,28 +1211,26 @@ class Package {
         // This keeps files of similar format near each other.
         // Put class files at the end, keeping their fixed order.
         // Be sure the JAR file's required manifest stays at the front. (4893051)
-        Collections.sort(files, new Comparator<>() {
-                public int compare(File r0, File r1) {
-                    // Get the file name.
-                    String f0 = r0.nameString;
-                    String f1 = r1.nameString;
-                    if (f0.equals(f1)) return 0;
-                    if (JarFile.MANIFEST_NAME.equals(f0))  return 0-1;
-                    if (JarFile.MANIFEST_NAME.equals(f1))  return 1-0;
-                    // Extract file basename.
-                    String n0 = f0.substring(1+f0.lastIndexOf('/'));
-                    String n1 = f1.substring(1+f1.lastIndexOf('/'));
-                    // Extract basename extension.
-                    String x0 = n0.substring(1+n0.lastIndexOf('.'));
-                    String x1 = n1.substring(1+n1.lastIndexOf('.'));
-                    int r;
-                    // Primary sort key is file extension.
-                    r = x0.compareTo(x1);
-                    if (r != 0)  return r;
-                    r = f0.compareTo(f1);
-                    return r;
-                }
-            });
+        Collections.sort(files, (File r0, File r1) -> {
+            // Get the file name.
+            String f0 = r0.nameString;
+            String f1 = r1.nameString;
+            if (f0.equals(f1)) return 0;
+            if (JarFile.MANIFEST_NAME.equals(f0))  return 0-1;
+            if (JarFile.MANIFEST_NAME.equals(f1))  return 1-0;
+            // Extract file basename.
+            String n0 = f0.substring(1+f0.lastIndexOf('/'));
+            String n1 = f1.substring(1+f1.lastIndexOf('/'));
+            // Extract basename extension.
+            String x0 = n0.substring(1+n0.lastIndexOf('.'));
+            String x1 = n1.substring(1+n1.lastIndexOf('.'));
+            int r;
+            // Primary sort key is file extension.
+            r = x0.compareTo(x1);
+            if (r != 0)  return r;
+            r = f0.compareTo(f1);
+            return r;
+        });
 
         // Add back the class stubs after sorting, before trimStubs.
         files.addAll(stubs);

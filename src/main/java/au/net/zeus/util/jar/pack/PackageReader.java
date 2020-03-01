@@ -1151,19 +1151,17 @@ class PackageReader extends BandStructure {
         return -1;
     }
 
-    Comparator<Entry> entryOutputOrder = new Comparator<>() {
-        public int compare(Entry e0, Entry e1) {
-            int k0 = getOutputIndex(e0);
-            int k1 = getOutputIndex(e1);
-            if (k0 >= 0 && k1 >= 0)
-                // If both have keys, use the keys.
-                return k0 - k1;
-            if (k0 == k1)
-                // If neither have keys, use their native tags & spellings.
-                return e0.compareTo(e1);
-            // Otherwise, the guy with the key comes first.
-            return (k0 >= 0)? 0-1: 1-0;
-        }
+    Comparator<Entry> entryOutputOrder = (Entry e0, Entry e1) -> {
+        int k0 = getOutputIndex(e0);
+        int k1 = getOutputIndex(e1);
+        if (k0 >= 0 && k1 >= 0)
+            // If both have keys, use the keys.
+            return k0 - k1;
+        if (k0 == k1)
+            // If neither have keys, use their native tags & spellings.
+            return e0.compareTo(e1);
+        // Otherwise, the guy with the key comes first.
+        return (k0 >= 0)? 0-1: 1-0;
     };
 
     void reconstructClass(Class cls) {

@@ -891,16 +891,20 @@ class PackageWriter extends BandStructure {
             defMap.entrySet().toArray(layoutsAndCounts);
             // Sort by count, most frequent first.
             // Predefs. participate in this sort, though it does not matter.
-            Arrays.sort(layoutsAndCounts,
-                        new Comparator<>() {
-                public int compare(Map.Entry<Attribute.Layout, int[]> e0,
-                                   Map.Entry<Attribute.Layout, int[]> e1) {
-                    // Primary sort key is count, reversed.
-                    int r = -(e0.getValue()[0] - e1.getValue()[0]);
-                    if (r != 0)  return r;
-                    return e0.getKey().compareTo(e1.getKey());
-                }
-            });
+            Arrays.sort(
+                layoutsAndCounts, 
+                (
+                    Map.Entry<Attribute.Layout,
+                    int[]> e0,
+                    Map.Entry<Attribute.Layout, int[]> e1
+                ) -> 
+                    {
+                        // Primary sort key is count, reversed.
+                        int r = -(e0.getValue()[0] - e1.getValue()[0]);
+                        if (r != 0)  return r;
+                        return e0.getKey().compareTo(e1.getKey());
+                    }
+            );
             attrCounts[i] = new int[attrIndexLimit[i]+layoutsAndCounts.length];
             for (int j = 0; j < layoutsAndCounts.length; j++) {
                 Map.Entry<Attribute.Layout, int[]> e = layoutsAndCounts[j];
@@ -1010,20 +1014,18 @@ class PackageWriter extends BandStructure {
         int numAttrDefs = defList.size();
         Object[][] defs = new Object[numAttrDefs][];
         defList.toArray(defs);
-        Arrays.sort(defs, new Comparator<>() {
-            public int compare(Object[] a0, Object[] a1) {
-                // Primary sort key is attr def header.
-                @SuppressWarnings("unchecked")
-                int r = ((Comparable)a0[0]).compareTo(a1[0]);
-                if (r != 0)  return r;
-                Integer ind0 = attrIndexTable.get(a0[1]);
-                Integer ind1 = attrIndexTable.get(a1[1]);
-                // Secondary sort key is attribute index.
-                // (This must be so, in order to keep overflow attr order.)
-                assert(ind0 != null);
-                assert(ind1 != null);
-                return ind0.compareTo(ind1);
-            }
+        Arrays.sort(defs, (Object[] a0, Object[] a1) -> {
+            // Primary sort key is attr def header.
+            @SuppressWarnings("unchecked")
+                    int r = ((Comparable)a0[0]).compareTo(a1[0]);
+            if (r != 0)  return r;
+            Integer ind0 = attrIndexTable.get(a0[1]);
+            Integer ind1 = attrIndexTable.get(a1[1]);
+            // Secondary sort key is attribute index.
+            // (This must be so, in order to keep overflow attr order.)
+            assert(ind0 != null);
+            assert(ind1 != null);
+            return ind0.compareTo(ind1);
         });
         attrDefsWritten = new Attribute.Layout[numAttrDefs];
         try (PrintStream dump = !optDumpBands ? null

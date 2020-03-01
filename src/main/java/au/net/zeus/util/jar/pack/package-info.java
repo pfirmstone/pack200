@@ -92,10 +92,10 @@
  *
  * <li>
  * Hypertext Transfer Protocol -- HTTP/1.1 : <a href="http://www.ietf.org/rfc/rfc2616.txt">
- * http://www.ietf.org/rfc/rfc2616.txt
+ * http://www.ietf.org/rfc/rfc2616.txt</a>
  * </ul>
  *
- * <li>
- * @since 1.5</li>
+ * 
+ * @since 1.5
  */
 package au.net.zeus.util.jar.pack;

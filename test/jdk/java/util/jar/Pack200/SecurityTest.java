@@ -28,7 +28,7 @@
  * @summary Verify Pack200 initialization with security manager
  */
 
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 
 public class SecurityTest {
     public static void main(String... args) {
