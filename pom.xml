@@ -36,7 +36,7 @@
 
     <name>PACK200-EX-OPENJDK</name>
     <description>Tool and library to compress and uncompress jar files using
-    Pack200.  https://docs.oracle.com/javase/8/docs/technotes/guides/pack200/pack-spec.html
+    Pack200.  https://docs.oracle.com/en/java/javase/13/docs/specs/pack-spec.html
     </description>
 
     <properties>
@@ -66,7 +66,7 @@
                   <useDefaultManifestFile>true</useDefaultManifestFile>
               </configuration>
             </plugin>
-            <!--<plugin>
+            <plugin>
               <groupId>biz.aQute.bnd</groupId>
               <artifactId>bnd-maven-plugin</artifactId>
               <version>3.2.0</version>
@@ -77,7 +77,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->       
+            </plugin>     
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -164,15 +164,17 @@
     <reporting>
         <plugins>
              <plugin>
+              <groupId>org.apache.maven.plugins</groupId> 
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.4</version>
+              <version>3.1.1</version>
               <configuration>
+                <source>8</source>
                 <links>
-                  <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                  <link>https://docs.oracle.com/en/java/javase/13/docs/api/</link>
                 </links>
                 <detectLinks>true</detectLinks>
                 <breakiterator>true</breakiterator>
-                <top><![CDATA[<h2>JGDMS Project ${project.version} API Documentation</h2>]]></top>
+                <top><![CDATA[<h2>Pack200 ${project.version} Documentation</h2>]]></top>
                 <footer><![CDATA[<i>Copyright &copy;, multiple authors.</i>]]></footer>
               </configuration>
             </plugin>
