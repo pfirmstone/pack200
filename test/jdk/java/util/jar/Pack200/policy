@@ -1,0 +1,9 @@
+grant {
+    permission java.util.PropertyPermission "au.net.zeus.util.jar.Pack200.Packer", "read";
+    permission java.lang.RuntimePermission "createSecurityManager";
+    permission java.lang.RuntimePermission "setSecurityManager";
+    permission java.util.PropertyPermission "au.net.zeus.util.jar.pack.disable.native", "read";
+    permission java.util.PropertyPermission "au.net.zeus.util.jar.pack.verbose", "read";
+    permission java.util.PropertyPermission "au.net.zeus.util.jar.pack.class.format.error", "read";
+    permission java.util.PropertyPermission "au.net.zeus.util.jar.Pack200.Unpacker", "read";
+};

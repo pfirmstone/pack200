@@ -24,8 +24,8 @@
 /**
  * @test
  * @bug 8179645
- * @run main/othervm SecurityTest
  * @summary Verify Pack200 initialization with security manager
+ * @run main/othervm/policy=policy SecurityTest
  */
 
 import au.net.zeus.util.jar.Pack200;

@@ -16,19 +16,6 @@
 
 keys=2d dnd headful i18n intermittent printer randomness jfr
 
-# Tests that must run in othervm mode
-othervm.dirs=java/awt java/beans javax/accessibility javax/imageio javax/sound javax/swing javax/print \
-com/apple/laf com/sun/java/accessibility com/sun/java/swing sanity/client demo/jfc \
-javax/management sun/awt sun/java2d javax/xml/jaxp/testng/validation java/lang/ProcessHandle
-
-# Tests that cannot run concurrently
-exclusiveAccess.dirs=java/math/BigInteger/largeMemory \
-java/rmi/Naming java/util/prefs sun/management/jmxremote \
-sun/tools/jstatd sun/tools/jcmd sun/tools/jhsdb sun/tools/jhsdb/heapconfig \
-sun/tools/jinfo sun/tools/jmap sun/tools/jps sun/tools/jstack sun/tools/jstat \
-com/sun/tools/attach sun/security/mscapi java/util/stream java/util/Arrays/largeMemory \
-java/util/BitSet/stream javax/rmi
-
 # Group definitions
 groups=TEST.groups
 
@@ -37,7 +24,6 @@ groups=TEST.groups
 # Source files for classes that will be used at the beginning of each test suite run,
 # to determine additional characteristics of the system for use with the @requires tag.
 # Note: compiled bootlibs code will be located in the folder 'bootClasses'
-requires.extraPropDefns = ../jtreg-ext/requires/VMProps.java
 requires.extraPropDefns.bootlibs = ../lib/sun \
     ../lib/jdk/test/lib/Platform.java \
     ../lib/jdk/test/lib/Container.java
