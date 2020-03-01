@@ -33,13 +33,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@SuppressWarnings({"removal"})
 class NativeUnpack {
     // Pointer to the native unpacker obj
     private long unpackerPtr;

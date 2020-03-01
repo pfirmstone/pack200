@@ -46,7 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 import static au.net.zeus.util.jar.pack.Constants.*;
 import java.util.LinkedList;
 
@@ -54,7 +54,6 @@ import java.util.LinkedList;
  * Define the structure and ordering of "bands" in a packed file.
  * @author John Rose
  */
-@SuppressWarnings({"removal"})
 abstract
 class BandStructure {
     static final int MAX_EFFORT = 9;

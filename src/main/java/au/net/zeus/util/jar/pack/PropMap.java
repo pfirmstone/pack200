@@ -41,13 +41,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 
 /**
  * Control block for publishing Pack200 options to the other classes.
  */
-
-@SuppressWarnings({"removal"})
 final class PropMap implements SortedMap<String, String>  {
     private final TreeMap<String, String> theMap = new TreeMap<>();;
 

@@ -50,14 +50,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /** Command line interface for Pack200.
  */
-
-@SuppressWarnings({"removal"})
 class Driver {
     private static final ResourceBundle RESOURCE =
         ResourceBundle.getBundle("au.net.zeus.util.jar.pack.DriverResource");

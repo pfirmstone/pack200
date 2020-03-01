@@ -198,7 +198,7 @@ class Utils {
     }
 
     static final Pack200Logger log
-        = new Pack200Logger("java.util.jar.Pack200");
+        = new Pack200Logger("au.net.zeus.util.jar.Pack200");
 
     // Returns the Max Version String of this implementation
     static String getVersionString() {

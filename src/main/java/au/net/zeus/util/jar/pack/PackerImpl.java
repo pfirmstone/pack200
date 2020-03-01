@@ -45,7 +45,7 @@ import java.util.SortedMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
-import java.util.jar.Pack200;
+import au.net.zeus.util.jar.Pack200;
 
 
 /*
@@ -54,8 +54,6 @@ import java.util.jar.Pack200;
  * @author John Rose
  * @author Kumar Srinivasan
  */
-
-@SuppressWarnings({"removal"})
 public class PackerImpl  extends TLGlobals implements Pack200.Packer {
 
     /**
