@@ -44,6 +44,7 @@ import au.net.zeus.util.jar.Pack200;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
+import org.osgi.service.component.annotations.Component;
 
 /*
  * Implementation of the Pack provider.
@@ -51,6 +52,7 @@ import java.util.zip.ZipEntry;
  * @author John Rose
  * @author Kumar Srinivasan
  */
+@Component(service = Pack200.Unpacker.class)
 public class UnpackerImpl extends TLGlobals implements Pack200.Unpacker {
 
     public UnpackerImpl() {}

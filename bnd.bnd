@@ -1,4 +1,3 @@
-Bundle-Activator: org.apache.river.resource.OSGiServiceIterator
 -exportcontents: \
     au.net.zeus.util.jar
 -sources: true

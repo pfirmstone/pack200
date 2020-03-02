@@ -548,7 +548,7 @@ class Utils {
         }
         return alist;
     }
-
+    
     static String getUnpack200Cmd() {
         return getAjavaCmd("unpack200");
     }
@@ -570,16 +570,16 @@ class Utils {
     }
 
     static String getAjavaCmd(String cmdStr) {
-        File binDir = new File(JavaHome, "bin");
+            File binDir = new File(JavaHome, "bin");
         File unpack200File = IsWindows
-                ? new File(binDir, cmdStr + ".exe")
-                : new File(binDir, cmdStr);
+                    ? new File(binDir, cmdStr + ".exe")
+                    : new File(binDir, cmdStr);
 
         String cmd = unpack200File.getAbsolutePath();
-        if (!unpack200File.canExecute()) {
-            throw new RuntimeException("please check" +
-                    cmd + " exists and is executable");
-        }
+            if (!unpack200File.canExecute()) {
+                throw new RuntimeException("please check" +
+                        cmd + " exists and is executable");
+            }
         return cmd;
     }
 

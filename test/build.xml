@@ -24,7 +24,6 @@
             <arg value="-cpa:${pack.home}/Pack200-ex-openjdk${version}.jar"/>
             <arg value="-timeout:16"/>
             <arg value="-Djtreg.dir=${jtreg.dir}"/>
-            <arg value="-Dtest.src=${jtreg.dir}"/>
             <arg value="-Dscratch.dir=${jtreg.dir}/JTwork/scratch"/>
             <arg value="-ignore:quiet"/>
             <arg value="-xml:verify"/>           

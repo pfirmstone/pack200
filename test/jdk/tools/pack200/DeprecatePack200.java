@@ -22,12 +22,13 @@
  */
 
 /**
- * @test
- * @bug 8199871
- * @summary pack200 and unpack200 should print out deprecate warning
- * @modules jdk.pack
- * @compile -XDignore.symbol.file Utils.java
- * @run testng DeprecatePack200
+ * Leading ampersands removed, don't need to test for deprecation.
+ * test
+ * bug 8199871
+ * summary pack200 and unpack200 should print out deprecate warning
+ * modules jdk.pack
+ * compile -XDignore.symbol.file Utils.java
+ * run testng DeprecatePack200
  */
 
 import java.util.List;

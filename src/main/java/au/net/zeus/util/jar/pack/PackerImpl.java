@@ -46,6 +46,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import au.net.zeus.util.jar.Pack200;
+import org.osgi.service.component.annotations.Component;
 
 
 /*
@@ -54,6 +55,7 @@ import au.net.zeus.util.jar.Pack200;
  * @author John Rose
  * @author Kumar Srinivasan
  */
+@Component(service = Pack200.Packer.class)
 public class PackerImpl  extends TLGlobals implements Pack200.Packer {
 
     /**

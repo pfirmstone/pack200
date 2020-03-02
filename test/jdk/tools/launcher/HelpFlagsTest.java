@@ -23,8 +23,12 @@
  */
 
 /**
- * @test
- * @summary Validate and test -?, -h and --help flags. All tools in the jdk
+ * Leading ampersands have been stripped as this tests the jdk tools, however
+ * should we develop a tool of our own to replace the pack200 command line tools
+ * the information in this file may be relevant.
+ * 
+ * test
+ * summary Validate and test -?, -h and --help flags. All tools in the jdk
  *          should take the same flags to display the help message. These
  *          flags should be documented in the printed help message. The
  *          tool should quit without error code after displaying the
@@ -35,8 +39,8 @@
  *          in future. I.e., check that the tool returns with the same
  *          return code as called with an invalid flag, and does not
  *          print anything containing '-help' in that case.
- * @compile HelpFlagsTest.java
- * @run main HelpFlagsTest
+ * compile HelpFlagsTest.java
+ * run main HelpFlagsTest
  */
 
 import java.io.File;
