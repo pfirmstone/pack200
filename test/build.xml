@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="test" basedir="." default="build">
+<project name="test" basedir=".." default="build">
     <!-- jtreg environment setup -->
     <property environment="env"/>
     <!-- location of jtreg tests -->
-    <property name="jtreg.dir" location="jdk" />
+    <property name="jtreg.dir" location="test/jdk" />
     <!-- location of Pack200 jar file -->
-    <property name="pack.home" location="../target"/>
+    <property name="pack.home" location="target"/>
     <property name="version" value="-1.14.0-SNAPSHOT"/>
     <property name="jtreg.home" location="${env.JT_HOME}" />
     <!-- probably should rename the environment variable, to enable using the correct -->
     <!-- jdk version for the jtreg tests -->
     <property name="jdk.home" location="${env.JAVA_HOME}"/>
-    <target name="jtreg" depends="" description="Run jtreg tests">
+    <target name="test" depends="" description="Run jtreg tests">
         <taskdef name="jtreg" classname="com.sun.javatest.regtest.Main$$Ant"
                 classpath="${jtreg.home}/jtreg.jar" />
         
