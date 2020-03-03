@@ -351,15 +351,24 @@ class Driver {
                     in = new GZIPInputStream(in);
                 }
                 String outfile = newfile.isEmpty()? jarfile: newfile;
+                String fileName = null;
                 OutputStream fileOut;
                 if (outfile.equals("-"))
                     fileOut = System.out;
                 else
+                    fileName = outfile;
                     fileOut = new FileOutputStream(outfile);
                 fileOut = new BufferedOutputStream(fileOut);
                 try (JarOutputStream out = new JarOutputStream(fileOut)) {
                     junpack.unpack(in, out);
                     // p200 closes in but not out
+                } catch (IOException ex){ 
+                    // Cleanup required for PackChecksum test, bugs 8000650 8150469
+                    if (fileName != null){
+                        File file = new File(fileName);
+                        file.delete();
+                    }
+                    throw ex;
                 }
                 // At this point, we have a good jarfile (or newfile, if -r)
             }

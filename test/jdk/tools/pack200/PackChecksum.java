@@ -64,7 +64,10 @@ public class PackChecksum {
         File testPack = new File("out.jar.pack.gz");
 
         cmdsList.clear();
-        cmdsList.add(Utils.getPack200Cmd());
+        cmdsList.add(Utils.getJavaCmd());
+        cmdsList.add("-jar");
+        cmdsList.add(Utils.getPackJar());
+        cmdsList.add("--pack");
         // force multiple segments
         cmdsList.add("--segment-limit=100");
         cmdsList.add(testPack.getName());
@@ -73,7 +76,10 @@ public class PackChecksum {
 
         File destFile = new File("dst.jar");
         cmdsList.clear();
-        cmdsList.add(Utils.getUnpack200Cmd());
+        cmdsList.add(Utils.getJavaCmd());
+        cmdsList.add("-jar");
+        cmdsList.add(Utils.getPackJar());
+        cmdsList.add("--unpack");
         cmdsList.add(testPack.getName());
         cmdsList.add(destFile.getName());
         try {
@@ -100,7 +106,10 @@ public class PackChecksum {
 
         cmdsList.clear();
         // Create .pack file
-        cmdsList.add(Utils.getPack200Cmd());
+        cmdsList.add(Utils.getJavaCmd());
+        cmdsList.add("-jar");
+        cmdsList.add(Utils.getPackJar());
+        cmdsList.add("--pack");
         cmdsList.add(testPack.getName());
         cmdsList.add(testFile.getName());
         Utils.runExec(cmdsList);
@@ -130,7 +139,10 @@ public class PackChecksum {
             dstFile.delete();
         }
         cmdsList.clear();
-        cmdsList.add(Utils.getUnpack200Cmd());
+        cmdsList.add(Utils.getJavaCmd());
+        cmdsList.add("-jar");
+        cmdsList.add(Utils.getPackJar());
+        cmdsList.add("--unpack");
         cmdsList.add(testPack.getName());
         cmdsList.add(dstFile.getName());
 

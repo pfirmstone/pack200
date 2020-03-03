@@ -74,6 +74,10 @@ class Utils {
     static final boolean Is64Bit =
             System.getProperty("sun.arch.data.model", "32").equals("64");
     static final File   JavaSDK =  new File(JavaHome);
+    
+    static final String PackHome = System.getProperty("pack.home");
+    static final String PackVersion = System.getProperty("pack.version");
+    static final String FileSeparator = System.getProperty("file.separator");
 
     static final String PACK_FILE_EXT   = ".pack";
     static final String JAVA_FILE_EXT   = ".java";
@@ -549,10 +553,18 @@ class Utils {
         return alist;
     }
     
+    static String getPackJar() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(PackHome).append(FileSeparator);
+        sb.append("Pack200-ex-openjdk").append(PackVersion);
+        sb.append(".jar");
+        return sb.toString();
+    }
+    
     static String getUnpack200Cmd() {
         return getAjavaCmd("unpack200");
     }
-
+    
     static String getPack200Cmd() {
         return getAjavaCmd("pack200");
     }
@@ -570,7 +582,7 @@ class Utils {
     }
 
     static String getAjavaCmd(String cmdStr) {
-            File binDir = new File(JavaHome, "bin");
+        File binDir = new File(JavaHome, "bin");
         File unpack200File = IsWindows
                     ? new File(binDir, cmdStr + ".exe")
                     : new File(binDir, cmdStr);

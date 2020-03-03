@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import au.net.zeus.util.jar.Pack200;
 import au.net.zeus.util.jar.Pack200.Packer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /*
@@ -64,16 +65,19 @@ public class Pack200Props {
         log.info("creating jar");
         File testJar = Utils.createRtJar();
 
-        log.info("using pack200: " + Utils.getPack200Cmd());
         List<String> cmdsList = new ArrayList<>();
-        cmdsList.add(Utils.getPack200Cmd());
-        cmdsList.add("-J-Xshare:off");
-        cmdsList.add("-J-Xmx1280m");
+        cmdsList.add(Utils.getJavaCmd());
+        cmdsList.add("-Xshare:off");
+        cmdsList.add("-Xmx1280m");
+        cmdsList.add("-jar");
+        cmdsList.add(Utils.getPackJar());
+        cmdsList.add("--pack");
         cmdsList.add("--effort=1");
         cmdsList.add("--verbose");
         cmdsList.add("--no-gzip");
         cmdsList.add(outFile.getName());
         cmdsList.add(testJar.getAbsolutePath());
+        log.log(Level.INFO, "using pack200: {0}", cmdsList.toString());
         List<String> outList = Utils.runExec(cmdsList);
 
         log.info("verifying");

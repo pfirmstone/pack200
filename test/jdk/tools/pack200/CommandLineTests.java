@@ -130,10 +130,11 @@ public class CommandLineTests {
                 Utils.copyFile(bakFile, f);
             }
             cmdsList.clear();
-            cmdsList.add(Utils.getPack200Cmd());
-            cmdsList.add("-J-esa");
-            cmdsList.add("-J-ea");
-            cmdsList.add(Utils.Is64Bit ? "-J-Xmx1g" : "-J-Xmx512m");
+            cmdsList.add(Utils.getJavaCmd());
+            cmdsList.add("-esa");
+            cmdsList.add("-ea");
+            cmdsList.add(Utils.Is64Bit ? "-Xmx1g" : "-Xmx512m");
+            cmdsList.add(Utils.getPackJar());
             cmdsList.add("--repack");
             cmdsList.add("--config-file=" + ConfigFile.getAbsolutePath());
             if (jre) {

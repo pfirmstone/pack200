@@ -70,12 +70,14 @@ public class AttributeTests {
      * this test checks to see if we get the expected strings for output
      */
     static void test6746111() throws Exception {
-        String pack200Cmd = Utils.getPack200Cmd();
         File badAttrJar = new File(".", "badattr.jar");
         Utils.copyFile(new File(Utils.TEST_SRC_DIR, "badattr.jar"), badAttrJar);
         File testJar = new File(".", "test.jar");
         List<String> cmds = new ArrayList<String>();
-        cmds.add(pack200Cmd);
+        cmds.add(Utils.getJavaCmd());
+        cmds.add("-jar");
+        cmds.add(Utils.getPackJar());
+        cmds.add("--pack");
         cmds.add("--repack");
         cmds.add("-v");
         cmds.add(testJar.getAbsolutePath());

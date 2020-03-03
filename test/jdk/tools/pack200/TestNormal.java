@@ -40,13 +40,14 @@ public class TestNormal {
 
         try {
             String jarCmd = Utils.getJarCmd();
-            String packCmd = Utils.getPack200Cmd();
+            String javaCmd = Utils.getJavaCmd();
+            String packJar = Utils.getPackJar();
 
             // create the original jar
             Utils.runExec(jarCmd, "cf", "original.jar", "-C", testdir, ".");
 
             // create the reference jar
-            Utils.runExec(packCmd, "-r", "repacked.jar", "original.jar");
+            Utils.runExec(javaCmd, "-jar", packJar, "--pack", "-r", "repacked.jar", "original.jar");
 
             // create the normalized jar using jar(1)
             Utils.runExec(jarCmd, "cnf", "normalized.jar", "-C", testdir, ".");

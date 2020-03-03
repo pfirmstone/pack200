@@ -23,6 +23,8 @@
             <!--<arg value="-Dpolicy.provider=net.jini.security.policy.DynamicPolicyProvider"/>-->
             <arg value="-cpa:${pack.home}/Pack200-ex-openjdk${version}.jar"/>
             <arg value="-timeout:16"/>
+            <arg value="-Dpack.home=${pack.home}"/>
+            <arg value="-Dpack.version=${version}"/>
             <arg value="-Djtreg.dir=${jtreg.dir}"/>
             <arg value="-Dscratch.dir=${jtreg.dir}/JTwork/scratch"/>
             <arg value="-ignore:quiet"/>
@@ -40,6 +42,7 @@
              * 30 - Include additional test debugging output, including time. -->
             <arg value="-DtestLevel=30"/>
             <!--<arg value="-J-Djavatest.maxOutputSize=300000"/>-->
+            <!--<arg value="-Bug:8000650"/>-->
         </jtreg>
         <fail if="jtreg.fail"/>
     </target>

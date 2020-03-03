@@ -109,9 +109,12 @@ public class MultiRelease {
                 File outFile = new File(tcwd, "test-repacked" + Utils.JAR_FILE_EXT);
                 List<String> cmdsList = new ArrayList<>();
 
-                cmdsList.add(Utils.getPack200Cmd());
-                cmdsList.add("-J-ea");
-                cmdsList.add("-J-esa");
+                cmdsList.add(Utils.getJavaCmd());
+                cmdsList.add("-ea");
+                cmdsList.add("-esa");
+                cmdsList.add("-jar");
+                cmdsList.add(Utils.getPackJar());
+                cmdsList.add("--pack");
                 cmdsList.add("-v");
                 cmdsList.add("--repack");
                 cmdsList.add(outFile.getAbsolutePath());
