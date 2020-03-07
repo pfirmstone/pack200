@@ -16,10 +16,12 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.IOException;
+
 /**
  * Represents a problem with a Pack200 coding/decoding issue.
  */
-public class Pack200Exception extends Exception {
+public class Pack200Exception extends IOException {
 
     private static final long serialVersionUID = 5168177401552611803L;
 
@@ -31,6 +33,10 @@ public class Pack200Exception extends Exception {
      */
     public Pack200Exception(String message) {
         super(message);
+    }
+    
+    public Pack200Exception(String message, Exception cause){
+        super(message, cause);
     }
 
 }

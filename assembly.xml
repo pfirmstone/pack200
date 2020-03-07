@@ -1,0 +1,16 @@
+<assembly>
+    <id>1</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>false</useStrictFiltering>
+            <includes>
+                <include>asm:*</include>
+            </includes>
+            <outputDirectory>deps</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+</assembly>

@@ -41,7 +41,7 @@ import org.objectweb.asm.Type;
  */
 class Segment extends ClassVisitor {
 
-    private final static int opcode = Opcodes.ASM6;
+    private final static int OPCODE = Opcodes.ASM7;
     private SegmentHeader segmentHeader;
     private CpBands cpBands;
     private AttributeDefinitionBands attributeDefinitionBands;
@@ -58,7 +58,7 @@ class Segment extends ClassVisitor {
     private Attribute[] nonStandardAttributePrototypes;
  
     public Segment() {
-	super(opcode);
+	super(OPCODE);
     }
     
     /**
@@ -166,7 +166,7 @@ class Segment extends ClassVisitor {
             }
             try {
                 classReader.accept(this, attributes, flags);
-            } catch (PassException pe) {
+            } catch (PassException e) {
                 // Pass this class through as-is rather than packing it
                 // TODO: probably need to deal with any inner classes
                 classBands.removeCurrentClass();
@@ -184,7 +184,7 @@ class Segment extends ClassVisitor {
                     }
                 }
                 if(!found) {
-                    throw new Pack200Exception("Error passing file " + name);
+                    throw new Pack200Exception("Error passing file " + name, e);
                 }
             }
         }
@@ -280,7 +280,7 @@ class Segment extends ClassVisitor {
     public class SegmentMethodVisitor extends MethodVisitor {
 	
 	public SegmentMethodVisitor() {
-	    super(opcode);
+	    super(OPCODE);
 	}
 
 	@Override
@@ -487,20 +487,20 @@ class Segment extends ClassVisitor {
 
         public SegmentAnnotationVisitor(int context, String desc,
                 boolean visible) {
-	    super(opcode);
+	    super(OPCODE);
             this.context = context;
             this.desc = desc;
             this.visible = visible;
         }
 
         public SegmentAnnotationVisitor(int context) {
-	    super(opcode);
+	    super(OPCODE);
             this.context = context;
         }
 
         public SegmentAnnotationVisitor(int context, int parameter,
                 String desc, boolean visible) {
-	    super(opcode);
+	    super(OPCODE);
             this.context = context;
             this.parameter = parameter;
             this.desc = desc;
@@ -570,7 +570,7 @@ class Segment extends ClassVisitor {
 	private class AnnotationVisitorImpl extends AnnotationVisitor {
 
 	    public AnnotationVisitorImpl() {
-		super(opcode);
+		super(OPCODE);
 	    }
 
 	    @Override
@@ -619,7 +619,7 @@ class Segment extends ClassVisitor {
         private List T;
 
         public ArrayVisitor(List caseArrayN, List T, List nameRU, List values) {
-	    super(opcode);
+	    super(OPCODE);
             this.caseArrayN = caseArrayN;
             this.T = T;
             this.nameRU = nameRU;
@@ -675,7 +675,7 @@ class Segment extends ClassVisitor {
     public class SegmentFieldVisitor extends FieldVisitor {
 	
 	public SegmentFieldVisitor() {
-	    super(opcode);
+	    super(OPCODE);
 	}
 
 	@Override

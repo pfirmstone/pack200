@@ -1631,6 +1631,14 @@ class ClassBands extends BandSet {
     public int[] getClassThisInts() {
         return classThisInts;
     }
+    
+    public int getClassThisInt(int index){
+        if ( index >= classThisInts.length ) 
+            throw new IndexOutOfBoundsException(
+                    "Array index out of bounds, length ="
+                            + classThisInts.length + " requested: " + index);
+        return classThisInts[index];
+    }
 
     public int[] getCodeMaxNALocals() {
         return codeMaxNALocals;

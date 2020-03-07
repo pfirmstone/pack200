@@ -124,7 +124,8 @@ public class Segment {
         }
         // build constant pool
         ClassConstantPool cp = classFile.pool;
-        int fullNameIndexInCpClass = classBands.getClassThisInts()[classNum];
+
+        int fullNameIndexInCpClass = classBands.getClassThisInt(classNum);
         String fullName = cpBands.getCpClass()[fullNameIndexInCpClass];
         // SourceFile attribute
         int beginSimpleClassName = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then

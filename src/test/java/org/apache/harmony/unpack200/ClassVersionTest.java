@@ -26,8 +26,16 @@ import org.apache.harmony.unpack200.Segment;
 
 public class ClassVersionTest extends TestCase {
 
-    private static final int JAVA_15 = 49;
-
+    private static final int JAVA_5 = 49;
+    private static final int JAVA_6 = 50;
+    private static final int JAVA_7 = 51;
+    private static final int JAVA_8 = 52;
+    private static final int JAVA_9 = 53;
+    private static final int JAVA_10 = 54;
+    private static final int JAVA_11 = 55;
+    private static final int JAVA_12 = 56;
+    private static final int JAVA_13 = 57;
+    
     public void testCorrectVersionOfSegment() throws IOException {
         InputStream in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/unpack200/Segment.class");
@@ -37,7 +45,7 @@ public class ClassVersionTest extends TestCase {
         din.readShort(); // MINOR -- don't care
 //        assertTrue("Class file has been compiled with Java 1.5 compatibility"
 //                + " instead of 1.4 or lower", din.readShort() < JAVA_15);
-	assertTrue("Class not compiled with Java 1.5 compatibility", din.readShort() == JAVA_15);
+	assertTrue("Class not compiled with Java 13 compatibility", din.readShort() <= JAVA_13);
     }
 
     public void testCorrectVersionOfTest() throws IOException {
@@ -49,7 +57,7 @@ public class ClassVersionTest extends TestCase {
         din.readShort(); // MINOR -- don't care
 //        assertTrue("Class file has been compiled with Java 1.5 compatibility"
 //                + " instead of 1.4 or lower", din.readShort() < JAVA_15);
-	assertTrue("Class not compiled with Java 1.5 compatibility", din.readShort() == JAVA_15);
+	assertTrue("Class not compiled with Java 13 compatibility", din.readShort() <= JAVA_13);
         din.close();
     }
 
@@ -64,8 +72,8 @@ public class ClassVersionTest extends TestCase {
 
             assertEquals(0xCAFEBABE, din.readInt());
             din.readShort(); // MINOR -- don't care
-            assertTrue("Class file needs 1.5 compatibility",
-                    din.readShort() >= JAVA_15);
+            assertTrue("Class file needs 1.6 compatibility",
+                    din.readShort() >= JAVA_6);
             din.close();
         }
     }
