@@ -22,7 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarOutputStream;
-import au.net.zeus.util.jar.Pack200.Unpacker;
+import io.pack200.Pack200.Unpacker;
 
 import org.apache.harmony.pack200.Pack200Adapter;
 import org.apache.harmony.pack200.Pack200Exception;
@@ -37,7 +37,7 @@ public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see au.net.zeus.util.jar.Pack200.Unpacker#unpack(java.io.InputStream,
+	 * @see io.pack200.Pack200.Unpacker#unpack(java.io.InputStream,
 	 *      java.util.jar.JarOutputStream)
 	 */
 	public void unpack(InputStream in, JarOutputStream out) throws IOException {
@@ -57,7 +57,7 @@ public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see au.net.zeus.util.jar.Pack200.Unpacker#unpack(java.io.File,
+	 * @see io.pack200.Pack200.Unpacker#unpack(java.io.File,
 	 *      java.util.jar.JarOutputStream)
 	 */
 	public void unpack(File file, JarOutputStream out) throws IOException {

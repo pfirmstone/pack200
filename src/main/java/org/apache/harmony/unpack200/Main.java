@@ -14,9 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.jretools.unpack200;
-
-import org.apache.harmony.unpack200.Archive;
+package org.apache.harmony.unpack200;
 
 /**
  * Main class for the unpack200 command line tool
@@ -72,7 +70,7 @@ public class Main {
             printUsage();
             return;
         }
-        Archive archive = new Archive(inputFileName, outputFileName);
+        UnPack200Archive archive = new UnPack200Archive(inputFileName, outputFileName);
         archive.setRemovePackFile(removePackFile);
         archive.setVerbose(verbose);
         archive.setQuiet(quiet);

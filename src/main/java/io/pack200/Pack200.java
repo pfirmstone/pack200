@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package java.util.jar;
+package io.pack200;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -24,8 +24,11 @@ import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.SortedMap;
-
-import org.apache.harmony.archive.internal.nls.Messages;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import org.apache.harmony.pack200.Pack200PackerAdapter;
+import org.apache.harmony.unpack200.Pack200UnpackerAdapter;
 
 /**
  * Class factory for {@link Pack200.Packer} and {@link Pack200.Unpacker}.
@@ -54,19 +57,19 @@ public abstract class Pack200 {
      * @return an instance of {@code Packer}
      */
     public static Pack200.Packer newPacker() {
-        return (Packer) AccessController
-                .doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
+        return AccessController
+                .doPrivileged(new PrivilegedAction<Pack200.Packer>() {
+                    public Pack200.Packer run() {
                         String className = System
                                 .getProperty(SYSTEM_PROPERTY_PACKER,
                                         "org.apache.harmony.pack200.Pack200PackerAdapter"); //$NON-NLS-1$
                         try {
                             // TODO Not sure if this will cause problems with
                             // loading the packer
-                            return ClassLoader.getSystemClassLoader()
-                                    .loadClass(className).newInstance();
+                            return (Packer) ClassLoader.getSystemClassLoader()
+                                    .loadClass(className).getDeclaredConstructor().newInstance();
                         } catch (Exception e) {
-                            throw new Error(Messages.getString("archive.3E",className), e); //$NON-NLS-1$
+                            return new Pack200PackerAdapter();
                         }
                     }
                 });
@@ -84,17 +87,17 @@ public abstract class Pack200 {
      * @return a instance of {@code Unpacker}.
      */
     public static Pack200.Unpacker newUnpacker() {
-        return (Unpacker) AccessController
-                .doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
+        return AccessController
+                .doPrivileged(new PrivilegedAction<Pack200.Unpacker>() {
+                    public Pack200.Unpacker run() {
                         String className = System
                                 .getProperty(SYSTEM_PROPERTY_UNPACKER,
                                         "org.apache.harmony.unpack200.Pack200UnpackerAdapter");//$NON-NLS-1$
                         try {
-                            return ClassLoader.getSystemClassLoader()
-                                    .loadClass(className).newInstance();
+                            return (Unpacker) ClassLoader.getSystemClassLoader()
+                                    .loadClass(className).getDeclaredConstructor().newInstance();
                         } catch (Exception e) {
-                            throw new Error(Messages.getString("archive.3E",className), e); //$NON-NLS-1$
+                            return new Pack200UnpackerAdapter();
                         }
                     }
                 });

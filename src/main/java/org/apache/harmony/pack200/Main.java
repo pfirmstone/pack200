@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.jretools.pack200;
+package org.apache.harmony.pack200;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import org.apache.harmony.pack200.PackingOptions;
 
 /**
  * Main class for the pack200 command line tool.
@@ -40,7 +39,7 @@ public class Main {
         String inputFileName = null;
         String outputFileName = null;
         PackingOptions options = new PackingOptions();
-        String value = null;
+        String value;
         boolean repack = false;
 
         for (int i = 0; i < args.length; i++) {
@@ -321,7 +320,7 @@ public class Main {
         JarFile jarFile = new JarFile(inputFileName);
         OutputStream outputStream = new BufferedOutputStream(
                 new FileOutputStream(outputFileName));
-        org.apache.harmony.pack200.Archive archive = new org.apache.harmony.pack200.Archive(
+        org.apache.harmony.pack200.Pack200Archive archive = new org.apache.harmony.pack200.Pack200Archive(
                 jarFile, outputStream, options);
         archive.pack();
     }
@@ -342,13 +341,13 @@ public class Main {
 
         // packing
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        org.apache.harmony.pack200.Archive packer;
+        org.apache.harmony.pack200.Pack200Archive packer;
         // this is a workround for compatibility with RI
         if (0 == options.getEffort()) {
-            packer = new org.apache.harmony.pack200.Archive(new JarInputStream(
+            packer = new org.apache.harmony.pack200.Pack200Archive(new JarInputStream(
                     new FileInputStream(inputFileName)), outputStream, options);
         } else {
-            packer = new org.apache.harmony.pack200.Archive(new JarFile(
+            packer = new org.apache.harmony.pack200.Pack200Archive(new JarFile(
                     inputFileName), outputStream, options);
         }
         packer.pack();
@@ -358,7 +357,7 @@ public class Main {
                 outputStream.toByteArray());
         JarOutputStream jarOutputStream = new JarOutputStream(
                 new FileOutputStream(outputFileName));
-        org.apache.harmony.unpack200.Archive unpacker = new org.apache.harmony.unpack200.Archive(
+        org.apache.harmony.unpack200.UnPack200Archive unpacker = new org.apache.harmony.unpack200.UnPack200Archive(
                 inputStream, jarOutputStream);
         unpacker.setVerbose(options.isVerbose());
         // set deflate_hint option

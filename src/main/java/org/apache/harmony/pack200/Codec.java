@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.harmony.pack200.Segment.PassException;
 
 
 /**

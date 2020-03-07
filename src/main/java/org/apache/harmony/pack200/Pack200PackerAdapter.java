@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
-import au.net.zeus.util.jar.Pack200.Packer;
+import io.pack200.Pack200.Packer;
 
 
 /**
