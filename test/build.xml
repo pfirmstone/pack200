@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="test" basedir=".." default="build">
+    <!-- jtreg environment setup -->
+    <property environment="env"/>
+    <!-- location of jtreg tests -->
+    <property name="jtreg.dir" location="test/jdk" />
+    <!-- location of Pack200 jar file -->
+    <property name="pack.home" location="target"/>
+    <property name="version" value="-1.14.0-SNAPSHOT"/>
+    <property name="jtreg.home" location="${env.JT_HOME}" />
+    <!-- probably should rename the environment variable, to enable using the correct -->
+    <!-- jdk version for the jtreg tests -->
+    <property name="jdk.home" location="${env.JAVA_HOME}"/>
+    <target name="test" depends="" description="Run jtreg tests">
+        <taskdef name="jtreg" classname="com.sun.javatest.regtest.Main$$Ant"
+                classpath="${jtreg.home}/jtreg.jar" />
+        
+        <jtreg  dir="${jtreg.dir}" verbose="all" failonerror="false"
+                errorproperty="jtreg.fail" failureproperty="jtreg.fail"
+                reportdir="${jtreg.dir}/JTreport" workdir="${jtreg.dir}/JTwork"
+                jdk="${jdk.home}">
+            <!--<arg value="-Dpolicy.provider=net.jini.security.policy.DynamicPolicyProvider"/>-->
+            <arg value="-cpa:${pack.home}/Pack200-ex-openjdk${version}.jar"/>
+            <arg value="-timeout:16"/>
+            <arg value="-Dpack.home=${pack.home}"/>
+            <arg value="-Dpack.version=${version}"/>
+            <arg value="-Djtreg.dir=${jtreg.dir}"/>
+            <arg value="-Dscratch.dir=${jtreg.dir}/JTwork/scratch"/>
+            <arg value="-ignore:quiet"/>
+            <arg value="-xml:verify"/>           
+            <!-- This argument only runs the tests that failed on the last test run -->
+            <!--<arg value="-status:fail"/>-->
+            <arg value="-Djava.security.debug=access,failure"/>
+            <!-- -DtestLevel Controls the amount of information printed.
+             *  0 - Just print final results and failures.
+             *  5 - Include stack trace for unexpected exceptions (default).
+             * 10 - Print test number and class for each new top level test class
+             * 15 - Print test number and class for every test.
+             * 20 - Print full test entry and pass/fail for every test.
+             * 25 - Include passing results.
+             * 30 - Include additional test debugging output, including time. -->
+            <arg value="-DtestLevel=30"/>
+            <!--<arg value="-J-Djavatest.maxOutputSize=300000"/>-->
+            <!--<arg value="-Bug:8000650"/>-->
+        </jtreg>
+        <fail if="jtreg.fail"/>
+    </target>
+    <target name="clean" description="Clean up jtreg tests">
+        <delete dir="${jtreg.dir}/JTreport"/>
+        <delete dir="${jtreg.dir}/JTwork"/>
+    </target>
+</project>
