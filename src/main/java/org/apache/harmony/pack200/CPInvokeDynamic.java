@@ -15,10 +15,42 @@
  */
 package org.apache.harmony.pack200;
 
-/**
- *
- * @author peter
- */
-public class CPInvokeDynamic {
-    
+class CPInvokeDynamic extends ConstantPoolEntry implements Comparable {
+
+    private final CPBootstrapMethod bootstrapMethod;
+    private final CPNameAndType nameAndType;
+
+    CPInvokeDynamic(CPBootstrapMethod bootstrapMethod, CPNameAndType nameAndType) {
+        this.bootstrapMethod = bootstrapMethod;
+        this.nameAndType = nameAndType;
+    }
+
+    public CPBootstrapMethod getBootstrapMethod() { return bootstrapMethod; }
+    public CPNameAndType getNameAndType() { return nameAndType; }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof CPInvokeDynamic)) return 0;
+        CPInvokeDynamic that = (CPInvokeDynamic) o;
+        int cmp = bootstrapMethod.compareTo(that.bootstrapMethod);
+        if (cmp != 0) return cmp;
+        return nameAndType.compareTo(that.nameAndType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CPInvokeDynamic)) return false;
+        CPInvokeDynamic that = (CPInvokeDynamic) o;
+        return bootstrapMethod.equals(that.bootstrapMethod) && nameAndType.equals(that.nameAndType);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * bootstrapMethod.hashCode() + nameAndType.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "InvokeDynamic:" + bootstrapMethod + ":" + nameAndType;
+    }
 }

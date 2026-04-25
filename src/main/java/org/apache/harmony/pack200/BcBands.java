@@ -67,6 +67,7 @@ class BcBands extends BandSet {
     private final List<CPMethodOrField> bcSuperMethod = new ArrayList<CPMethodOrField>();
     private List<Integer> bcInitRefInt = Collections.emptyList();
     private final List<CPMethodOrField> bcInitRef = new ArrayList<CPMethodOrField>();
+    private final List<CPInvokeDynamic> bcIndyRef = new ArrayList<CPInvokeDynamic>();
 
     private String currentClass;
     private String superClass;
@@ -229,6 +230,10 @@ class BcBands extends BandSet {
         out.write(encodedBand);
         PackingUtils.log("Wrote " + encodedBand.length
                 + " bytes from bcInitRef[" + bcInitRef.size() + "]");
+
+        encodedBand = encodeBandInt("bcIndyRef", cpEntryListToArray(bcIndyRef), Codec.DELTA5);
+        out.write(encodedBand);
+        PackingUtils.log("Wrote " + encodedBand.length + " bytes from bcIndyRef[" + bcIndyRef.size() + "]");
 
         // out.write(encodeBandInt(cpEntryintegerListToArray(bcEscRef),
         // Codec.UNSIGNED5));
@@ -506,8 +511,8 @@ class BcBands extends BandSet {
 		break;
 	    case 185: // invokeinterface
 		throw new IllegalStateException("Opcode 185: invokeinterface declared");
-	    case 186: // invokedynamic
-		throw new UnsupportedOperationException("Invoke dynamic not supported yet");
+	    case 186: // invokedynamic - handled via visitInvokeDynamicInsn
+		break;
 	    }
 	}
         updateRenumbering();
@@ -590,8 +595,11 @@ class BcBands extends BandSet {
         updateRenumbering();
     }
 
-    void visitInvokeDynamicInsn(String p1, String p2, Handle p3, Object[] p4) {
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object[] bsmArgs) {
+	byteCodeOffset += 5; // invokedynamic opcode (1) + index (2) + zeros (2)
+	updateRenumbering();
+	bcCodes.add(186); // invokedynamic
+	bcIndyRef.add(cpBands.getCPInvokeDynamic(name, desc, bsm, bsmArgs));
     }
 
 }

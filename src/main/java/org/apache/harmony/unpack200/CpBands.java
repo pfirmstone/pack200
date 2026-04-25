@@ -155,25 +155,24 @@ class CpBands extends BandSet {
         parseCpField(in);
         parseCpMethod(in);
         parseCpIMethod(in);
-	parseCpMethodHandle(in);
-	parseCpMethodType(in);
-	parseCpBootstrapMethod(in);
 	
-	// cp_AnyMember group method handle component.
+	// cp_AnyMember group offsets (field, method, imethod)
 	anyMemberFieldOffset = 0;
 	anyMemberMethodOffset = cpFieldClass.length;
 	anyMemberIMethodOffset = cpMethodClass.length + anyMemberMethodOffset;
 	
-	parseCpMethodHandle(in);
-	parseCpMethodType(in);
-	
-	// cp_LoadableValue group for bootstrap method argument
+	// cp_LoadableValue group offsets
 	lVIntOffset = 0;
 	lVFloatOffset = cpInt.length;
 	lVLongOffset = cpFloat.length + lVFloatOffset;
 	lVDoubleOffset = cpLong.length + lVLongOffset;
 	lVStringOffset = cpDouble.length + lVDoubleOffset;
 	lVClassOffset = cpString.length + lVStringOffset;
+	// lVMethodHandleOffset and lVMethodTypeOffset set after parsing MethodHandle/MethodType
+	
+	parseCpMethodHandle(in);
+	parseCpMethodType(in);
+	
 	lVMethodHandleOffset = cpClass.length + lVClassOffset;
 	lVMethodTypeOffset = cpMethodHandleRefkindInts.length + lVMethodHandleOffset;
 	

@@ -243,7 +243,8 @@ public abstract class ByteCodeForm {
                 184, -1, -1 });
         byteCodeArray[185] = new IMethodRefForm(185, "invokeinterface",
                 new int[] { 185, -1, -1, /* count */-1, 0 });
-        byteCodeArray[186] = new NoArgumentForm(186, "xxxunusedxxx");
+        byteCodeArray[186] = new InvokeDynamicForm(186, "invokedynamic",
+                new int[] { 186, -1, -1, 0, 0 });
         byteCodeArray[187] = new NewClassRefForm(187, "new", new int[] { 187,
                 -1, -1 });
         byteCodeArray[188] = new ByteForm(188, "newarray",

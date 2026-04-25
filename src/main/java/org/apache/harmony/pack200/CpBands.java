@@ -67,6 +67,11 @@ class CpBands extends BandSet {
 
     private final Map objectsToCPConstant = new HashMap();
 
+    private final Map<String, CPMethodHandle> keysToCpMethodHandle = new HashMap<String, CPMethodHandle>();
+    private final Map<String, CPMethodType> keysToCpMethodType = new HashMap<String, CPMethodType>();
+    private final Map<String, CPBootstrapMethod> keysToCpBootstrapMethod = new HashMap<String, CPBootstrapMethod>();
+    private final Map<String, CPInvokeDynamic> keysToCpInvokeDynamic = new HashMap<String, CPInvokeDynamic>();
+
     private final Segment segment;
 
     public CpBands(Segment segment, int effort) {
@@ -116,6 +121,12 @@ class CpBands extends BandSet {
 	writeCpMethodOrField(cp_Field, out, "cp_Field");
 	writeCpMethodOrField(cp_Method, out, "cp_Method");
 	writeCpMethodOrField(cp_Imethod, out, "cp_Imethod");
+	if (!cp_MethodHandle.isEmpty()) {
+	    writeCpMethodHandle(out);
+	    writeCpMethodType(out);
+	    writeCpBootstrapMethod(out);
+	    writeCpInvokeDynamic(out);
+	}
     }
 
     private void writeCpUtf8(OutputStream out) throws IOException,
@@ -423,6 +434,10 @@ class CpBands extends BandSet {
 	segmentHeader.setCp_Field_count(cp_Field.size());
 	segmentHeader.setCp_Method_count(cp_Method.size());
 	segmentHeader.setCp_Imethod_count(cp_Imethod.size());
+	segmentHeader.setCp_MethodHandle_count(cp_MethodHandle.size());
+	segmentHeader.setCp_MethodType_count(cp_MethodType.size());
+	segmentHeader.setCp_BootstrapMethod_count(cp_BootstrapMethod.size());
+	segmentHeader.setCp_InvokeDynamic_count(cp_InvokeDynamic.size());
     }
 
     private void removeSignaturesFromCpUTF8() {
@@ -440,7 +455,8 @@ class CpBands extends BandSet {
     private void addIndices() {
 	Set[] sets = new Set[]{cp_Utf8, cp_Int, cp_Float, cp_Long, cp_Double,
 	    cp_String, cp_Class, cp_Signature, cp_Descr, cp_Field,
-	    cp_Method, cp_Imethod};
+	    cp_Method, cp_Imethod, cp_MethodHandle, cp_MethodType,
+	    cp_BootstrapMethod, cp_InvokeDynamic};
 	for (int i = 0; i < sets.length; i++) {
 	    int j = 0;
 	    for (Iterator iterator = sets[i].iterator(); iterator.hasNext();) {
@@ -713,6 +729,178 @@ class CpBands extends BandSet {
     public boolean existsCpClass(String className) {
 	CPClass cpClass = (CPClass) stringsToCpClass.get(className);
 	return cpClass != null;
+    }
+
+    public CPMethodHandle getCPMethodHandle(int refKind, Handle handle) {
+	String key = refKind + ":" + handle.getOwner() + ":" + handle.getName() + ":" + handle.getDesc();
+	CPMethodHandle existing = keysToCpMethodHandle.get(key);
+	if (existing != null) return existing;
+	CPClass owner = getCPClass(handle.getOwner());
+	CPMethodOrField member;
+	if (refKind <= 4) { // field: H_GETFIELD=1, H_GETSTATIC=2, H_PUTFIELD=3, H_PUTSTATIC=4
+	    member = getCPField(owner, handle.getName(), handle.getDesc());
+	} else if (refKind == 9) { // H_INVOKEINTERFACE
+	    member = getCPIMethod(owner, handle.getName(), handle.getDesc());
+	} else { // 5-8: virtual, static, special, newinvokespecial
+	    member = getCPMethod(owner, handle.getName(), handle.getDesc());
+	}
+	CPMethodHandle mh = new CPMethodHandle(refKind, member);
+	cp_MethodHandle.add(mh);
+	keysToCpMethodHandle.put(key, mh);
+	return mh;
+    }
+
+    public CPMethodType getCPMethodType(String descriptor) {
+	CPMethodType existing = keysToCpMethodType.get(descriptor);
+	if (existing != null) return existing;
+	CPSignature sig = getCPSignature(descriptor);
+	CPMethodType mt = new CPMethodType(sig);
+	cp_MethodType.add(mt);
+	keysToCpMethodType.put(descriptor, mt);
+	return mt;
+    }
+
+    public CPBootstrapMethod getCPBootstrapMethod(Handle bsmHandle, Object[] bsmArgs) {
+	CPMethodHandle mh = getCPMethodHandle(bsmHandle.getTag(), bsmHandle);
+	ConstantPoolEntry[] args = new ConstantPoolEntry[bsmArgs.length];
+	for (int i = 0; i < bsmArgs.length; i++) {
+	    args[i] = getLoadableConstant(bsmArgs[i]);
+	}
+	String key = mh.toString() + java.util.Arrays.toString(args);
+	CPBootstrapMethod existing = keysToCpBootstrapMethod.get(key);
+	if (existing != null) return existing;
+	CPBootstrapMethod bsm = new CPBootstrapMethod(mh, args);
+	cp_BootstrapMethod.add(bsm);
+	keysToCpBootstrapMethod.put(key, bsm);
+	return bsm;
+    }
+
+    private ConstantPoolEntry getLoadableConstant(Object value) {
+	if (value instanceof Handle) {
+	    Handle h = (Handle) value;
+	    return getCPMethodHandle(h.getTag(), h);
+	}
+	if (value instanceof Type && ((Type) value).getSort() == Type.METHOD) {
+	    return getCPMethodType(((Type) value).getDescriptor());
+	}
+	return getConstant(value);
+    }
+
+    public CPInvokeDynamic getCPInvokeDynamic(String name, String desc, Handle bsm, Object[] bsmArgs) {
+	CPBootstrapMethod bootstrapMethod = getCPBootstrapMethod(bsm, bsmArgs);
+	CPNameAndType nat = getCPNameAndType(name, desc);
+	String key = bootstrapMethod.toString() + ":" + name + ":" + desc;
+	CPInvokeDynamic existing = keysToCpInvokeDynamic.get(key);
+	if (existing != null) return existing;
+	CPInvokeDynamic id = new CPInvokeDynamic(bootstrapMethod, nat);
+	cp_InvokeDynamic.add(id);
+	keysToCpInvokeDynamic.put(key, id);
+	return id;
+    }
+
+    private void writeCpMethodHandle(OutputStream out) throws IOException, Pack200Exception {
+	PackingUtils.log("Writing " + cp_MethodHandle.size() + " MethodHandle entries...");
+	int[] refkind = new int[cp_MethodHandle.size()];
+	int[] member = new int[cp_MethodHandle.size()];
+	int fieldCount = cp_Field.size();
+	int methodCount = cp_Method.size();
+	int i = 0;
+	for (Iterator it = cp_MethodHandle.iterator(); it.hasNext(); ) {
+	    CPMethodHandle mh = (CPMethodHandle) it.next();
+	    refkind[i] = mh.getReferenceKind();
+	    int rk = mh.getReferenceKind();
+	    if (rk <= 4) { // field ref
+		member[i] = mh.getMember().getIndex();
+	    } else if (rk == 9) { // imethod ref
+		member[i] = fieldCount + methodCount + mh.getMember().getIndex();
+	    } else { // method ref (5-8)
+		member[i] = fieldCount + mh.getMember().getIndex();
+	    }
+	    i++;
+	}
+	byte[] encodedBand = encodeBandInt("cp_MethodHandle_refkind", refkind, Codec.DELTA5);
+	out.write(encodedBand);
+	encodedBand = encodeBandInt("cp_MethodHandle_member", member, Codec.UDELTA5);
+	out.write(encodedBand);
+    }
+
+    private void writeCpMethodType(OutputStream out) throws IOException, Pack200Exception {
+	PackingUtils.log("Writing " + cp_MethodType.size() + " MethodType entries...");
+	int[] form = new int[cp_MethodType.size()];
+	int i = 0;
+	for (Iterator it = cp_MethodType.iterator(); it.hasNext(); ) {
+	    CPMethodType mt = (CPMethodType) it.next();
+	    form[i++] = mt.getIndexInCpSignature();
+	}
+	byte[] encodedBand = encodeBandInt("cp_MethodType_form", form, Codec.DELTA5);
+	out.write(encodedBand);
+    }
+
+    private void writeCpBootstrapMethod(OutputStream out) throws IOException, Pack200Exception {
+	PackingUtils.log("Writing " + cp_BootstrapMethod.size() + " BootstrapMethod entries...");
+	int[] bsmRef = new int[cp_BootstrapMethod.size()];
+	int[] bsmArgCount = new int[cp_BootstrapMethod.size()];
+	int intBase = 0;
+	int floatBase = cp_Int.size();
+	int longBase = floatBase + cp_Float.size();
+	int doubleBase = longBase + cp_Long.size();
+	int stringBase = doubleBase + cp_Double.size();
+	int classBase = stringBase + cp_String.size();
+	int mhBase = classBase + cp_Class.size();
+	int mtBase = mhBase + cp_MethodHandle.size();
+	int i = 0;
+	java.util.List<int[]> argBands = new java.util.ArrayList<int[]>();
+	for (Iterator it = cp_BootstrapMethod.iterator(); it.hasNext(); ) {
+	    CPBootstrapMethod bsm = (CPBootstrapMethod) it.next();
+	    bsmRef[i] = bsm.getMethodHandle().getIndex();
+	    ConstantPoolEntry[] args = bsm.getArgs();
+	    bsmArgCount[i] = args.length;
+	    int[] argIndices = new int[args.length];
+	    for (int j = 0; j < args.length; j++) {
+		argIndices[j] = loadableValueIndex(args[j], intBase, floatBase, longBase,
+			doubleBase, stringBase, classBase, mhBase, mtBase);
+	    }
+	    argBands.add(argIndices);
+	    i++;
+	}
+	byte[] encodedBand = encodeBandInt("cp_BootstrapMethod_ref", bsmRef, Codec.DELTA5);
+	out.write(encodedBand);
+	encodedBand = encodeBandInt("cp_BootstrapMethod_arg_count", bsmArgCount, Codec.UDELTA5);
+	out.write(encodedBand);
+	for (int[] argBand : argBands) {
+	    encodedBand = encodeBandInt("cp_BootstrapMethod_arg", argBand, Codec.DELTA5);
+	    out.write(encodedBand);
+	}
+    }
+
+    private int loadableValueIndex(ConstantPoolEntry entry, int intBase, int floatBase,
+	    int longBase, int doubleBase, int stringBase, int classBase, int mhBase, int mtBase) {
+	if (entry instanceof CPInt) return intBase + entry.getIndex();
+	if (entry instanceof CPFloat) return floatBase + entry.getIndex();
+	if (entry instanceof CPLong) return longBase + entry.getIndex();
+	if (entry instanceof CPDouble) return doubleBase + entry.getIndex();
+	if (entry instanceof CPString) return stringBase + entry.getIndex();
+	if (entry instanceof CPClass) return classBase + entry.getIndex();
+	if (entry instanceof CPMethodHandle) return mhBase + entry.getIndex();
+	if (entry instanceof CPMethodType) return mtBase + entry.getIndex();
+	throw new IllegalArgumentException("Not a loadable value: " + entry);
+    }
+
+    private void writeCpInvokeDynamic(OutputStream out) throws IOException, Pack200Exception {
+	PackingUtils.log("Writing " + cp_InvokeDynamic.size() + " InvokeDynamic entries...");
+	int[] spec = new int[cp_InvokeDynamic.size()];
+	int[] descr = new int[cp_InvokeDynamic.size()];
+	int i = 0;
+	for (Iterator it = cp_InvokeDynamic.iterator(); it.hasNext(); ) {
+	    CPInvokeDynamic id = (CPInvokeDynamic) it.next();
+	    spec[i] = id.getBootstrapMethod().getIndex();
+	    descr[i] = id.getNameAndType().getIndex();
+	    i++;
+	}
+	byte[] encodedBand = encodeBandInt("cp_InvokeDynamic_spec", spec, Codec.DELTA5);
+	out.write(encodedBand);
+	encodedBand = encodeBandInt("cp_InvokeDynamic_descr", descr, Codec.UDELTA5);
+	out.write(encodedBand);
     }
 
 }

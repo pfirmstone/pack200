@@ -126,6 +126,17 @@ public class ClassConstantPool {
         if (entryIndex != null) {
             return entryIndex.intValue() + 1;
         }
+        // Debug: search for any equal entry
+        if (entry instanceof org.apache.harmony.unpack200.bytecode.CPClass ||
+            entry instanceof org.apache.harmony.unpack200.bytecode.CPNameAndType) {
+            for (java.util.Iterator it = indexCache.keySet().iterator(); it.hasNext(); ) {
+                Object k = it.next();
+                if (k.getClass() == entry.getClass() && k.equals(entry)) {
+                    System.err.println("DEBUG indexOf: found by equals but not by hashCode! entry=" + entry + " h=" + entry.hashCode() + " k=" + k + " kh=" + k.hashCode());
+                    return ((Integer)indexCache.get(k)).intValue() + 1;
+                }
+            }
+        }
         return -1;
     }
 

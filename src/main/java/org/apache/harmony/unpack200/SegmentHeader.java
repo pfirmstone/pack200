@@ -121,8 +121,8 @@ class SegmentHeader {
         parseArchiveFileCounts(in);
         parseArchiveSpecialCounts(in);
         parseCpCounts(in);
+	parseCpExtraCounts(in); // Java 7, 8 and 9. Must be before parseClassCounts.
         parseClassCounts(in);
-	parseCpExtraCounts(in); // Java 7, 8 and 9.
 
         if (getBandHeadersSize() > 0) {
             byte[] bandHeaders = new byte[getBandHeadersSize()];

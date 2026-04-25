@@ -38,8 +38,11 @@ import java.util.zip.ZipEntry;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
+import org.apache.harmony.unpack200.bytecode.BootstrapMethodsAttribute;
+import org.apache.harmony.unpack200.bytecode.CPBootstrapMethod;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPField;
+import org.apache.harmony.unpack200.bytecode.CPInvokeDynamic;
 import org.apache.harmony.unpack200.bytecode.CPMethod;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
@@ -300,6 +303,39 @@ public class Segment {
             classFile.attributes = newAttrs;
             cp.addWithNestedEntries(innerClassesAttribute);
         }
+
+        // Build BootstrapMethods attribute if the class uses invokedynamic
+        List bootstrapMethods = new ArrayList();
+        List cpEntries = cp.entries();
+        for (int i = 0, size = cpEntries.size(); i < size; i++) {
+            ClassFileEntry entry = (ClassFileEntry) cpEntries.get(i);
+            if (entry instanceof CPInvokeDynamic) {
+                CPBootstrapMethod bsm = ((CPInvokeDynamic) entry).getCpBootstrapMethod();
+                if (!bootstrapMethods.contains(bsm)) {
+                    bootstrapMethods.add(bsm);
+                }
+            }
+        }
+        if (!bootstrapMethods.isEmpty()) {
+            System.err.println("DEBUG Segment: " + bootstrapMethods.size() + " unique BSMs");
+            // Assign local bootstrap_method_attr_index (0-based within this class)
+            for (int i = 0; i < bootstrapMethods.size(); i++) {
+                CPBootstrapMethod bsmEntry = (CPBootstrapMethod) bootstrapMethods.get(i);
+                bsmEntry.setBootstrapMethodAttrIndex(i);
+                System.err.println("  BSM[" + i + "] = " + bsmEntry);
+            }
+            BootstrapMethodsAttribute bootstrapMethodsAttribute =
+                    new BootstrapMethodsAttribute(bootstrapMethods);
+            Attribute[] originalAttrs = classFile.attributes;
+            Attribute[] newAttrs = new Attribute[originalAttrs.length + 1];
+            for (int i = 0, length = originalAttrs.length; i < length; i++) {
+                newAttrs[i] = originalAttrs[i];
+            }
+            newAttrs[newAttrs.length - 1] = bootstrapMethodsAttribute;
+            classFile.attributes = newAttrs;
+            cp.addWithNestedEntries(bootstrapMethodsAttribute);
+        }
+
         // sort CP according to cp_All
         cp.resolve(this);
         // NOTE the indexOf is only valid after the cp.resolve()

@@ -90,6 +90,9 @@ public abstract class CPRef extends CPAnyMemberRef {
         super.resolve(pool);
         nameAndTypeIndex = pool.indexOf(nameAndType);
         classNameIndex = pool.indexOf(className);
+        if (nameAndTypeIndex == -1 || classNameIndex == -1) {
+            System.err.println("DEBUG CPRef.resolve MISSING: " + this + " className=" + className + " classIdx=" + classNameIndex + " nat=" + nameAndType + " natIdx=" + nameAndTypeIndex);
+        }
     }
 
     protected String cachedToString;

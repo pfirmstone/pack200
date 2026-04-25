@@ -15,15 +15,34 @@
  */
 package org.apache.harmony.pack200;
 
-import java.util.List;
+class CPMethodType extends ConstantPoolEntry implements Comparable {
 
-/**
- *
- * @author peter
- */
-class CPMethodType extends CPSignature {
+    private final CPSignature signature;
 
-    public CPMethodType(String signature, CPUTF8 signatureForm, List classes) {
-	super(signature, signatureForm, classes);
+    CPMethodType(CPSignature signature) {
+        this.signature = signature;
     }
+
+    public CPSignature getSignature() { return signature; }
+
+    /** Index of the underlying signature in cp_Signature (for cp_MethodType_form band). */
+    public int getIndexInCpSignature() { return signature.getIndex(); }
+
+    @Override
+    public int compareTo(Object o) {
+        if (!(o instanceof CPMethodType)) return 0;
+        return signature.compareTo(((CPMethodType) o).signature);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CPMethodType)) return false;
+        return signature.equals(((CPMethodType) o).signature);
+    }
+
+    @Override
+    public int hashCode() { return signature.hashCode(); }
+
+    @Override
+    public String toString() { return "MethodType:" + signature; }
 }

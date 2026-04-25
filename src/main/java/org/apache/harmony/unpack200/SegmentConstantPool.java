@@ -344,6 +344,8 @@ public class SegmentConstantPool {
             return bands.cpMethodValue(index);
         } else if (cp == CP_IMETHOD) {
             return bands.cpIMethodValue(index);
+        } else if (cp == CP_INVOKE_DYNAMIC) {
+            return bands.cpInvokeDynamicValue(index);
         } else {
             // etc
             throw new Error("Get value incomplete");

@@ -36,6 +36,15 @@ public class CPInvokeDynamic extends ConstantPoolEntry {
     }
     
     @Override
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+	return new ClassFileEntry[] { cpNameAndTypeValue };
+    }
+
+    public CPBootstrapMethod getCpBootstrapMethod() {
+	return cpBootstrapMethodValue;
+    }
+
+    @Override
     protected void resolve(ClassConstantPool pool) {
 	bootstrap_method_attr_index = cpBootstrapMethodValue.getBootstrapMethodAttrIndex();
 	cpNameAndTypeIndex = pool.indexOf(cpNameAndTypeValue);

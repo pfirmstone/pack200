@@ -33,6 +33,11 @@ public class CPMethodType extends CPLoadableValue {
     }
     
     @Override
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+	return new ClassFileEntry[] { cp_Signature };
+    }
+
+    @Override
     protected void resolve(ClassConstantPool pool) {
 	super.resolve(pool);
 	cp_signature_index = pool.indexOf(cp_Signature);

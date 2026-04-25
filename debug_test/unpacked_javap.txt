@@ -1,0 +1,216 @@
+Classfile /home/runner/work/pack200/pack200/debug_test/unpacked_LambdaSubject.class
+  Last modified Apr 25, 2026; size 1945 bytes
+  SHA-256 checksum f79ea9b7f4fe835d5924586454bb5eb1700e5eb6c9a9211f11f7825cd61148e6
+  Compiled from "LambdaSubject.java"
+public class roundtrip.LambdaSubject
+  minor version: 0
+  major version: 55
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #10                         // roundtrip/LambdaSubject
+  super_class: #33                        // java/lang/Object
+  interfaces: 0, fields: 0, methods: 6, attributes: 3
+Constant pool:
+   #1 = String             #31            // world
+Error: invalid index #65535
+Error: invalid index #65535
+   #2 = Methodref          #65535.#65535  // ???.???
+Error: invalid index #65535
+Error: invalid index #65535
+   #3 = Methodref          #65535.#65535  // ???.???
+Error: invalid index #65535
+   #4 = Methodref          #7.#65535      // java/lang/invoke/StringConcatFactory.???
+   #5 = Utf8               ()V
+   #6 = Methodref          #10.#8         // roundtrip/LambdaSubject.lambda$supplier$0:(Ljava/lang/String;)Ljava/lang/String;
+   #7 = Class              #21            // java/lang/invoke/StringConcatFactory
+   #8 = NameAndType        #23:#9         // lambda$supplier$0:(Ljava/lang/String;)Ljava/lang/String;
+   #9 = Utf8               (Ljava/lang/String;)Ljava/lang/String;
+  #10 = Class              #27            // roundtrip/LambdaSubject
+  #11 = Utf8               Hello, \u0001
+  #12 = Utf8               apply
+  #13 = Utf8               compare
+  #14 = Utf8               (Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;
+  #15 = Utf8               get
+  #16 = Utf8               greet
+  #17 = Utf8               java/lang/Object
+  #18 = Utf8               java/lang/String
+  #19 = Utf8               java/lang/invoke/LambdaMetafactory
+  #20 = Utf8               java/lang/invoke/MethodHandles$Lookup
+  #21 = Utf8               java/lang/invoke/StringConcatFactory
+  #22 = Utf8               java/util/List
+  #23 = Utf8               lambda$supplier$0
+  #24 = Utf8               makeConcatWithConstants
+  #25 = Utf8               metafactory
+  #26 = Utf8               methodRef
+  #27 = Utf8               roundtrip/LambdaSubject
+  #28 = Utf8               sort
+  #29 = Utf8               sorted
+  #30 = Utf8               supplier
+  #31 = Utf8               world
+  #32 = String             #11            // Hello, \u0001
+  #33 = Class              #17            // java/lang/Object
+  #34 = Class              #20            // java/lang/invoke/MethodHandles$Lookup
+  #35 = Class              #22            // java/util/List
+  #36 = Utf8               ()Ljava/lang/Object;
+  #37 = Utf8               ()Ljava/lang/String;
+  #38 = Utf8               ()Ljava/util/Comparator;
+  #39 = Utf8               (Ljava/util/Comparator;)V
+  #40 = Utf8               ()Ljava/util/function/Function;
+  #41 = Utf8               ()Ljava/util/function/Supplier;
+  #42 = Utf8               (Ljava/lang/Object;)Ljava/lang/Object;
+  #43 = Utf8               (Ljava/lang/Object;Ljava/lang/Object;)I
+  #44 = Utf8               (Ljava/lang/String;Ljava/lang/String;)I
+  #45 = Utf8               ()Ljava/util/function/Supplier<Ljava/lang/String;>;
+  #46 = Utf8               (Ljava/util/List;)Ljava/util/List;
+  #47 = Utf8               (Ljava/lang/String;)Ljava/util/function/Supplier;
+  #48 = Utf8               ()Ljava/util/function/Function<Ljava/lang/String;Ljava/lang/String;>;
+  #49 = Utf8               (Ljava/util/List<Ljava/lang/String;>;)Ljava/util/List<Ljava/lang/String;>;
+Error: invalid index #65535
+  #50 = NameAndType        #65535:#5      // ???:()V
+  #51 = NameAndType        #13:#38        // compare:()Ljava/util/Comparator;
+  #52 = NameAndType        #28:#39        // sort:(Ljava/util/Comparator;)V
+  #53 = NameAndType        #12:#40        // apply:()Ljava/util/function/Function;
+  #54 = NameAndType        #24:#9         // makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+  #55 = NameAndType        #15:#47        // get:(Ljava/lang/String;)Ljava/util/function/Supplier;
+Error: invalid index #65535
+  #56 = Methodref          #33.#50        // java/lang/Object.???:()V
+  #57 = InterfaceMethodref #35.#52        // java/util/List.sort:(Ljava/util/Comparator;)V
+Error: invalid index #65535
+Error: invalid index #65535
+  #58 = MethodHandle       5:#2           // REF_invokeVirtual ???.???
+Error: invalid index #65535
+Error: invalid index #65535
+  #59 = MethodHandle       6:#3           // REF_invokeStatic ???.???
+Error: invalid index #65535
+  #60 = MethodHandle       6:#4           // REF_invokeStatic java/lang/invoke/StringConcatFactory.???
+Error: invalid index #65535
+  #61 = MethodHandle       6:#65535       // ???
+  #62 = MethodHandle       6:#6           // REF_invokeStatic roundtrip/LambdaSubject.lambda$supplier$0:(Ljava/lang/String;)Ljava/lang/String;
+  #63 = MethodType         #36            //  ()Ljava/lang/Object;
+  #64 = MethodType         #37            //  ()Ljava/lang/String;
+  #65 = MethodType         #42            //  (Ljava/lang/Object;)Ljava/lang/Object;
+  #66 = MethodType         #43            //  (Ljava/lang/Object;Ljava/lang/Object;)I
+  #67 = MethodType         #9             //  (Ljava/lang/String;)Ljava/lang/String;
+  #68 = MethodType         #44            //  (Ljava/lang/String;Ljava/lang/String;)I
+  #69 = InvokeDynamic      #1:#55         // #1:get:(Ljava/lang/String;)Ljava/util/function/Supplier;
+  #70 = InvokeDynamic      #2:#53         // #2:apply:()Ljava/util/function/Function;
+  #71 = InvokeDynamic      #3:#51         // #3:compare:()Ljava/util/Comparator;
+  #72 = InvokeDynamic      #0:#54         // #0:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+  #73 = Utf8               BootstrapMethods
+  #74 = Utf8               Code
+  #75 = Utf8               InnerClasses
+  #76 = Utf8               LambdaSubject.java
+  #77 = Utf8               LineNumberTable
+  #78 = Utf8               LocalVariableTable
+  #79 = Utf8               Lookup
+  #80 = Utf8               Signature
+  #81 = Utf8               SourceFile
+  #82 = Utf8               java/lang/invoke/MethodHandles
+  #83 = Class              #82            // java/lang/invoke/MethodHandles
+{
+Error: invalid index #65535
+  public void ???();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+Error: invalid index #65535
+         1: invokespecial #56                 // Method java/lang/Object.???:()V
+         4: return
+      LineNumberTable:
+        line 6: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+
+  public static java.lang.String greet(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokedynamic #72,  0             // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
+         6: areturn
+      LineNumberTable:
+        line 7: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+
+  public static java.util.function.Supplier<java.lang.String> supplier();
+    descriptor: ()Ljava/util/function/Supplier;
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=1, args_size=0
+         0: ldc           #1                  // String world
+         2: astore_0
+         3: aload_0
+         4: invokedynamic #69,  0             // InvokeDynamic #1:get:(Ljava/lang/String;)Ljava/util/function/Supplier;
+         9: areturn
+      LineNumberTable:
+        line 9: 0
+        line 10: 3
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+    Signature: #45                          // ()Ljava/util/function/Supplier<Ljava/lang/String;>;
+
+  public static java.util.function.Function<java.lang.String, java.lang.String> methodRef();
+    descriptor: ()Ljava/util/function/Function;
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=0, args_size=0
+         0: invokedynamic #70,  0             // InvokeDynamic #2:apply:()Ljava/util/function/Function;
+         5: areturn
+      LineNumberTable:
+        line 13: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+    Signature: #48                          // ()Ljava/util/function/Function<Ljava/lang/String;Ljava/lang/String;>;
+
+  public static java.util.List<java.lang.String> sorted(java.util.List<java.lang.String>);
+    descriptor: (Ljava/util/List;)Ljava/util/List;
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: invokedynamic #71,  0             // InvokeDynamic #3:compare:()Ljava/util/Comparator;
+         6: invokeinterface #57,  2           // InterfaceMethod java/util/List.sort:(Ljava/util/Comparator;)V
+        11: aload_0
+        12: areturn
+      LineNumberTable:
+        line 16: 0
+        line 17: 11
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+    Signature: #49                          // (Ljava/util/List<Ljava/lang/String;>;)Ljava/util/List<Ljava/lang/String;>;
+}
+SourceFile: "LambdaSubject.java"
+InnerClasses:
+  public static final #79= #34 of #83;    // Lookup=class java/lang/invoke/MethodHandles$Lookup of class java/lang/invoke/MethodHandles
+BootstrapMethods:
+Error: invalid index #65535
+  0: #60 REF_invokeStatic java/lang/invoke/StringConcatFactory.???
+    Method arguments:
+      #32 Hello, \u0001
+Error: invalid index #65535
+Error: invalid index #65535
+  1: #59 REF_invokeStatic ???.???
+    Method arguments:
+      #63 ()Ljava/lang/Object;
+      #62 REF_invokeStatic roundtrip/LambdaSubject.lambda$supplier$0:(Ljava/lang/String;)Ljava/lang/String;
+      #64 ()Ljava/lang/String;
+Error: invalid index #65535
+Error: invalid index #65535
+  2: #59 REF_invokeStatic ???.???
+    Method arguments:
+      #65 (Ljava/lang/Object;)Ljava/lang/Object;
+Error: invalid index #65535
+      #61 ???
+      #67 (Ljava/lang/String;)Ljava/lang/String;
+Error: invalid index #65535
+Error: invalid index #65535
+  3: #59 REF_invokeStatic ???.???
+    Method arguments:
+      #66 (Ljava/lang/Object;Ljava/lang/Object;)I
+Error: invalid index #65535
+Error: invalid index #65535
+      #58 REF_invokeVirtual ???.???
+      #68 (Ljava/lang/String;Ljava/lang/String;)I

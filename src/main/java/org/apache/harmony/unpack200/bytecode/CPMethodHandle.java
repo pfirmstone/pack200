@@ -56,6 +56,11 @@ public class CPMethodHandle extends CPLoadableValue {
     }
     
     @Override
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+	return new ClassFileEntry[] { member };
+    }
+
+    @Override
     protected void resolve(ClassConstantPool pool) {
 	super.resolve(pool);
 	reference_index = pool.indexOf(member);

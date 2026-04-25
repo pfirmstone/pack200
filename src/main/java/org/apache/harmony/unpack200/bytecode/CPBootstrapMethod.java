@@ -49,7 +49,25 @@ public class CPBootstrapMethod extends ClassFileEntry {
     public int getBootstrapMethodAttrIndex(){
 	return bootstrap_method_attr_index;
     }
-    
+
+    public void setBootstrapMethodAttrIndex(int index) {
+	bootstrap_method_attr_index = index;
+    }
+
+    public int getArgCount() {
+	return bootstrapMethodArg.length;
+    }
+
+    @Override
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+	ClassFileEntry[] result = new ClassFileEntry[1 + bootstrapMethodArg.length];
+	result[0] = cpMethodHandleValue;
+	for (int i = 0; i < bootstrapMethodArg.length; i++) {
+	    result[i + 1] = bootstrapMethodArg[i];
+	}
+	return result;
+    }
+
     @Override
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
@@ -77,7 +95,7 @@ public class CPBootstrapMethod extends ClassFileEntry {
 	CPBootstrapMethod that = (CPBootstrapMethod) arg0;
 	if (cpBootstrapMethodArgInt != that.cpBootstrapMethodArgInt) return false;
 	if (!this.cpMethodHandleValue.equals(that.cpMethodHandleValue)) return false;
-	return Arrays.equals(bootstrapMethodArg, this.bootstrapMethodArg);
+	return Arrays.equals(this.bootstrapMethodArg, that.bootstrapMethodArg);
     }
 
     @Override

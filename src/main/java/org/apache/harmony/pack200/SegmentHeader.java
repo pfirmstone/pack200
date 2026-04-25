@@ -192,6 +192,11 @@ class SegmentHeader extends BandSet {
         cp_Imethod_count = count;
     }
 
+    public void setCp_MethodHandle_count(int count) { cp_MethodHandle_count = count; }
+    public void setCp_MethodType_count(int count) { cp_MethodType_count = count; }
+    public void setCp_BootstrapMethod_count(int count) { cp_BootstrapMethod_count = count; }
+    public void setCp_InvokeDynamic_count(int count) { cp_InvokeDynamic_count = count; }
+
     public void setAttribute_definition_count(int attribute_definition_count) {
         this.attribute_definition_count = attribute_definition_count;
     }
