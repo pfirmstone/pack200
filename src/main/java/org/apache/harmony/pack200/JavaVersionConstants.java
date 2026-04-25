@@ -23,7 +23,8 @@ package org.apache.harmony.pack200;
  * file header for the corresponding Java platform version.  The minor version
  * is typically {@code 0} (or {@code 65535} for preview features).
  *
- * <p>Relationship: {@code major = 44 + java_version} for Java 1 and above.
+ * <p>Relationship: {@code major = 44 + java_version} for Java 1 and above
+ * (e.g. Java 1 → 45, Java 2 → 46, Java 27 → 71).
  */
 public final class JavaVersionConstants {
 
