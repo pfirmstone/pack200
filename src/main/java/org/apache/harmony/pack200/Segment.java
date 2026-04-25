@@ -41,7 +41,7 @@ import org.objectweb.asm.Type;
  */
 class Segment extends ClassVisitor {
 
-    private final static int OPCODE = Opcodes.ASM7;
+    private final static int OPCODE = Opcodes.ASM9;
     private SegmentHeader segmentHeader;
     private CpBands cpBands;
     private AttributeDefinitionBands attributeDefinitionBands;

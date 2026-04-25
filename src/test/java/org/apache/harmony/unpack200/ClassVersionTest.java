@@ -35,6 +35,20 @@ public class ClassVersionTest extends TestCase {
     private static final int JAVA_11 = 55;
     private static final int JAVA_12 = 56;
     private static final int JAVA_13 = 57;
+    private static final int JAVA_14 = 58;
+    private static final int JAVA_15 = 59;
+    private static final int JAVA_16 = 60;
+    private static final int JAVA_17 = 61;
+    private static final int JAVA_18 = 62;
+    private static final int JAVA_19 = 63;
+    private static final int JAVA_20 = 64;
+    private static final int JAVA_21 = 65;
+    private static final int JAVA_22 = 66;
+    private static final int JAVA_23 = 67;
+    private static final int JAVA_24 = 68;
+    private static final int JAVA_25 = 69;
+    private static final int JAVA_26 = 70;
+    private static final int JAVA_27 = 71;
     
     public void testCorrectVersionOfSegment() throws IOException {
         InputStream in = Segment.class
