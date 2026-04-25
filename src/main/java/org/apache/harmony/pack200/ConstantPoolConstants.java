@@ -145,9 +145,8 @@ public final class ConstantPoolConstants {
 
     /**
      * {@code CONSTANT_InvokeDynamic} (tag 18).
-     * Also known as {@code CONSTANT_DynamicCallSite}.  A dynamically-computed
-     * call-site descriptor resolved via a bootstrap method.
-     * Introduced in Java 7 (JSR 292).
+     * A dynamically-computed call-site descriptor resolved via a bootstrap
+     * method.  Introduced in Java 7 (JSR 292).
      */
     public static final byte CP_InvokeDynamic = 18;
 
